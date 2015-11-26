@@ -1,0 +1,284 @@
+/**
+ * Effects.h
+ * Masken für diverse Effekte
+ *
+ * @mc       Arduino/UNO
+ * @autor    Manuel Bracher / manuel.bracher@gmail.com
+ * @version  1.0
+ * @created  02.01.15
+ *
+ * Versionshistorie:
+ * V 1.0:  - Erstellt.
+ */
+
+#ifndef EFFECTS_H
+#define EFFECTS_H
+
+#include <avr/pgmspace.h>
+#include "Renderer.h"
+#include "Configuration.h"
+
+extern Renderer renderer;
+
+#if defined (LED_DRIVER_DEFAULT)
+#include "LedDriverDefault.h"
+extern LedDriverDefault ledDriver;
+#elif defined(LED_DRIVER_UEBERPIXEL)
+#include "LedDriverUeberPixel.h"
+extern LedDriverUeberPixel ledDriver;
+#elif defined(LED_DRIVER_POWER_SHIFT_REGISTER)
+#include "LedDriverPowerShiftRegister.h"
+extern LedDriverPowerShiftRegister ledDriver;
+#elif defined(LED_DRIVER_NEOPIXEL)
+#include "LedDriverNeoPixel.h"
+extern LedDriverNeoPixel ledDriver;
+#elif defined(LED_DRIVER_NEOPIXEL_CLT)
+#include "LedDriverNeoPixel.h"
+extern LedDriverNeoPixel ledDriver;
+#elif defined(LED_DRIVER_DOTSTAR)
+#include "LedDriverDotStar.h"
+extern LedDriverDotStar ledDriver;
+#elif defined(LED_DRIVER_LPD8806)
+#include "LedDriverLPD8806.h"
+extern LedDriverLPD8806 ledDriver;
+#endif
+
+class Effects {
+  public:
+  enum eEffects : byte
+  {
+    NO_EFFECT = 255,
+    EFFECT_FIREWORK = 0,
+    EFFECT_HEART,
+    EFFECT_CANDLE,
+    EFFECT_LOVEU,
+    EFFECT_INTRO,
+  
+    BITMAP_MIN,
+    BITMAP_HEART = BITMAP_MIN,
+    BITMAP_DOTCIRCLE,
+    BITMAP_WEDDINGRING,
+    BITMAP_BDPIE,
+    BITMAP_CHAMPGLASS1,
+    BITMAP_CHAMPGLASS2,
+    BITMAP_CHRISTTREE1,
+    BITMAP_CHRISTTREE2,
+    BITMAP_SMILEY,
+    BITMAP_SMILEY_WINK,
+  
+    ANI_BITMAP_MIN,
+    ANI_BITMAP_CHAMPGLASS = ANI_BITMAP_MIN,
+    ANI_BITMAP_CHRISTTREE,
+    ANI_BITMAP_SMILEY_WINK,
+  };
+    
+  public:
+    static void showTickerString(String str2disp, byte tickerSpeed);
+    static void showIntro();
+    static void showFireWork(byte posX);
+    static void showHeart();
+    static void showCandle();
+    static void showLoveU();
+    static void showBitmap(byte bitmapIdx, byte duration);
+    static void showAnimatedBitmap(byte animatedBitmap);
+};
+
+const word effectMasks[][10] PROGMEM = {
+  { // 0:heart small
+    0b00000000000,
+    0b00011011000,
+    0b00111111100,
+    0b00011111000,
+    0b00001110000,
+    0b00000100000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 1:heart big
+    0b00111011100,
+    0b01100100110,
+    0b01000000010,
+    0b00100000100,
+    0b00010001000,
+    0b00001010000,
+    0b00000100000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 2:candle 0
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000100000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 3:candle 1&7
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00001110000,
+    0b00000100000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 4:candle 2&6
+    0b00000000000,
+    0b00000000000,
+    0b00001110000,
+    0b00001110000,
+    0b00000100000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 5:candle 3%5
+    0b00000000000,
+    0b00001110000,
+    0b00001110000,
+    0b00001110000,
+    0b00000100000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 6:candle 4
+    0b00000100000,
+    0b00001110000,
+    0b00001110000,
+    0b00001110000,
+    0b00000100000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 7:candle base
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00001110000,
+    0b00001110000,
+    0b00001110000,
+    0b00001110000
+  },
+  { // 8:fireWork1
+    0b00000000000,
+    0b00000000000,
+    0b00001110000,
+    0b00011111000,
+    0b00001110000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 9:fireWork2
+    0b00000000000,
+    0b00001010000,
+    0b00010101000,
+    0b00101110100,
+    0b00010101000,
+    0b00001010000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 10:fireWork3
+    0b00001010000,
+    0b00010101000,
+    0b00001110000,
+    0b01011111010,
+    0b00001110000,
+    0b00010101000,
+    0b00001010000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 11:fireWork4
+    0b00001010000,
+    0b00100100100,
+    0b00001010000,
+    0b00101110100,
+    0b00001010000,
+    0b00100100100,
+    0b00001010000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 12:fireWork5
+    0b00000100000,
+    0b00100000100,
+    0b00010101000,
+    0b00101010100,
+    0b00010101000,
+    0b00100000100,
+    0b00000100000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 13:fireWork6
+    0b00001010000,
+    0b00100100100,
+    0b00101010100,
+    0b01010101010,
+    0b00101010100,
+    0b00100100100,
+    0b00001010000,
+    0b00000000000,
+    0b00000000000,
+    0b00000000000
+  },
+  { // 14:arrowHeart
+    0b10000000000,
+    0b10000000000,
+    0b10110001100,
+    0b01111011110,
+    0b00111111100,
+    0b00011111000,
+    0b00001110000,
+    0b00000100101,
+    0b00000000101,
+    0b00000000111
+  }
+};
+
+const word bitmaps[][11] PROGMEM = {
+  {28, 62, 127, 255, 510, 1020, 510, 255, 127, 62, 28}, // ASCII-Code 0x6 =>(6) Herz
+  {0, 40, 130, 0, 257, 0, 257, 0, 130, 40, 0}, // ASCII-Code 0x8 =>(8) gepunkteter Kreis
+  {48, 72, 132, 132, 72, 48, 72, 132, 132, 72, 48}, // ASCII-Code 0xE =>(14) Eheringe
+  {960, 1021, 960, 1018, 960, 1018, 960, 1018, 960, 1021, 960}, // ASCII-Code 0x18 => (24) Geburtstagskuchen
+  {14, 540, 1020, 540, 14, 0, 7, 270, 510, 270, 7}, // ASCII-Code 0x10 =>(16) Sektgläser 1
+  {7, 270, 510, 270, 7, 0, 14, 540, 1020, 540, 14}, // ASCII-Code 0x12 => (18) Sektgläser 2
+  {128, 288, 328, 338, 340, 1023, 340, 338, 328, 288, 128}, // ASCII-Code 0x14 => (20) Weihnachtsbaum 1
+  {0, 256, 320, 336, 340, 1022, 340, 336, 320, 256, 0}, // ASCII-Code 0x14 => (22) Weihnachtsbaum 2
+  {0, 4, 138, 266, 260, 304, 260, 266, 138, 4, 0}, // ASCII-Code 0x1C => (28) Smily :-)
+  {0, 68, 138, 266, 260, 304, 260, 264, 136, 68, 0} // ASCII-Code 0x1C => (30) Smily ;-)
+};
+
+#endif //EFFECTS_H
+
+
