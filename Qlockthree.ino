@@ -551,6 +551,8 @@ unsigned long lastFpsCheck = 0;
 
 byte counter = 0;
 
+bool evtActive = false;
+
 /**
  * Aenderung der Anzeige als Funktion fuer den Interrupt, der ueber das SQW-Signal
  * der Real-Time-Clock gesetzt wird. Da die Wire-Bibliothek benutzt wird, kann man
@@ -841,35 +843,41 @@ void loop() {
             switch (settings.getEvent()) {
               case 0:
                 while (!(rtc.getMinutes() % 5)) {
+                  evtActive = true;
                   events[evtID].show();
                   rtc.readTime();
                 }
                 break;
               case 1:
                 while (!(rtc.getMinutes() % 15)) {
+                  evtActive = true;
                   events[evtID].show();
                   rtc.readTime();
                 }
                 break;
               case 2:
                 while (!(rtc.getMinutes() % 30)) {
+                  evtActive = true;
                   events[evtID].show();
                   rtc.readTime();
                 }
                 break;
               case 3:
                 while (!(rtc.getMinutes() % 45)) {
+                  evtActive = true;
                   events[evtID].show();
                   rtc.readTime();
                 }
                 break;
               case 4:
                 while (!(rtc.getMinutes() % 60)) {
+                  evtActive = true;
                   events[evtID].show();
                   rtc.readTime();
                 }
                 break;
             }
+            evtActive = false;
           }
         }
 #endif
@@ -1734,10 +1742,10 @@ void manageNewDCF77Data() {
     DEBUG_PRINTLN(F("DCF77-Time written to RTC."));
     DEBUG_FLUSH();
     // falls im manuellen Dunkel-Modus, Display wieder einschalten... (Hilft bei der Erkennung, ob der DCF-Empfang geklappt hat).
-    if (mode == STD_MODE_BLANK) {
-      mode = STD_MODE_NORMAL;
-      ledDriver.wakeUp();
-    }
+//    if (mode == STD_MODE_BLANK) {
+//      mode = STD_MODE_NORMAL;
+//      ledDriver.wakeUp();
+//    }
   } else {
     DEBUG_PRINTLN(F("DCF77-Time trashed because wrong distances between timestamps."));
     DEBUG_FLUSH();

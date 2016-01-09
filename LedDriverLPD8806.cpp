@@ -104,7 +104,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     **************/
 
     if (onChange || _demoTransition) {
-      if (((helperSeconds == 0) || _demoTransition) && (mode == STD_MODE_NORMAL) && _transitionCompleted) {
+      if (((helperSeconds == 0) || _demoTransition) && (mode == STD_MODE_NORMAL) && _transitionCompleted && !evtActive) {
         switch (settings.getTransitionMode()) {
           case TRANSITION_MODE_FADE:
             for (byte i = 0; i < 11; i++) {
@@ -331,6 +331,35 @@ void LedDriverLPD8806::_setPixel(byte x, byte y, uint32_t c) {
  * Einen Pixel im Streifen setzten (die Eck-LEDs sind am Ende).
  */
 void LedDriverLPD8806::_setPixel(byte num, uint32_t c) {
+  #ifdef MATRIX_XXL
+    if (num < 110) {
+    if ((num / 11) % 2 == 0) {
+      _strip->setPixelColor(num*2, c);
+      _strip->setPixelColor(num*2+1, c);
+    } else {
+      _strip->setPixelColor(((num / 11) * 22) + 21 - ((num % 11)*2), c);
+      _strip->setPixelColor(((num / 11) * 22) + 20 - ((num % 11)*2), c);
+    }
+  } else {
+    switch (num) {
+      case 110:
+        _strip->setPixelColor(222, c);
+        break;
+      case 111:
+        _strip->setPixelColor(224, c);
+        break;
+      case 112:
+        _strip->setPixelColor(226, c);
+        break;
+      case 113:
+        _strip->setPixelColor(220, c);
+        break;
+      case 114:
+        _strip->setPixelColor(228, c);
+        break;
+    }
+  }
+  #else
   if (num < 110) {
     if ((num / 11) % 2 == 0) {
       _strip->setPixelColor(num + (num / 11), c);
@@ -356,6 +385,7 @@ void LedDriverLPD8806::_setPixel(byte num, uint32_t c) {
         break;
     }
   }
+  #endif
   delay(1);
 }
 

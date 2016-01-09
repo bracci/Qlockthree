@@ -31,6 +31,7 @@ extern volatile byte helperSeconds;
 extern Mode mode;
 extern Settings settings;
 extern MyRTC rtc;
+extern bool evtActive;
 
 /* Treiberkonfiguration */
 #define FADINGCOUNTERLOAD 70 // nicht ?ndern, bitte: ?berblendvariable Startwert

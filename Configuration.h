@@ -57,6 +57,10 @@
 // #define LED_DRIVER_DOTSTAR
  #define LED_DRIVER_LPD8806
 
+#ifdef LED_DRIVER_LPD8806
+  #define MATRIX_XXL
+#endif
+
 /*
  * Welche Uhr soll benutzt werden?
  */

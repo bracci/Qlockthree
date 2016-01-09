@@ -105,7 +105,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     **************/
 
     if (onChange || _demoTransition) {
-      if (((helperSeconds == 0) || _demoTransition) && (mode == STD_MODE_NORMAL) && _transitionCompleted) {
+      if (((helperSeconds == 0) || _demoTransition) && (mode == STD_MODE_NORMAL) && _transitionCompleted && !evtActive) {
         switch (settings.getTransitionMode()) {
           case TRANSITION_MODE_FADE:
             for (byte i = 0; i < 11; i++) {
