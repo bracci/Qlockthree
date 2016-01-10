@@ -116,8 +116,9 @@
 /*
  * Welche Uhr soll benutzt werden?
  */
-#define DS1307
+//#define DS1307
 // #define DS3231
+#define TEENSYRTC
 
 /*
  * Welche IR-Fernbedienung soll benutzt werden?
