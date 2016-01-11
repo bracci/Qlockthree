@@ -58,7 +58,7 @@
  #define LED_DRIVER_LPD8806
 
 #ifdef LED_DRIVER_LPD8806
-  #define MATRIX_XXL
+  //#define MATRIX_XXL
 #endif
 
 /*
@@ -76,7 +76,7 @@
 //#define REMOTE_LUNARTEC
 #define REMOTE_CLT
  
-//#define EVENTS
+#define EVENTS
 
 /*
  *

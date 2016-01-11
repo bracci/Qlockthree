@@ -26,8 +26,10 @@ class Event {
           const char* txt,
           Effects::eEffects effect) :
       _month (month), _date (date),
-      _txt (txt), _effect (effect) {};
-      
+      _txt (txt), _effect (effect) {
+      _effects = &(Effects::getInstance());
+    };
+
     void show();
     byte getMonth();
     byte getDate();
@@ -37,6 +39,7 @@ class Event {
     byte _date;
     const char* _txt;
     Effects::eEffects _effect;
+    Effects *_effects;
 };
 
 #endif //EVENT_H

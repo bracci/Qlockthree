@@ -197,6 +197,7 @@
 #include "Settings.h"
 #include "Zahlen.h"
 #include "Modes.h"
+#include "Effects.h"
 
 #ifdef EVENTS
 #include "Events.h"
@@ -239,7 +240,7 @@ TimeStamp onTime(30, 4, 0, 0, 0, 0);
 /**
  * Der Renderer, der die Woerter auf die Matrix ausgibt.
  */
-Renderer renderer;
+Renderer& renderer  = Renderer::getInstance();
 
 /**
  * Der LED-Treiber fuer 74HC595-Shift-Register. Verwendet
@@ -594,6 +595,8 @@ void setup() {
   Serial.println(F("Qlockthree is initializing..."));
   DEBUG_PRINTLN(F("... and starting in debug-mode..."));
   Serial.flush();
+
+  Effects::getInstance().setLedDriver((LedDriver*)&ledDriver);
 
   pinMode(PIN_DCF77_PON, OUTPUT);
   enableDcf(false);

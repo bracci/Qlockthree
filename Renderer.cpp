@@ -18,6 +18,7 @@
  * V 1.5:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
  */
 #include "Renderer.h"
+Renderer* Renderer::_instance = NULL;
 
 #include "Woerter_DE.h"
 // #include "Woerter_DE_MKF.h"
@@ -31,8 +32,6 @@
 // #define DEBUG
 #include "Debug.h"
 
-Renderer::Renderer() {
-}
 
 /**
  * Ein Zufallsmuster erzeugen (zum Testen der LEDs)

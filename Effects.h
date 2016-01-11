@@ -17,70 +17,67 @@
 #include <avr/pgmspace.h>
 #include "Renderer.h"
 #include "Configuration.h"
-
-extern Renderer renderer;
-
-#if defined (LED_DRIVER_DEFAULT)
-#include "LedDriverDefault.h"
-extern LedDriverDefault ledDriver;
-#elif defined(LED_DRIVER_UEBERPIXEL)
-#include "LedDriverUeberPixel.h"
-extern LedDriverUeberPixel ledDriver;
-#elif defined(LED_DRIVER_POWER_SHIFT_REGISTER)
-#include "LedDriverPowerShiftRegister.h"
-extern LedDriverPowerShiftRegister ledDriver;
-#elif defined(LED_DRIVER_NEOPIXEL)
-#include "LedDriverNeoPixel.h"
-extern LedDriverNeoPixel ledDriver;
-#elif defined(LED_DRIVER_NEOPIXEL_CLT)
-#include "LedDriverNeoPixel.h"
-extern LedDriverNeoPixel ledDriver;
-#elif defined(LED_DRIVER_DOTSTAR)
-#include "LedDriverDotStar.h"
-extern LedDriverDotStar ledDriver;
-#elif defined(LED_DRIVER_LPD8806)
-#include "LedDriverLPD8806.h"
-extern LedDriverLPD8806 ledDriver;
-#endif
+#include "LedDriver.h"
 
 class Effects {
   public:
-  enum eEffects : byte
-  {
-    NO_EFFECT = 255,
-    EFFECT_FIREWORK = 0,
-    EFFECT_HEART,
-    EFFECT_CANDLE,
-    EFFECT_LOVEU,
-    EFFECT_INTRO,
-  
-    BITMAP_MIN,
-    BITMAP_HEART = BITMAP_MIN,
-    BITMAP_DOTCIRCLE,
-    BITMAP_WEDDINGRING,
-    BITMAP_BDPIE,
-    BITMAP_CHAMPGLASS1,
-    BITMAP_CHAMPGLASS2,
-    BITMAP_CHRISTTREE1,
-    BITMAP_CHRISTTREE2,
-    BITMAP_SMILEY,
-    BITMAP_SMILEY_WINK,
-  
-    ANI_BITMAP_MIN,
-    ANI_BITMAP_CHAMPGLASS = ANI_BITMAP_MIN,
-    ANI_BITMAP_CHRISTTREE,
-    ANI_BITMAP_SMILEY_WINK,
-  };
-    
+    static Effects &getInstance()
+    {
+      if (_instance == NULL)
+      {
+        _instance = new Effects();
+      }
+      return *_instance;
+    }
+
+    void setLedDriver(LedDriver *ledDriver) {
+      _ledDriver = ledDriver;
+    }
+
+    enum eEffects : byte
+    {
+      NO_EFFECT = 255,
+      EFFECT_FIREWORK = 0,
+      EFFECT_HEART,
+      EFFECT_CANDLE,
+      EFFECT_LOVEU,
+      EFFECT_INTRO,
+
+      BITMAP_MIN,
+      BITMAP_HEART = BITMAP_MIN,
+      BITMAP_DOTCIRCLE,
+      BITMAP_WEDDINGRING,
+      BITMAP_BDPIE,
+      BITMAP_CHAMPGLASS1,
+      BITMAP_CHAMPGLASS2,
+      BITMAP_CHRISTTREE1,
+      BITMAP_CHRISTTREE2,
+      BITMAP_SMILEY,
+      BITMAP_SMILEY_WINK,
+
+      ANI_BITMAP_MIN,
+      ANI_BITMAP_CHAMPGLASS = ANI_BITMAP_MIN,
+      ANI_BITMAP_CHRISTTREE,
+      ANI_BITMAP_SMILEY_WINK,
+    };
+
   public:
-    static void showTickerString(String str2disp, byte tickerSpeed);
-    static void showIntro();
-    static void showFireWork(byte posX);
-    static void showHeart();
-    static void showCandle();
-    static void showLoveU();
-    static void showBitmap(byte bitmapIdx, byte duration);
-    static void showAnimatedBitmap(byte animatedBitmap);
+    void showTickerString(String str2disp, byte tickerSpeed);
+    void showIntro();
+    void showFireWork(byte posX);
+    void showHeart();
+    void showCandle();
+    void showLoveU();
+    void showBitmap(byte bitmapIdx, byte duration);
+    void showAnimatedBitmap(byte animatedBitmap);
+
+  private:
+    Effects() {}
+    ~Effects() {}
+
+    static Effects *_instance;
+    Renderer& renderer = Renderer::getInstance();
+    LedDriver* _ledDriver = NULL;
 };
 
 const word effectMasks[][10] PROGMEM = {

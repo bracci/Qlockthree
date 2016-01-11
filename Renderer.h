@@ -36,8 +36,13 @@
 #define LANGUAGE_COUNT 5
 
 class Renderer {
-public:
-    Renderer();
+  public:
+    static Renderer &getInstance() {
+      if (NULL == _instance) {
+        _instance = new Renderer();
+      }
+      return *_instance;
+    }
 
     void setMinutes(char hours, byte minutes, byte language, word matrix[16]);
     void setCorners(byte minutes, boolean cw, word matrix[16]);
@@ -48,13 +53,18 @@ public:
     void clearScreenBuffer(word matrix[16]);
     void setAllScreenBuffer(word matrix[16]);
 
-private:
+  private:
+    Renderer(){}
+    ~Renderer() {}
+    
+    static Renderer *_instance;
+
     void setHours(byte hours, boolean glatt, byte language, word matrix[16]);
 
     // Spezialfaelle
-//    void FR_hours(byte hours, word matrix[16]);
-//    void IT_hours(byte hours, word matrix[16]);
-//    void ES_hours(byte hours, word matrix[16]);
+    //    void FR_hours(byte hours, word matrix[16]);
+    //    void IT_hours(byte hours, word matrix[16]);
+    //    void ES_hours(byte hours, word matrix[16]);
 };
 
 #endif
