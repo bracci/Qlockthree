@@ -70,11 +70,11 @@
 /*
  * Welche Fernbedienung soll benutzt werden?
  */
-//#define REMOTE_NO_REMOTE
+#define REMOTE_NO_REMOTE
 //#define REMOTE_SPARKFUN
 //#define REMOTE_MOONCANDLES
 //#define REMOTE_LUNARTEC
-#define REMOTE_CLT
+//#define REMOTE_CLT
  
 #define EVENTS
 

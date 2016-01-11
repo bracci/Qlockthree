@@ -1745,10 +1745,10 @@ void manageNewDCF77Data() {
     DEBUG_PRINTLN(F("DCF77-Time written to RTC."));
     DEBUG_FLUSH();
     // falls im manuellen Dunkel-Modus, Display wieder einschalten... (Hilft bei der Erkennung, ob der DCF-Empfang geklappt hat).
-//    if (mode == STD_MODE_BLANK) {
-//      mode = STD_MODE_NORMAL;
-//      ledDriver.wakeUp();
-//    }
+    if (mode == STD_MODE_BLANK) {
+      mode = STD_MODE_NORMAL;
+      ledDriver.wakeUp();
+    }
   } else {
     DEBUG_PRINTLN(F("DCF77-Time trashed because wrong distances between timestamps."));
     DEBUG_FLUSH();

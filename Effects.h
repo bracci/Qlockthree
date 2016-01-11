@@ -16,7 +16,6 @@
 
 #include <avr/pgmspace.h>
 #include "Renderer.h"
-#include "Configuration.h"
 #include "LedDriver.h"
 
 class Effects {
@@ -38,10 +37,10 @@ class Effects {
     {
       NO_EFFECT = 255,
       EFFECT_FIREWORK = 0,
-      EFFECT_HEART,
+//      EFFECT_HEART,
       EFFECT_CANDLE,
       EFFECT_LOVEU,
-      EFFECT_INTRO,
+//      EFFECT_INTRO,
 
       BITMAP_MIN,
       BITMAP_HEART = BITMAP_MIN,
@@ -63,9 +62,9 @@ class Effects {
 
   public:
     void showTickerString(String str2disp, byte tickerSpeed);
-    void showIntro();
+//    void showIntro();
     void showFireWork(byte posX);
-    void showHeart();
+//    void showHeart();
     void showCandle();
     void showLoveU();
     void showBitmap(byte bitmapIdx, byte duration);
@@ -76,7 +75,7 @@ class Effects {
     ~Effects() {}
 
     static Effects *_instance;
-    Renderer& renderer = Renderer::getInstance();
+    Renderer* _renderer = &(Renderer::getInstance());
     LedDriver* _ledDriver = NULL;
 };
 
