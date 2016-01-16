@@ -18,35 +18,35 @@
 
 void Event::show() {
   if (_txt != "")
-    _effects->showTickerString(_txt, TICKER_SPEED);
+    Effects::showTickerString(_txt, TICKER_SPEED);
   if (_effect < Effects::BITMAP_MIN) {
     switch (_effect)
     {
       case Effects::NO_EFFECT:
         break;
       case Effects::EFFECT_FIREWORK:
-        _effects->showFireWork(5);
-        _effects->showFireWork(2);
-        _effects->showFireWork(8);
+        Effects::showFireWork(5);
+        Effects::showFireWork(2);
+        Effects::showFireWork(8);
         break;
       case Effects::EFFECT_HEART:
-        _effects->showHeart();
+        Effects::showHeart();
         break;
       case Effects::EFFECT_CANDLE:
-        _effects->showCandle();
+        Effects::showCandle();
         break;
-//      case Effects::EFFECT_LOVEU:
-//        _effects->showLoveU();
-//        break;
+      case Effects::EFFECT_LOVEU:
+        Effects::showLoveU();
+        break;
       default:
         ;
     }
   }
   if ((_effect >= Effects::BITMAP_MIN) && (_effect < Effects::ANI_BITMAP_MIN)) {
-    _effects->showBitmap(_effect, DURATION_BM);
+    Effects::showBitmap(_effect, DURATION_BM);
   }
   if (_effect >= Effects::ANI_BITMAP_MIN) {
-    _effects->showAnimatedBitmap(_effect);
+    Effects::showAnimatedBitmap(_effect);
   }
 }
 

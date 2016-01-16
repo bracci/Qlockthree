@@ -90,7 +90,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
 
   if (onChange) {
     if ((helperSeconds == 0) && (mode == STD_MODE_NORMAL) && _transitionCompleted && !evtActive) {
-      switch (_settings->getTransitionMode()) {
+      switch (settings.getTransitionMode()) {
         case TRANSITION_MODE_FADE:
           for (byte i = 0; i < _linesToWrite; i++) {
             _matrixOld[i] = _matrixNew[i]; //Abbild der aktuellen Matrix in Vorversion r�berkopieren
@@ -122,7 +122,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
   }
 
   if ((_transitionCounter == 0) && !_transitionCompleted) {
-    switch (_settings->getTransitionMode()) {
+    switch (settings.getTransitionMode()) {
       case TRANSITION_MODE_SLIDE:
       Serial.println("slide");
         _transitionCounter = SLIDINGCOUNTERLOAD/50;
@@ -133,7 +133,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
 
   word row = 1;
 
-  if ((TRANSITION_MODE_FADE == _settings->getTransitionMode()) && !_transitionCompleted) {
+  if ((TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
     _delayOldMatrix =  map(_transitionCounter, 0, FADINGCOUNTERLOAD, 1, ((_brightnessInPercent * PWM_DURATION) + 132)); //Summand ist Korrektur um die Zeit, die das Einschieben der 32 bit f�r "PWM dunkel" dauert
     _delayNewMatrix =  map(_transitionCounter, FADINGCOUNTERLOAD, 0, 1, ((_brightnessInPercent * PWM_DURATION) + 132));
     if (_transitionCounter == 0) {
@@ -154,7 +154,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
 #endif
 
       if (_displayOn == true) {
-        if ((TRANSITION_MODE_FADE == _settings->getTransitionMode()) && !_transitionCompleted) { // �ber OE einschalten und nach PWM-Anteil wieder ausschalten, wenn das Display aktiv ist
+        if ((TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) { // �ber OE einschalten und nach PWM-Anteil wieder ausschalten, wenn das Display aktiv ist
           // Alter Zeileninhalt
           // Zeile schreiben...
           _shiftRegister->prepareShiftregisterWrite();

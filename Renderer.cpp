@@ -20,7 +20,7 @@
 #include "Renderer.h"
 
 #include "Woerter_DE.h"
-#include "Woerter_DE_MKF.h"
+// #include "Woerter_DE_MKF.h"
 #include "Woerter_CH.h"
 #include "Woerter_EN.h"
 #include "Woerter_FR.h"
@@ -31,6 +31,8 @@
 // #define DEBUG
 #include "Debug.h"
 
+Renderer::Renderer() {
+}
 
 /**
  * Ein Zufallsmuster erzeugen (zum Testen der LEDs)

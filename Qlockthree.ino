@@ -70,7 +70,7 @@
  *          - Eine Alarm-Klasse eingefuehrt, das macht den 'Hauptcode' nochmal besser lesbar.
  *          - Configuration.h eingefueht, in der alle wichtigen Compiler-Schalter zusammengefuehrt sind, dadurch gibt es eine zentrale Stelle
  *              fuer die Anpassungen (Danke fuer das Konzept an Markus K.).
- *          - Settings eingefuehrt, in der die Spracheinstellung gehalten wird und im EEPROM gespeichert wird (Danke fuer das Konzept an Markus K.).
+ *          - Settings.h eingefuehrt, in der die Spracheinstellung gehalten wird und im EEPROM gespeichert wird (Danke fuer das Konzept an Markus K.).
  *          - Modes zum Einstellen der Sprache und des Eck-Modus eingefuehrt.
  *          - Extended Modes eingefuehrt.
  *          - Saechsisch als Sprache aufgenommen, danke an Sven.
@@ -197,7 +197,6 @@
 #include "Settings.h"
 #include "Zahlen.h"
 #include "Modes.h"
-#include "Effects.h"
 
 #ifdef EVENTS
 #include "Events.h"
@@ -222,7 +221,7 @@
 /*
  * Die persistenten (im EEPROM gespeicherten) Einstellungen.
  */
-Settings* settings = Settings::getInstance();
+Settings settings;
 
 /**
  * Hier definiert man die Ab- und Anschaltzeiten fuer das Display. Die Abschaltung des
@@ -240,7 +239,7 @@ TimeStamp onTime(30, 4, 0, 0, 0, 0);
 /**
  * Der Renderer, der die Woerter auf die Matrix ausgibt.
  */
-Renderer* renderer  = Renderer::getInstance();
+Renderer renderer;
 
 /**
  * Der LED-Treiber fuer 74HC595-Shift-Register. Verwendet
@@ -598,12 +597,10 @@ void setup() {
   DEBUG_PRINTLN(F("... and starting in debug-mode..."));
   Serial.flush();
 
-  Effects::getInstance()->setLedDriver((LedDriver*)&ledDriver);
-
   pinMode(PIN_DCF77_PON, OUTPUT);
   enableDcf(false);
 #ifdef ALARM
-  if (settings->getEnableAlarm()) {
+  if (settings.getEnableAlarm()) {
     // als Wecker Display nicht abschalten...
     TimeStamp offTime(0, 0, 0, 0, 0, 0);
     TimeStamp onTime(0, 0, 0, 0, 0, 0);
@@ -612,11 +609,11 @@ void setup() {
 
   // LED-Treiber initialisieren
   ledDriver.init();
-  ledDriver.setColor(settings->getRed(), settings->getGreen(), settings->getBlue());
+  ledDriver.setColor(settings.getRed(), settings.getGreen(), settings.getBlue());
   // Inhalt des Led-Treibers loeschen...
   ledDriver.clearData();
   // und Inhalt des Bildspeichers loeschen
-  renderer->clearScreenBuffer(matrix);
+  renderer.clearScreenBuffer(matrix);
   // wir brauchen nur 10 Zeilen...
   ledDriver.setLinesToWrite(10);
 
@@ -632,14 +629,14 @@ void setup() {
   for (byte i = 0; i < 3; i++) {
     dcf77.statusLed(true);
 #ifdef ALARM
-    if (settings->getEnableAlarm()) {
+    if (settings.getEnableAlarm()) {
       alarm.buzz(true);
     }
 #endif
     delay(100);
     dcf77.statusLed(false);
 #ifdef ALARM
-    if (settings->getEnableAlarm()) {
+    if (settings.getEnableAlarm()) {
       alarm.buzz(false);
     }
 #endif
@@ -714,14 +711,14 @@ void setup() {
   for (byte i = 0; i < 3; i++) {
     rtc.statusLed(true);
 #ifdef ALARM
-    if (settings->getEnableAlarm()) {
+    if (settings.getEnableAlarm()) {
       alarm.buzz(true);
     }
 #endif
     delay(100);
     rtc.statusLed(false);
 #ifdef ALARM
-    if (settings->getEnableAlarm()) {
+    if (settings.getEnableAlarm()) {
       alarm.buzz(false);
     }
 #endif
@@ -745,12 +742,12 @@ void setup() {
   Serial.print(F("Remote: disabled."));
 #endif
 #ifdef ALARM
-  if (settings->getEnableAlarm()) {
+  if (settings.getEnableAlarm()) {
     Serial.println(F("Alarm is enabled"));
   }
 #endif
 
-  if (settings->getDcfSignalIsInverted()) {
+  if (settings.getDcfSignalIsInverted()) {
     Serial.println(F("DCF77-Signal is inverted."));
   }
 
@@ -764,7 +761,7 @@ void setup() {
   enableDcf(true);
   // Display einschalten...
   ledDriver.wakeUp();
-  ledDriver.setBrightness(settings->getBrightness());
+  ledDriver.setBrightness(settings.getBrightness());
 }
 
 /**
@@ -791,7 +788,7 @@ void loop() {
   //
   // Dimmung.
   //
-  if (settings->getUseLdr()) {
+  if (settings.getUseLdr()) {
     if (millis() < lastBrightnessCheck) {
       // wir hatten einen Ueberlauf...
       lastBrightnessCheck = millis();
@@ -857,7 +854,7 @@ void loop() {
 #ifdef EVENTS
         for (int evtID = 0; evtID < nbrOfEvts; evtID++) {
           if ((rtc.getDate() == events[evtID].getDate()) & (rtc.getMonth() == events[evtID].getMonth())) {
-            switch (settings->getEvent()) {
+            switch (settings.getEvent()) {
               case 0:
                 while (!(rtc.getMinutes() % 5)) {
                   evtActive = true;
@@ -899,17 +896,17 @@ void loop() {
         }
 #endif
       case EXT_MODE_TIMESET:
-        renderer->clearScreenBuffer(matrix);
-        renderer->setMinutes(rtc.getHours() + settings->getTimeShift(), rtc.getMinutes(), settings->getLanguage(), matrix);
-        renderer->setCorners(rtc.getMinutes(), settings->getRenderCornersCw(), matrix);
+        renderer.clearScreenBuffer(matrix);
+        renderer.setMinutes(rtc.getHours() + settings.getTimeShift(), rtc.getMinutes(), settings.getLanguage(), matrix);
+        renderer.setCorners(rtc.getMinutes(), settings.getRenderCornersCw(), matrix);
         break;
       case EXT_MODE_TIME_SHIFT:
-        renderer->clearScreenBuffer(matrix);
-        if (settings->getTimeShift() < 0) {
+        renderer.clearScreenBuffer(matrix);
+        if (settings.getTimeShift() < 0) {
           for (byte x = 0; x < 3; x++) {
             ledDriver.setPixelInScreenBuffer(x, 1, matrix);
           }
-        } else if (settings->getTimeShift() > 0) {
+        } else if (settings.getTimeShift() > 0) {
           for (byte x = 0; x < 3; x++) {
             ledDriver.setPixelInScreenBuffer(x, 1, matrix);
           }
@@ -918,23 +915,23 @@ void loop() {
           }
         }
         for (byte i = 0; i < 7; i++) {
-          matrix[3 + i] |= pgm_read_byte_near(&(ziffern[abs(settings->getTimeShift()) % 10][i])) << 5;
-          if (abs(settings->getTimeShift()) > 9) {
+          matrix[3 + i] |= pgm_read_byte_near(&(ziffern[abs(settings.getTimeShift()) % 10][i])) << 5;
+          if (abs(settings.getTimeShift()) > 9) {
             matrix[3 + i] |= pgm_read_byte_near(&(ziffern[1][i])) << 10;
           }
         }
         break;
 #ifdef ALARM
       case STD_MODE_ALARM:
-        renderer->clearScreenBuffer(matrix);
+        renderer.clearScreenBuffer(matrix);
         if (alarm.getShowAlarmTimeTimer() == 0) {
-          renderer->setMinutes(rtc.getHours() + settings->getTimeShift(), rtc.getMinutes(), settings->getLanguage(), matrix);
-          renderer->setCorners(rtc.getMinutes(), settings->getRenderCornersCw(), matrix);
+          renderer.setMinutes(rtc.getHours() + settings.getTimeShift(), rtc.getMinutes(), settings.getLanguage(), matrix);
+          renderer.setCorners(rtc.getMinutes(), settings.getRenderCornersCw(), matrix);
           matrix[4] |= 0b0000000000011111; // Alarm-LED
         } else {
-          renderer->setMinutes(alarm.getAlarmTime()->getHours() + settings->getTimeShift(), alarm.getAlarmTime()->getMinutes(), settings->getLanguage(), matrix);
-          renderer->setCorners(alarm.getAlarmTime()->getMinutes(), settings->getRenderCornersCw(), matrix);
-          renderer->cleanWordsForAlarmSettingMode(settings->getLanguage(), matrix); // ES IST weg
+          renderer.setMinutes(alarm.getAlarmTime()->getHours() + settings.getTimeShift(), alarm.getAlarmTime()->getMinutes(), settings.getLanguage(), matrix);
+          renderer.setCorners(alarm.getAlarmTime()->getMinutes(), settings.getRenderCornersCw(), matrix);
+          renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if (alarm.getShowAlarmTimeTimer() % 2 == 0) {
             matrix[4] |= 0b0000000000011111; // Alarm-LED
           }
@@ -943,15 +940,15 @@ void loop() {
         break;
 #endif
       case STD_MODE_SECONDS:
-        renderer->clearScreenBuffer(matrix);
+        renderer.clearScreenBuffer(matrix);
         for (byte i = 0; i < 7; i++) {
           matrix[1 + i] |= pgm_read_byte_near(&(ziffern[rtc.getSeconds() / 10][i])) << 11;
           matrix[1 + i] |= pgm_read_byte_near(&(ziffern[rtc.getSeconds() % 10][i])) << 5;
         }
         break;
       case EXT_MODE_LDR_MODE:
-        renderer->clearScreenBuffer(matrix);
-        if (settings->getUseLdr()) {
+        renderer.clearScreenBuffer(matrix);
+        if (settings.getUseLdr()) {
           for (byte i = 0; i < 5; i++) {
             matrix[2 + i] |= pgm_read_byte_near(&(staben['A' - 'A'][i])) << 8;
           }
@@ -963,11 +960,11 @@ void loop() {
         break;
       case STD_MODE_BLANK:
       case STD_MODE_NIGHT:
-        renderer->clearScreenBuffer(matrix);
+        renderer.clearScreenBuffer(matrix);
         break;
       case STD_MODE_BRIGHTNESS:
-        renderer->clearScreenBuffer(matrix);
-        brightnessToDisplay = map(settings->getBrightness(), 1, 100, 0, 9);
+        renderer.clearScreenBuffer(matrix);
+        brightnessToDisplay = map(settings.getBrightness(), 1, 100, 0, 9);
         for (byte xb = 0; xb < brightnessToDisplay; xb++) {
           for (byte yb = 0; yb <= xb; yb++) {
             matrix[9 - yb] |= 1 << (14 - xb);
@@ -975,8 +972,8 @@ void loop() {
         }
         break;
       case EXT_MODE_CORNERS:
-        renderer->clearScreenBuffer(matrix);
-        if (settings->getRenderCornersCw()) {
+        renderer.clearScreenBuffer(matrix);
+        if (settings.getRenderCornersCw()) {
           for (byte i = 0; i < 5; i++) {
             matrix[2 + i] |= pgm_read_byte_near(&(staben['C' - 'A'][i])) << 11;
             matrix[2 + i] |= pgm_read_byte_near(&(staben['W' - 'A'][i])) << 5;
@@ -991,8 +988,8 @@ void loop() {
         break;
 #ifdef ALARM
       case EXT_MODE_ENABLE_ALARM:
-        renderer->clearScreenBuffer(matrix);
-        if (settings->getEnableAlarm()) {
+        renderer.clearScreenBuffer(matrix);
+        if (settings.getEnableAlarm()) {
           for (byte i = 0; i < 5; i++) {
             matrix[0 + i] |= pgm_read_byte_near(&(staben['A' - 'A'][i])) << 11;
             matrix[0 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
@@ -1011,7 +1008,7 @@ void loop() {
 #endif
       // Color cycle on/off
       case EXT_MODE_RAINBOW:
-        renderer->clearScreenBuffer(matrix);
+        renderer.clearScreenBuffer(matrix);
         if (ledDriver.isRainbow()) {
           for (byte i = 0; i < 5; i++) {
             matrix[0 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 11;
@@ -1032,9 +1029,9 @@ void loop() {
 #ifdef EVENTS
       // Eventwiederholung einstelleng
       case EXT_MODE_EVENT:
-        renderer->clearScreenBuffer(matrix);
+        renderer.clearScreenBuffer(matrix);
         for (byte i = 0; i < 5; i++) {
-          switch (settings->getEvent()) {
+          switch (settings.getEvent()) {
             case 0:
               matrix[0 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
               matrix[0 + i] |= pgm_read_byte_near(&(staben['V' - 'A'][i])) << 5;
@@ -1069,8 +1066,8 @@ void loop() {
         break;
 #endif
       case EXT_MODE_TRANSITION:
-        renderer->clearScreenBuffer(matrix);
-        switch (settings->getTransitionMode()) {
+        renderer.clearScreenBuffer(matrix);
+        switch (settings.getTransitionMode()) {
           case TRANSITION_MODE_NORMAL:
             for (byte i = 0; i < 5; i++) {
               matrix[0 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 11;
@@ -1106,8 +1103,8 @@ void loop() {
         }
         break;
       case EXT_MODE_DCF_IS_INVERTED:
-        renderer->clearScreenBuffer(matrix);
-        if (settings->getDcfSignalIsInverted()) {
+        renderer.clearScreenBuffer(matrix);
+        if (settings.getDcfSignalIsInverted()) {
           for (byte i = 0; i < 5; i++) {
             matrix[0 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 11;
             matrix[0 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 5;
@@ -1124,9 +1121,9 @@ void loop() {
         }
         break;
       case EXT_MODE_LANGUAGE:
-        renderer->clearScreenBuffer(matrix);
+        renderer.clearScreenBuffer(matrix);
         for (byte i = 0; i < 5; i++) {
-          switch (settings->getLanguage()) {
+          switch (settings.getLanguage()) {
             case LANGUAGE_DE_DE:
               matrix[2 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 11;
               matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 5;
@@ -1182,10 +1179,10 @@ void loop() {
         }
         break;
       case EXT_MODE_TEST:
-        renderer->clearScreenBuffer(matrix);
-        renderer->setCorners(helperSeconds % 5, settings->getRenderCornersCw(), matrix);
+        renderer.clearScreenBuffer(matrix);
+        renderer.setCorners(helperSeconds % 5, settings.getRenderCornersCw(), matrix);
 #ifdef ALARM
-        if (settings->getEnableAlarm()) {
+        if (settings.getEnableAlarm()) {
           matrix[4] |= 0b0000000000011111; // Alarm-LED
         }
 #endif
@@ -1198,8 +1195,8 @@ void loop() {
         }
         break;
       case EXT_MODE_DCF_DEBUG:
-        renderer->clearScreenBuffer(matrix);
-        renderer->setCorners(dcf77.getBitPointer() % 5, settings->getRenderCornersCw(), matrix);
+        renderer.clearScreenBuffer(matrix);
+        renderer.setCorners(dcf77.getBitPointer() % 5, settings.getRenderCornersCw(), matrix);
         break;
     }
 
@@ -1260,7 +1257,7 @@ void loop() {
         hourPlusPressed();
         break;
       case REMOTE_BUTTON_BRIGHTER:
-        if (!settings->getUseLdr()) {
+        if (!settings.getUseLdr()) {
           if (STD_MODE_BRIGHTNESS == mode) {
             setDisplayBrighter();
             enableCounter(2);
@@ -1272,7 +1269,7 @@ void loop() {
         }
         break;
       case REMOTE_BUTTON_DARKER:
-        if (!settings->getUseLdr()) {
+        if (!settings.getUseLdr()) {
           if (STD_MODE_BRIGHTNESS == mode) {
             setDisplayDarker();
             enableCounter(2);
@@ -1296,11 +1293,11 @@ void loop() {
         setDisplayToResume();
         break;
       case REMOTE_BUTTON_SETCOLOR:
-        settings->setColor(irTranslator.getRed(), irTranslator.getGreen(), irTranslator.getBlue());
+        settings.setColor(irTranslator.getRed(), irTranslator.getGreen(), irTranslator.getBlue());
         ledDriver.setColor(irTranslator.getRed(), irTranslator.getGreen(), irTranslator.getBlue());
         break;
       case REMOTE_BUTTON_SAVE:
-        settings->saveToEEPROM();
+        settings.saveToEEPROM();
         break;
       case REMOTE_BUTTON_SETMODE:
         mode = irTranslator.getMode();
@@ -1318,8 +1315,8 @@ void loop() {
         break;
       case REMOTE_BUTTON_LDR:
         if (EXT_MODE_LDR_MODE == mode) {
-          settings->setUseLdr(!settings->getUseLdr());
-          if (!settings->getUseLdr()) {
+          settings.setUseLdr(!settings.getUseLdr());
+          if (!settings.getUseLdr()) {
             ledDriver.setBrightness(50);
           }
           enableCounter(2);
@@ -1358,14 +1355,14 @@ void loop() {
         helperSeconds = 0;
         break;
       case REMOTE_BUTTON_TRANSITION:
-        settings->setTransitionMode(irTranslator.getTransition());
+        settings.setTransitionMode(irTranslator.getTransition());
         ledDriver.demoTransition();
         //mode = EXT_MODE_TRANSITION;
         //enableCounter(2);
         break;
     }
     irrecv.resume();
-    settings->saveToEEPROM();
+    settings.saveToEEPROM();
   }
 #endif
 
@@ -1427,7 +1424,7 @@ void loop() {
    *
    */
 #ifdef ENABLE_DCF_LED
-  dcf77.statusLed(dcf77.signal(settings->getDcfSignalIsInverted()));
+  dcf77.statusLed(dcf77.signal(settings.getDcfSignalIsInverted()));
 #endif
 #ifdef ENABLE_SQW_LED
   rtc.statusLed(digitalRead(PIN_SQW_SIGNAL) == HIGH);
@@ -1438,7 +1435,7 @@ void loop() {
    * DCF77-Empfaenger anticken...
    *
    */
-  dcf77.poll(settings->getDcfSignalIsInverted());
+  dcf77.poll(settings.getDcfSignalIsInverted());
 }
 
 /**
@@ -1497,12 +1494,12 @@ void modePressed() {
 #endif
 
   // Brightness ueberspringen, wenn LDR verwendet wird.
-  if (settings->getUseLdr() && (mode == STD_MODE_BRIGHTNESS)) {
+  if (settings.getUseLdr() && (mode == STD_MODE_BRIGHTNESS)) {
     mode++;
   }
 #ifdef ALARM
   // Alarm ueberspringen, wenn kein Alarm enabled ist.
-  if (!settings->getEnableAlarm() && (mode == STD_MODE_ALARM)) {
+  if (!settings.getEnableAlarm() && (mode == STD_MODE_ALARM)) {
     mode++;
   }
 #endif
@@ -1543,7 +1540,7 @@ void modePressed() {
   lastMode = mode;
 
   // Werte speichern (die Funktion speichert nur bei geaenderten Werten)...
-  settings->saveToEEPROM();
+  settings.saveToEEPROM();
 }
 
 /**
@@ -1567,8 +1564,8 @@ void hourPlusPressed() {
       DEBUG_FLUSH();
       break;
     case EXT_MODE_TIME_SHIFT:
-      if (settings->getTimeShift() > -13) {
-        settings->setTimeShift(settings->getTimeShift() - 1);
+      if (settings.getTimeShift() > -13) {
+        settings.setTimeShift(settings.getTimeShift() - 1);
       }
       break;
 #ifdef ALARM
@@ -1584,20 +1581,20 @@ void hourPlusPressed() {
       setDisplayDarker();
       break;
     case EXT_MODE_LDR_MODE:
-      settings->setUseLdr(!settings->getUseLdr());
-      if (!settings->getUseLdr()) {
+      settings.setUseLdr(!settings.getUseLdr());
+      if (!settings.getUseLdr()) {
         ledDriver.setBrightness(50);
       }
       DEBUG_PRINT(F("LDR is now "));
-      DEBUG_PRINTLN(settings->getUseLdr());
+      DEBUG_PRINTLN(settings.getUseLdr());
       DEBUG_FLUSH();
       break;
     case EXT_MODE_CORNERS:
-      settings->setRenderCornersCw(!settings->getRenderCornersCw());
+      settings.setRenderCornersCw(!settings.getRenderCornersCw());
       break;
 #ifdef ALARM
     case EXT_MODE_ENABLE_ALARM:
-      settings->setEnableAlarm(!settings->getEnableAlarm());
+      settings.setEnableAlarm(!settings.getEnableAlarm());
       break;
 #endif
     case EXT_MODE_RAINBOW:
@@ -1608,35 +1605,35 @@ void hourPlusPressed() {
       else {
         c = 0;
       }
-      settings->setColor(c, c, c);
+      settings.setColor(c, c, c);
       ledDriver.setColor(c, c, c);
       break;
 #ifdef EVENTS
     // Eventwiederholungszeit Auswahl
     case EXT_MODE_EVENT:
-      if (settings->getEvent() == 0) {
-        settings->setEvent(4);
+      if (settings.getEvent() == 0) {
+        settings.setEvent(4);
       }
       else {
-        settings->setEvent(settings->getEvent() - 1);
+        settings.setEvent(settings.getEvent() - 1);
       }
       break;
 #endif
     case EXT_MODE_TRANSITION:
-      if (settings->getTransitionMode() == 0) {
-        settings->setTransitionMode(TRANSITION_MODE_COUNT);
+      if (settings.getTransitionMode() == 0) {
+        settings.setTransitionMode(TRANSITION_MODE_COUNT);
       } else {
-        settings->setTransitionMode(settings->getTransitionMode() - 1);
+        settings.setTransitionMode(settings.getTransitionMode() - 1);
       }
       break;
     case EXT_MODE_DCF_IS_INVERTED:
-      settings->setDcfSignalIsInverted(!settings->getDcfSignalIsInverted());
+      settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
       break;
     case EXT_MODE_LANGUAGE:
-      if (settings->getLanguage() == 0) {
-        settings->setLanguage(LANGUAGE_COUNT);
+      if (settings.getLanguage() == 0) {
+        settings.setLanguage(LANGUAGE_COUNT);
       } else {
-        settings->setLanguage(settings->getLanguage() - 1);
+        settings.setLanguage(settings.getLanguage() - 1);
       }
       break;
   }
@@ -1663,8 +1660,8 @@ void minutePlusPressed() {
       DEBUG_FLUSH();
       break;
     case EXT_MODE_TIME_SHIFT:
-      if (settings->getTimeShift() < 13) {
-        settings->setTimeShift(settings->getTimeShift() + 1);
+      if (settings.getTimeShift() < 13) {
+        settings.setTimeShift(settings.getTimeShift() + 1);
       }
       break;
 #ifdef ALARM
@@ -1680,20 +1677,20 @@ void minutePlusPressed() {
       setDisplayBrighter();
       break;
     case EXT_MODE_LDR_MODE:
-      settings->setUseLdr(!settings->getUseLdr());
-      if (!settings->getUseLdr()) {
+      settings.setUseLdr(!settings.getUseLdr());
+      if (!settings.getUseLdr()) {
         ledDriver.setBrightness(50);
       }
       DEBUG_PRINT(F("LDR is now "));
-      DEBUG_PRINTLN(settings->getUseLdr());
+      DEBUG_PRINTLN(settings.getUseLdr());
       DEBUG_FLUSH();
       break;
     case EXT_MODE_CORNERS:
-      settings->setRenderCornersCw(!settings->getRenderCornersCw());
+      settings.setRenderCornersCw(!settings.getRenderCornersCw());
       break;
 #ifdef ALARM
     case EXT_MODE_ENABLE_ALARM:
-      settings->setEnableAlarm(!settings->getEnableAlarm());
+      settings.setEnableAlarm(!settings.getEnableAlarm());
       break;
 #endif
     // Color Cycle On/Off
@@ -1705,32 +1702,32 @@ void minutePlusPressed() {
       else {
         c = 0;
       }
-      settings->setColor(c, c, c);
+      settings.setColor(c, c, c);
       ledDriver.setColor(c, c, c);
       break;
 #ifdef EVENTS
     // Eventwiederholungszeit Auswahl
     case EXT_MODE_EVENT:
-      settings->setEvent(settings->getEvent() + 1);
-      if (settings->getEvent() > 4) {
-        settings->setEvent(0);
+      settings.setEvent(settings.getEvent() + 1);
+      if (settings.getEvent() > 4) {
+        settings.setEvent(0);
       }
       break;
 #endif
     case EXT_MODE_TRANSITION:
-      if (settings->getTransitionMode() == TRANSITION_MODE_COUNT) {
-        settings->setTransitionMode(0);
+      if (settings.getTransitionMode() == TRANSITION_MODE_COUNT) {
+        settings.setTransitionMode(0);
       } else {
-        settings->setTransitionMode(settings->getTransitionMode() + 1);
+        settings.setTransitionMode(settings.getTransitionMode() + 1);
       }
       break;
     case EXT_MODE_DCF_IS_INVERTED:
-      settings->setDcfSignalIsInverted(!settings->getDcfSignalIsInverted());
+      settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
       break;
     case EXT_MODE_LANGUAGE:
-      settings->setLanguage(settings->getLanguage() + 1);
-      if (settings->getLanguage() > LANGUAGE_COUNT) {
-        settings->setLanguage(0);
+      settings.setLanguage(settings.getLanguage() + 1);
+      if (settings.getLanguage() > LANGUAGE_COUNT) {
+        settings.setLanguage(0);
       }
       break;
   }
@@ -1832,13 +1829,13 @@ void setDisplayToResume() {
  * Das Display manuell heller machen.
  */
 void setDisplayBrighter() {
-  if ((!settings->getUseLdr()) && (settings->getBrightness() < 100)) {
-    byte b = settings->getBrightness() + 10;
+  if ((!settings.getUseLdr()) && (settings.getBrightness() < 100)) {
+    byte b = settings.getBrightness() + 10;
     if (b > 100) {
       b = 100;
     }
-    settings->setBrightness(b);
-    settings->saveToEEPROM();
+    settings.setBrightness(b);
+    settings.saveToEEPROM();
     ledDriver.setBrightness(b);
   }
 }
@@ -1847,13 +1844,13 @@ void setDisplayBrighter() {
  * Das Display dunkler machen.
  */
 void setDisplayDarker() {
-  if ((!settings->getUseLdr()) && (settings->getBrightness() > 1)) {
-    int i = settings->getBrightness() - 10;
+  if ((!settings.getUseLdr()) && (settings.getBrightness() > 1)) {
+    int i = settings.getBrightness() - 10;
     if (i < 2) {
       i = 1;
     }
-    settings->setBrightness(i);
-    settings->saveToEEPROM();
+    settings.setBrightness(i);
+    settings.saveToEEPROM();
     ledDriver.setBrightness(i);
   }
 }

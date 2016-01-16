@@ -84,7 +84,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     _transitionCounter = 0;
   }
 
-  if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (TRANSITION_MODE_FADE == _settings->getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
+  if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
     uint32_t color;
     uint32_t colorNew;
     uint32_t colorOld;
@@ -106,7 +106,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
 
     if (onChange || _demoTransition) {
       if (((helperSeconds == 0) || _demoTransition) && (mode == STD_MODE_NORMAL) && _transitionCompleted && !evtActive) {
-        switch (_settings->getTransitionMode()) {
+        switch (settings.getTransitionMode()) {
           case TRANSITION_MODE_FADE:
             for (byte i = 0; i < 11; i++) {
               _matrixOld[i] = _matrixNew[i];
@@ -157,7 +157,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     _demoTransition = false;
 
     if ((_transitionCounter == 0) && !_transitionCompleted) {
-      switch (_settings->getTransitionMode()) {
+      switch (settings.getTransitionMode()) {
         case TRANSITION_MODE_MATRIX:
           _transitionCounter = MATRIXCOUNTERLOAD * 2;
           _transitionCompleted = Transitions::nextMatrixStep(_matrixOld, _matrixNew, _matrixOverlay, matrix);
@@ -176,7 +176,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
      * BRIGHTNESS
     **************/
 
-    if ((TRANSITION_MODE_FADE == _settings->getTransitionMode()) && !_transitionCompleted) {
+    if ((TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
       brightnessOld = map(_transitionCounter, 0, FADINGCOUNTERLOAD * 2, 0, _brightnessInPercent);
       brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD * 2, 0 , 0 , _brightnessInPercent);
       if (_transitionCounter == 0) {
@@ -215,7 +215,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
       colorOverlay2 = 0;
     }
 
-    if ( (_settings->getTransitionMode() == TRANSITION_MODE_MATRIX) && !_transitionCompleted ) {
+    if ( (settings.getTransitionMode() == TRANSITION_MODE_MATRIX) && !_transitionCompleted ) {
       colorOverlay1 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255), _brightnessScaleColor(_brightnessInPercent, 0));
       colorOverlay2 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.5), _brightnessScaleColor(_brightnessInPercent, 0));
       colorOld = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.1), _brightnessScaleColor(_brightnessInPercent, 0));
@@ -230,7 +230,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     for (byte y = 0; y < 10; y++) {
       for (byte x = 5; x < 16; x++) {
         word t = 1 << x;
-        if ((_settings->getTransitionMode() == TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t)) {
+        if ((settings.getTransitionMode() == TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t)) {
           _setPixel(15 - x, y, color);
         }
         else {
@@ -253,7 +253,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     // wir muessen die Eck-LEDs und die Alarm-LED umsetzen...
     byte cornerLedCount[] = {1, 0, 3, 2, 4};
     for ( byte i = 0; i < 5; i++) {
-      if ((_settings->getTransitionMode() == TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
+      if ((settings.getTransitionMode() == TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
         _setPixel(110 + i, color);
       }
       else {

@@ -37,10 +37,7 @@
 
 class Renderer {
   public:
-    static Renderer* getInstance() {
-      static Renderer _instance;
-      return &_instance;
-    }
+    Renderer();
 
     void setMinutes(char hours, byte minutes, byte language, word matrix[16]);
     void setCorners(byte minutes, boolean cw, word matrix[16]);
@@ -52,9 +49,6 @@ class Renderer {
     void setAllScreenBuffer(word matrix[16]);
 
   private:
-    Renderer(){}
-    ~Renderer() {}
-
     void setHours(byte hours, boolean glatt, byte language, word matrix[16]);
 
     // Spezialfaelle
