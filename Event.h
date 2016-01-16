@@ -17,7 +17,7 @@
 #include "Effects.h"
 
 #define DURATION_BM   5
-#define TICKER_SPEED  1
+#define TICKER_SPEED  8
 
 class Event {
   public:
