@@ -182,8 +182,9 @@ boolean MyDCF77::decode() {
   //
   _minutes = 0;
   c = 0;
-  for (byte i = 0; i < 7; i++, c++) {
+  for (byte i = 0; i < 7; i++) {
     if (getBitAtPos(21 + i)) {
+      c++;
       _minutes += DCFFactors[i];
     }
   }
@@ -202,8 +203,9 @@ boolean MyDCF77::decode() {
   //
   _hours = 0;
   c = 0;
-  for (byte i = 0; i < 5; i++, c++) {
+  for (byte i = 0; i < 6; i++) {
     if (getBitAtPos(29 + i)) {
+      c++;
       _hours += DCFFactors[i];
     }
   }
@@ -221,8 +223,9 @@ boolean MyDCF77::decode() {
   //
   _date = 0;
   c = 0;
-  for (byte i = 0; i < 6; i++, c++) {
+  for (byte i = 0; i < 6; i++) {
     if (getBitAtPos(36 + i)) {
+      c++;
       _date += DCFFactors[i];
     }
   }
@@ -235,8 +238,9 @@ boolean MyDCF77::decode() {
   // day of week
   //
   _dayOfWeek = 0;
-  for (byte i = 0; i < 3; i++, c++) {
+  for (byte i = 0; i < 3; i++) {
     if (getBitAtPos(42 + i)) {
+      c++;
       _dayOfWeek += DCFFactors[i];
     }
   }
@@ -248,8 +252,9 @@ boolean MyDCF77::decode() {
   // month
   //
   _month = 0;
-  for (byte i = 0; i < 5; i++, c++) {
+  for (byte i = 0; i < 5; i++) {
     if (getBitAtPos(45 + i)) {
+      c++;
       _month += DCFFactors[i];
     }
   }
@@ -261,8 +266,9 @@ boolean MyDCF77::decode() {
   // year
   //
   _year = 0;
-  for (byte i = 0; i < 8; i++, c++) {
+  for (byte i = 0; i < 8; i++) {
     if (getBitAtPos(50 + i)) {
+      c++;
       _year += DCFFactors[i];
     }
   }
