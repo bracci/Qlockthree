@@ -24,7 +24,7 @@
 #include "LedDriver.h"
 
 class LedDriverUeberPixel : public LedDriver {
-public:
+  public:
     LedDriverUeberPixel(byte data, byte clock, byte load);
 
     void init();
@@ -43,7 +43,7 @@ public:
 
     void clearData();
 
-private:
+  private:
     void _setPixel(byte x, byte y, boolean state);
 
     byte _brightnessInPercent;

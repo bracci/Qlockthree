@@ -27,7 +27,7 @@
 #include "MyRTC.h"
 
 class TimeStamp {
-public:
+  public:
     TimeStamp(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year);
     TimeStamp(MyDCF77 dcf77);
     TimeStamp(MyRTC rtc);
@@ -51,7 +51,7 @@ public:
 
     char* asString();
 
-private:
+  private:
     byte _minutes;
     byte _hours;
 

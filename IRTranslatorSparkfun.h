@@ -19,7 +19,7 @@
 #include "IRTranslator.h"
 
 class IRTranslatorSparkfun : public IRTranslator {
-public:
+  public:
     void printSignature();
     byte buttonForCode(unsigned long code);
 };

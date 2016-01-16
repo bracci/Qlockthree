@@ -26,7 +26,6 @@
 #include "MyRTC.h"
 #include "Transitions.h"
 #include "Modes.h"
-#include "Configuration.h"
 
 extern volatile byte helperSeconds;
 extern Mode mode;

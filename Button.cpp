@@ -31,15 +31,15 @@
  *         pressedAgainst: wogegen schaltet der Taster? (HIGH/LOW)
  */
 Button::Button(byte pin, byte pressedAgainst) {
-    _pin1 = pin;
-    _lastPressTime = 0;
-    _doubleMode = false;
-    _pressedAgainst = pressedAgainst;
-    if (_pressedAgainst == HIGH) {
-        pinMode(_pin1, INPUT);
-    } else {
-        pinMode(_pin1, INPUT_PULLUP);
-    }
+  _pin1 = pin;
+  _lastPressTime = 0;
+  _doubleMode = false;
+  _pressedAgainst = pressedAgainst;
+  if (_pressedAgainst == HIGH) {
+    pinMode(_pin1, INPUT);
+  } else {
+    pinMode(_pin1, INPUT_PULLUP);
+  }
 }
 
 /**
@@ -49,43 +49,43 @@ Button::Button(byte pin, byte pressedAgainst) {
  *         pressedAgainst: wogegen schalten die Taster? (HIGH/LOW)
  */
 Button::Button(byte pin1, byte pin2, byte pressedAgainst) {
-    _pin1 = pin1;
-    _pin2 = pin2;
-    _lastPressTime = 0;
-    _doubleMode = true;
-    _pressedAgainst = pressedAgainst;
-    _pressedAgainst = pressedAgainst;
-    if (_pressedAgainst == HIGH) {
-        pinMode(_pin1, INPUT);
-        pinMode(_pin2, INPUT);
-    } else {
-        pinMode(_pin1, INPUT_PULLUP);
-        pinMode(_pin2, INPUT_PULLUP);
-    }
+  _pin1 = pin1;
+  _pin2 = pin2;
+  _lastPressTime = 0;
+  _doubleMode = true;
+  _pressedAgainst = pressedAgainst;
+  _pressedAgainst = pressedAgainst;
+  if (_pressedAgainst == HIGH) {
+    pinMode(_pin1, INPUT);
+    pinMode(_pin2, INPUT);
+  } else {
+    pinMode(_pin1, INPUT_PULLUP);
+    pinMode(_pin2, INPUT_PULLUP);
+  }
 }
 
 /**
  * Wurde der Taster gedrueckt?
  */
 boolean Button::pressed() {
-    boolean _retVal = false;
+  boolean _retVal = false;
 
-    if (millis() < _lastPressTime) {
-        // wir hatten einen Ueberlauf...
-        _lastPressTime = millis();
+  if (millis() < _lastPressTime) {
+    // wir hatten einen Ueberlauf...
+    _lastPressTime = millis();
+  }
+
+  if (!_doubleMode) {
+    if ((digitalRead(_pin1) == _pressedAgainst) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
+      _lastPressTime = millis();
+      _retVal = true;
     }
-
-    if (!_doubleMode) {
-        if ((digitalRead(_pin1) == _pressedAgainst) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
-            _lastPressTime = millis();
-            _retVal = true;
-        }
-    } else {
-        if ((digitalRead(_pin1) == _pressedAgainst) && (digitalRead(_pin2) == _pressedAgainst) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
-            _lastPressTime = millis();
-            _retVal = true;
-        }
+  } else {
+    if ((digitalRead(_pin1) == _pressedAgainst) && (digitalRead(_pin2) == _pressedAgainst) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
+      _lastPressTime = millis();
+      _retVal = true;
     }
+  }
 
-    return _retVal;
+  return _retVal;
 }

@@ -22,11 +22,11 @@
 #include "Woerter_DE.h"
 // #include "Woerter_DE_MKF.h"
 #include "Woerter_CH.h"
-//#include "Woerter_EN.h"
-//#include "Woerter_FR.h"
-//#include "Woerter_IT.h"
-//#include "Woerter_NL.h"
-//#include "Woerter_ES.h"
+#include "Woerter_EN.h"
+#include "Woerter_FR.h"
+#include "Woerter_IT.h"
+#include "Woerter_NL.h"
+#include "Woerter_ES.h"
 
 // #define DEBUG
 #include "Debug.h"

@@ -25,33 +25,33 @@
  *         inverse: Schaltverhalten umdrehen? (HIGH/LOW)
  */
 AnalogButton::AnalogButton(byte pin, boolean inverse) {
-    _pin = pin;
-    _lastPressTime = 0;
-    _inverse = inverse;
+  _pin = pin;
+  _lastPressTime = 0;
+  _inverse = inverse;
 }
 
 /**
  * Wurde der Taster gedrueckt?
  */
 boolean AnalogButton::pressed() {
-    boolean _retVal = false;
+  boolean _retVal = false;
 
-    if (millis() < _lastPressTime) {
-        // wir hatten einen Ueberlauf...
-        _lastPressTime = millis();
+  if (millis() < _lastPressTime) {
+    // wir hatten einen Ueberlauf...
+    _lastPressTime = millis();
+  }
+
+  if (!_inverse) {
+    if ((analogRead(_pin) >= 512) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
+      _lastPressTime = millis();
+      _retVal = true;
     }
-
-    if (!_inverse) {
-        if ((analogRead(_pin) >= 512) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
-            _lastPressTime = millis();
-            _retVal = true;
-        }
-    } else {
-        if ((analogRead(_pin) < 512) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
-            _lastPressTime = millis();
-            _retVal = true;
-        }
+  } else {
+    if ((analogRead(_pin) < 512) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
+      _lastPressTime = millis();
+      _retVal = true;
     }
+  }
 
-    return _retVal;
+  return _retVal;
 }

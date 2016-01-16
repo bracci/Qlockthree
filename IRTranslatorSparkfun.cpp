@@ -29,28 +29,28 @@
 #define SPARKFUN_SELECT 0x10EF20DF
 
 void IRTranslatorSparkfun::printSignature() {
-    Serial.println(F("Sparkfun COM-11759"));
+  Serial.println(F("Sparkfun COM-11759"));
 }
 
 byte IRTranslatorSparkfun::buttonForCode(unsigned long code) {
-    switch (code) {
-        case SPARKFUN_POWER:
-            return REMOTE_BUTTON_TOGGLEBLANK;
-        case SPARKFUN_A:
-            return REMOTE_BUTTON_MODE;
-        case SPARKFUN_LEFT:
-        case SPARKFUN_B:
-            return REMOTE_BUTTON_HOUR_PLUS;
-        case SPARKFUN_RIGHT:
-        case SPARKFUN_C:
-            return REMOTE_BUTTON_MINUTE_PLUS;
-        case SPARKFUN_UP:
-            return REMOTE_BUTTON_BRIGHTER;
-        case SPARKFUN_DOWN:
-            return REMOTE_BUTTON_DARKER;
-        case SPARKFUN_SELECT:
-            return REMOTE_BUTTON_EXTMODE;
-        default:
-            return REMOTE_BUTTON_UNDEFINED;
-    }
+  switch (code) {
+    case SPARKFUN_POWER:
+      return REMOTE_BUTTON_TOGGLEBLANK;
+    case SPARKFUN_A:
+      return REMOTE_BUTTON_MODE;
+    case SPARKFUN_LEFT:
+    case SPARKFUN_B:
+      return REMOTE_BUTTON_HOUR_PLUS;
+    case SPARKFUN_RIGHT:
+    case SPARKFUN_C:
+      return REMOTE_BUTTON_MINUTE_PLUS;
+    case SPARKFUN_UP:
+      return REMOTE_BUTTON_BRIGHTER;
+    case SPARKFUN_DOWN:
+      return REMOTE_BUTTON_DARKER;
+    case SPARKFUN_SELECT:
+      return REMOTE_BUTTON_EXTMODE;
+    default:
+      return REMOTE_BUTTON_UNDEFINED;
+  }
 }

@@ -24,7 +24,7 @@
 #include <Adafruit_DotStar.h>
 
 class LedDriverDotStar : public LedDriver {
-public:
+  public:
     LedDriverDotStar(byte dataPin, byte clockPin);
 
     void init();
@@ -43,7 +43,7 @@ public:
 
     void clearData();
 
-private:
+  private:
     byte _brightnessInPercent;
 
     boolean _dirty;
@@ -54,7 +54,7 @@ private:
     uint32_t _wheel(byte brightness, byte wheelPos);
 
     void _clear();
-    
+
     byte _brightnessScaleColor(byte brightness, byte colorPart);
 
     Adafruit_DotStar *_strip;

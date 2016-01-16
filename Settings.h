@@ -80,7 +80,7 @@ class Settings {
     byte _green;
     byte _blue;
     byte _transitionMode;
-byte _event;
+    byte _event;
 };
 
 #endif

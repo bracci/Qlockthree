@@ -17,10 +17,10 @@
 // #define DEBUG
 #include "Debug.h"
 
-void Effects::showTickerString(String str2disp, byte tickerSpeed) {
+void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   word matrix [16];
 
-  int strLength = str2disp.length();
+  int strLength = strlen(str2disp);//((String)str2disp).length();//sizeof(str2disp) / sizeof(char*);
   long bufLen;
   char actChar;
   char lastChar = 'W';
@@ -32,7 +32,7 @@ void Effects::showTickerString(String str2disp, byte tickerSpeed) {
     renderer.clearScreenBuffer(matrix);
     unsigned int shift = 0; // Schiebekorrektur aufgrund variierender Buchstabenbreite
     for (byte k = 0; k < strLength; k++) {
-      actChar = str2disp.charAt(k);
+      actChar = str2disp[k];
       if (actChar == ' ') {
         shift += 3;  //bei einem Space eine Lücke von:
       }
@@ -235,7 +235,7 @@ void Effects::showAnimatedBitmap(byte animatedBitmap) {
       }
       break;
     case ANI_BITMAP_SMILEY_WINK:
-      showBitmap(BITMAP_SMILEY, 2);
+      showBitmap(BITMAP_SMILEY, 1);
       showBitmap(BITMAP_SMILEY_WINK, 1);
       showBitmap(BITMAP_SMILEY, 1);
       break;

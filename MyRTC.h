@@ -28,7 +28,7 @@
 #include "Arduino.h"
 
 class MyRTC {
-public:
+  public:
     MyRTC(int address, byte statusLedPin);
 
     void statusLed(boolean on);
@@ -62,7 +62,7 @@ public:
     byte getMonth();
     byte getYear();
 
-private:
+  private:
     int _address;
     byte _statusLedPin;
 

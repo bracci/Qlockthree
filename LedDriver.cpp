@@ -20,13 +20,13 @@
 #include "LedDriver.h"
 
 void LedDriver::setColor(byte red, byte green, byte blue) {
-    _red = red;
-    _green = green;
-    _blue = blue;
+  _red = red;
+  _green = green;
+  _blue = blue;
 
-  if ( (_red == 0)   && 
-	   (_green == 0) && 
-	   (_blue == 0) ) {
+  if ( (_red == 0)   &&
+       (_green == 0) &&
+       (_blue == 0) ) {
     _rainbow = true;
   }
   else {
@@ -35,15 +35,15 @@ void LedDriver::setColor(byte red, byte green, byte blue) {
 }
 
 byte LedDriver::getRed() {
-    return _red;
+  return _red;
 }
 
 byte LedDriver::getGreen() {
-    return _green;
+  return _green;
 }
 
 byte LedDriver::getBlue() {
-    return _blue;
+  return _blue;
 }
 
 boolean LedDriver::isRainbow() {
@@ -51,13 +51,13 @@ boolean LedDriver::isRainbow() {
 }
 
 void LedDriver::setPixelInScreenBuffer(byte x, byte y, word matrix[16]) {
-    matrix[y] |= 0b1000000000000000 >> x;
+  matrix[y] |= 0b1000000000000000 >> x;
 }
 
 boolean LedDriver::getPixelFromScreenBuffer(byte x, byte y, word matrix[16]) {
-    return (matrix[y] & (0b1000000000000000 >> x)) == (0b1000000000000000 >> x);
+  return (matrix[y] & (0b1000000000000000 >> x)) == (0b1000000000000000 >> x);
 }
 
-void LedDriver::demoTransition(){
+void LedDriver::demoTransition() {
   _demoTransition = true;
 }

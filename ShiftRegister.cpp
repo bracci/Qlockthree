@@ -32,33 +32,33 @@
  */
 ShiftRegister::ShiftRegister(byte dataPin, byte clockPin, byte latchPin) {
 #ifdef SHIFTREGISTER_TURBO
-    DEBUG_PRINTLN(F("ShiftRegister is in TURBO-MODE."));
-    DEBUG_FLUSH();
+  DEBUG_PRINTLN(F("ShiftRegister is in TURBO-MODE."));
+  DEBUG_FLUSH();
 #else
-    DEBUG_PRINTLN(F("ShiftRegister is in SLOW-MODE."));
-    DEBUG_FLUSH();
+  DEBUG_PRINTLN(F("ShiftRegister is in SLOW-MODE."));
+  DEBUG_FLUSH();
 #endif
 
-    // slow version
-    _dataPin = dataPin;
-    _clockPin = clockPin;
-    _latchPin = latchPin;
-    pinMode(_latchPin, OUTPUT);
-    pinMode(_clockPin, OUTPUT);
-    pinMode(_dataPin, OUTPUT);
+  // slow version
+  _dataPin = dataPin;
+  _clockPin = clockPin;
+  _latchPin = latchPin;
+  pinMode(_latchPin, OUTPUT);
+  pinMode(_clockPin, OUTPUT);
+  pinMode(_dataPin, OUTPUT);
 
-    // fast version
-    _dataBit = digitalPinToBitMask(dataPin);
-    _dataPort = digitalPinToPort(dataPin);
-    _dataOut = portOutputRegister(_dataPort);
+  // fast version
+  _dataBit = digitalPinToBitMask(dataPin);
+  _dataPort = digitalPinToPort(dataPin);
+  _dataOut = portOutputRegister(_dataPort);
 
-    _clockBit = digitalPinToBitMask(clockPin);
-    _clockPort = digitalPinToPort(clockPin);
-    _clockOut = portOutputRegister(_clockPort);
+  _clockBit = digitalPinToBitMask(clockPin);
+  _clockPort = digitalPinToPort(clockPin);
+  _clockOut = portOutputRegister(_clockPort);
 
-    _latchBit = digitalPinToBitMask(latchPin);
-    _latchPort = digitalPinToPort(latchPin);
-    _latchOut = portOutputRegister(_latchPort);
+  _latchBit = digitalPinToBitMask(latchPin);
+  _latchPort = digitalPinToPort(latchPin);
+  _latchOut = portOutputRegister(_latchPort);
 }
 
 /**
@@ -66,43 +66,43 @@ ShiftRegister::ShiftRegister(byte dataPin, byte clockPin, byte latchPin) {
  */
 void ShiftRegister::shiftOut(word data) {
 #ifdef OPTIMIZED_FOR_DARKNESS
-    if (data == (word) 65535) {
-        fastDigitalWriteToData(HIGH);
-        for (byte i = 0; i < 16; i++) {
-            fastDigitalWriteToClock(LOW);
-            fastDigitalWriteToClock(HIGH);
-        }
-        return;
+  if (data == (word) 65535) {
+    fastDigitalWriteToData(HIGH);
+    for (byte i = 0; i < 16; i++) {
+      fastDigitalWriteToClock(LOW);
+      fastDigitalWriteToClock(HIGH);
     }
-    if (data == (word) 0) {
-        fastDigitalWriteToData(LOW);
-        for (byte i = 0; i < 16; i++) {
-            fastDigitalWriteToClock(LOW);
-            fastDigitalWriteToClock(HIGH);
-        }
-        return;
+    return;
+  }
+  if (data == (word) 0) {
+    fastDigitalWriteToData(LOW);
+    for (byte i = 0; i < 16; i++) {
+      fastDigitalWriteToClock(LOW);
+      fastDigitalWriteToClock(HIGH);
     }
+    return;
+  }
 #endif
 #ifdef SHIFTREGISTER_TURBO
-    for (byte b = 0; b < 16; b++) {
-        fastDigitalWriteToClock(LOW);
-        if (data & (1 << b)) {
-            fastDigitalWriteToData(HIGH);
-        } else {
-            fastDigitalWriteToData(LOW);
-        }
-        fastDigitalWriteToClock(HIGH);
+  for (byte b = 0; b < 16; b++) {
+    fastDigitalWriteToClock(LOW);
+    if (data & (1 << b)) {
+      fastDigitalWriteToData(HIGH);
+    } else {
+      fastDigitalWriteToData(LOW);
     }
+    fastDigitalWriteToClock(HIGH);
+  }
 #else
-    for (byte b = 0; b < 16; b++) {
-        digitalWrite(_clockPin, LOW);
-        if (data & (1 << b)) {
-            digitalWrite(_dataPin, HIGH);
-        } else {
-            digitalWrite(_dataPin, LOW);
-        }
-        digitalWrite(_clockPin, HIGH);
+  for (byte b = 0; b < 16; b++) {
+    digitalWrite(_clockPin, LOW);
+    if (data & (1 << b)) {
+      digitalWrite(_dataPin, HIGH);
+    } else {
+      digitalWrite(_dataPin, LOW);
     }
+    digitalWrite(_clockPin, HIGH);
+  }
 #endif
 }
 
@@ -111,21 +111,21 @@ void ShiftRegister::shiftOut(word data) {
  */
 void ShiftRegister::shiftOutABit(boolean bitIsSet) {
 #ifdef SHIFTREGISTER_TURBO
-    fastDigitalWriteToClock(LOW);
-    if (bitIsSet) {
-        fastDigitalWriteToData(HIGH);
-    } else {
-        fastDigitalWriteToData(LOW);
-    }
-    fastDigitalWriteToClock(HIGH);
+  fastDigitalWriteToClock(LOW);
+  if (bitIsSet) {
+    fastDigitalWriteToData(HIGH);
+  } else {
+    fastDigitalWriteToData(LOW);
+  }
+  fastDigitalWriteToClock(HIGH);
 #else
-    digitalWrite(_clockPin, LOW);
-    if (bitIsSet) {
-        digitalWrite(_dataPin, HIGH);
-    } else {
-        digitalWrite(_dataPin, LOW);
-    }
-    digitalWrite(_clockPin, HIGH);
+  digitalWrite(_clockPin, LOW);
+  if (bitIsSet) {
+    digitalWrite(_dataPin, HIGH);
+  } else {
+    digitalWrite(_dataPin, LOW);
+  }
+  digitalWrite(_clockPin, HIGH);
 #endif
 }
 
@@ -134,13 +134,13 @@ void ShiftRegister::shiftOutABit(boolean bitIsSet) {
  */
 void ShiftRegister::prepareShiftregisterWrite() {
 #ifdef SHIFTREGISTER_TURBO
-    // fastDigitalWriteToData(LOW);
-    // fastDigitalWriteToClock(LOW);
-    fastDigitalWriteToLatch(LOW);
+  // fastDigitalWriteToData(LOW);
+  // fastDigitalWriteToClock(LOW);
+  fastDigitalWriteToLatch(LOW);
 #else
-    // digitalWrite(_dataPin, LOW);
-    // digitalWrite(_clockPin, LOW);
-    digitalWrite(_latchPin, LOW);
+  // digitalWrite(_dataPin, LOW);
+  // digitalWrite(_clockPin, LOW);
+  digitalWrite(_latchPin, LOW);
 #endif
 }
 
@@ -149,13 +149,13 @@ void ShiftRegister::prepareShiftregisterWrite() {
  */
 void ShiftRegister::finishShiftregisterWrite() {
 #ifdef SHIFTREGISTER_TURBO
-    // fastDigitalWriteToData(LOW);
-    // fastDigitalWriteToClock(LOW);
-    fastDigitalWriteToLatch(HIGH);
+  // fastDigitalWriteToData(LOW);
+  // fastDigitalWriteToClock(LOW);
+  fastDigitalWriteToLatch(HIGH);
 #else
-    // digitalWrite(_dataPin, LOW);
-    // digitalWrite(_clockPin, LOW);
-    digitalWrite(_latchPin, HIGH);
+  // digitalWrite(_dataPin, LOW);
+  // digitalWrite(_clockPin, LOW);
+  digitalWrite(_latchPin, HIGH);
 #endif
 }
 
@@ -163,37 +163,37 @@ void ShiftRegister::finishShiftregisterWrite() {
  * Digitale Ausgaenge im Turbo-Mode!
  */
 void ShiftRegister::fastDigitalWriteToData(uint8_t val) {
-    uint8_t oldSREG = SREG;
-    cli();
-    if (val == LOW) {
-        *_dataOut &= ~_dataBit;
-    } else {
-        *_dataOut |= _dataBit;
-    }
-    sei();
-    SREG = oldSREG;
+  uint8_t oldSREG = SREG;
+  cli();
+  if (val == LOW) {
+    *_dataOut &= ~_dataBit;
+  } else {
+    *_dataOut |= _dataBit;
+  }
+  sei();
+  SREG = oldSREG;
 }
 
 void ShiftRegister::fastDigitalWriteToLatch(uint8_t val) {
-    uint8_t oldSREG = SREG;
-    cli();
-    if (val == LOW) {
-        *_latchOut &= ~_latchBit;
-    } else {
-        *_latchOut |= _latchBit;
-    }
-    sei();
-    SREG = oldSREG;
+  uint8_t oldSREG = SREG;
+  cli();
+  if (val == LOW) {
+    *_latchOut &= ~_latchBit;
+  } else {
+    *_latchOut |= _latchBit;
+  }
+  sei();
+  SREG = oldSREG;
 }
 
 void ShiftRegister::fastDigitalWriteToClock(uint8_t val) {
-    uint8_t oldSREG = SREG;
-    cli();
-    if (val == LOW) {
-        *_clockOut &= ~_clockBit;
-    } else {
-        *_clockOut |= _clockBit;
-    }
-    sei();
-    SREG = oldSREG;
+  uint8_t oldSREG = SREG;
+  cli();
+  if (val == LOW) {
+    *_clockOut &= ~_clockBit;
+  } else {
+    *_clockOut |= _clockBit;
+  }
+  sei();
+  SREG = oldSREG;
 }

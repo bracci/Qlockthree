@@ -26,7 +26,7 @@
 #include "Arduino.h"
 
 class ShiftRegister {
-public:
+  public:
     ShiftRegister(byte dataPin, byte clockPin, byte latchPin);
 
     void shiftOut(word data);
@@ -35,7 +35,7 @@ public:
     void prepareShiftregisterWrite();
     void finishShiftregisterWrite();
 
-private:
+  private:
     // slow version
     byte _dataPin;
     byte _clockPin;

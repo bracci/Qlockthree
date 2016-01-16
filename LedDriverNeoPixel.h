@@ -28,7 +28,7 @@
 #include <Adafruit_NeoPixel.h>
 
 class LedDriverNeoPixel : public LedDriver {
-public:
+  public:
     LedDriverNeoPixel(byte dataPin);
 
     void init();
@@ -47,7 +47,7 @@ public:
 
     void clearData();
 
-private:
+  private:
     byte _brightnessInPercent;
 
     boolean _dirty;
@@ -56,7 +56,7 @@ private:
     void _setPixel(byte num, uint32_t c);
 
     uint32_t _wheel(byte brightness, byte wheelPos);
-    
+
     byte _brightnessScaleColor(byte brightness, byte colorPart);
 
     Adafruit_NeoPixel *_strip;

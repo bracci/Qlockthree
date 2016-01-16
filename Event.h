@@ -17,7 +17,7 @@
 #include "Effects.h"
 
 #define DURATION_BM   5
-#define TICKER_SPEED  1
+#define TICKER_SPEED  8
 
 class Event {
   public:
@@ -27,7 +27,7 @@ class Event {
           Effects::eEffects effect) :
       _month (month), _date (date),
       _txt (txt), _effect (effect) {};
-      
+
     void show();
     byte getMonth();
     byte getDate();

@@ -503,10 +503,12 @@ volatile byte helperSeconds;
 MyDCF77 dcf77(PIN_DCF77_SIGNAL, PIN_DCF77_LED);
 DCF77Helper dcf77Helper;
 
+#ifdef ALARM
 /**
  * Variablen fuer den Alarm.
  */
 Alarm alarm(PIN_SPEAKER);
+#endif
 
 /**
  * Der Helligkeitssensor
@@ -597,12 +599,13 @@ void setup() {
 
   pinMode(PIN_DCF77_PON, OUTPUT);
   enableDcf(false);
-
+#ifdef ALARM
   if (settings.getEnableAlarm()) {
     // als Wecker Display nicht abschalten...
     TimeStamp offTime(0, 0, 0, 0, 0, 0);
     TimeStamp onTime(0, 0, 0, 0, 0, 0);
   }
+#endif
 
   // LED-Treiber initialisieren
   ledDriver.init();
@@ -625,14 +628,18 @@ void setup() {
   // und Speaker piepsen kassen, falls ENABLE_ALARM eingeschaltet ist.
   for (byte i = 0; i < 3; i++) {
     dcf77.statusLed(true);
+#ifdef ALARM
     if (settings.getEnableAlarm()) {
       alarm.buzz(true);
     }
+#endif
     delay(100);
     dcf77.statusLed(false);
+#ifdef ALARM
     if (settings.getEnableAlarm()) {
       alarm.buzz(false);
     }
+#endif
     delay(100);
   }
 
@@ -703,14 +710,18 @@ void setup() {
   // und Speaker piepsen kassen, falls ENABLE_ALARM eingeschaltet ist.
   for (byte i = 0; i < 3; i++) {
     rtc.statusLed(true);
+#ifdef ALARM
     if (settings.getEnableAlarm()) {
       alarm.buzz(true);
     }
+#endif
     delay(100);
     rtc.statusLed(false);
+#ifdef ALARM
     if (settings.getEnableAlarm()) {
       alarm.buzz(false);
     }
+#endif
     delay(100);
   }
 
@@ -730,10 +741,11 @@ void setup() {
 #else
   Serial.print(F("Remote: disabled."));
 #endif
-
+#ifdef ALARM
   if (settings.getEnableAlarm()) {
     Serial.println(F("Alarm is enabled"));
   }
+#endif
 
   if (settings.getDcfSignalIsInverted()) {
     Serial.println(F("DCF77-Signal is inverted."));
@@ -813,6 +825,7 @@ void loop() {
     switch (mode) {
       case STD_MODE_NORMAL:
       case EXT_MODE_TIMESET:
+#ifdef ALARM
       case STD_MODE_ALARM:
         if (alarm.isActive()) {
           rtc.readTime();
@@ -822,6 +835,7 @@ void loop() {
           helperSeconds = rtc.getSeconds();
         }
         break;
+#endif
       case STD_MODE_SECONDS:
       case STD_MODE_BLANK:
       case STD_MODE_NIGHT:
@@ -907,6 +921,7 @@ void loop() {
           }
         }
         break;
+#ifdef ALARM
       case STD_MODE_ALARM:
         renderer.clearScreenBuffer(matrix);
         if (alarm.getShowAlarmTimeTimer() == 0) {
@@ -923,6 +938,7 @@ void loop() {
           alarm.decShowAlarmTimeTimer();
         }
         break;
+#endif
       case STD_MODE_SECONDS:
         renderer.clearScreenBuffer(matrix);
         for (byte i = 0; i < 7; i++) {
@@ -970,6 +986,7 @@ void loop() {
           }
         }
         break;
+#ifdef ALARM
       case EXT_MODE_ENABLE_ALARM:
         renderer.clearScreenBuffer(matrix);
         if (settings.getEnableAlarm()) {
@@ -988,6 +1005,7 @@ void loop() {
           }
         }
         break;
+#endif
       // Color cycle on/off
       case EXT_MODE_RAINBOW:
         renderer.clearScreenBuffer(matrix);
@@ -1163,9 +1181,11 @@ void loop() {
       case EXT_MODE_TEST:
         renderer.clearScreenBuffer(matrix);
         renderer.setCorners(helperSeconds % 5, settings.getRenderCornersCw(), matrix);
+#ifdef ALARM
         if (settings.getEnableAlarm()) {
           matrix[4] |= 0b0000000000011111; // Alarm-LED
         }
+#endif
         for (int i = 0; i < 11; i++) {
           ledDriver.setPixelInScreenBuffer(x, i, matrix);
         }
@@ -1368,6 +1388,7 @@ void loop() {
    * Alarm?
    *
    */
+#ifdef ALARM
   if ((mode == STD_MODE_ALARM) && (alarm.getShowAlarmTimeTimer() == 0) && !alarm.isActive()) {
     if (alarm.getAlarmTime()->getMinutesOf12HoursDay(0) == rtc.getMinutesOf12HoursDay()) {
       alarm.activate();
@@ -1387,7 +1408,7 @@ void loop() {
       alarm.buzz(false);
     }
   }
-
+#endif
   /*
    *
    * Die Matrix auf die LEDs multiplexen, hier 'Refresh-Zyklen'.
@@ -1461,32 +1482,40 @@ void doubleEvtModePressed() {
  */
 void modePressed() {
   needsUpdateFromRtc = true;
+#ifdef ALARM
   if (alarm.isActive()) {
     alarm.deactivate();
     mode = STD_MODE_NORMAL;
   } else {
     mode++;
   }
+#else
+  mode++;
+#endif
+
   // Brightness ueberspringen, wenn LDR verwendet wird.
   if (settings.getUseLdr() && (mode == STD_MODE_BRIGHTNESS)) {
     mode++;
   }
+#ifdef ALARM
   // Alarm ueberspringen, wenn kein Alarm enabled ist.
   if (!settings.getEnableAlarm() && (mode == STD_MODE_ALARM)) {
     mode++;
   }
+#endif
   if (mode == STD_MODE_COUNT + 1) {
     mode = STD_MODE_NORMAL;
   }
   if (mode == EXT_MODE_COUNT + 1) {
     mode = STD_MODE_NORMAL;
   }
-
+#ifdef ALARM
   if (mode == STD_MODE_ALARM) {
     // wenn auf Alarm gewechselt wurde, fuer 10 Sekunden die
     // Weckzeit anzeigen.
     alarm.setShowAlarmTimeTimer(10);
   }
+#endif
 
   DEBUG_PRINT(F("Change mode pressed, mode is now "));
   DEBUG_PRINT(mode);
@@ -1539,6 +1568,7 @@ void hourPlusPressed() {
         settings.setTimeShift(settings.getTimeShift() - 1);
       }
       break;
+#ifdef ALARM
     case STD_MODE_ALARM:
       alarm.getAlarmTime()->incHours();
       alarm.setShowAlarmTimeTimer(10);
@@ -1546,6 +1576,7 @@ void hourPlusPressed() {
       DEBUG_PRINTLN(alarm.getAlarmTime()->asString());
       DEBUG_FLUSH();
       break;
+#endif
     case STD_MODE_BRIGHTNESS:
       setDisplayDarker();
       break;
@@ -1561,9 +1592,11 @@ void hourPlusPressed() {
     case EXT_MODE_CORNERS:
       settings.setRenderCornersCw(!settings.getRenderCornersCw());
       break;
+#ifdef ALARM
     case EXT_MODE_ENABLE_ALARM:
       settings.setEnableAlarm(!settings.getEnableAlarm());
       break;
+#endif
     case EXT_MODE_RAINBOW:
       byte c;
       if (ledDriver.isRainbow()) {
@@ -1631,6 +1664,7 @@ void minutePlusPressed() {
         settings.setTimeShift(settings.getTimeShift() + 1);
       }
       break;
+#ifdef ALARM
     case STD_MODE_ALARM:
       alarm.getAlarmTime()->incMinutes();
       alarm.setShowAlarmTimeTimer(10);
@@ -1638,6 +1672,7 @@ void minutePlusPressed() {
       DEBUG_PRINTLN(alarm.getAlarmTime()->asString());
       DEBUG_FLUSH();
       break;
+#endif
     case STD_MODE_BRIGHTNESS:
       setDisplayBrighter();
       break;
@@ -1653,9 +1688,11 @@ void minutePlusPressed() {
     case EXT_MODE_CORNERS:
       settings.setRenderCornersCw(!settings.getRenderCornersCw());
       break;
+#ifdef ALARM
     case EXT_MODE_ENABLE_ALARM:
       settings.setEnableAlarm(!settings.getEnableAlarm());
       break;
+#endif
     // Color Cycle On/Off
     case EXT_MODE_RAINBOW:
       byte c;
@@ -1742,10 +1779,10 @@ void manageNewDCF77Data() {
     DEBUG_PRINTLN(F("DCF77-Time written to RTC."));
     DEBUG_FLUSH();
     // falls im manuellen Dunkel-Modus, Display wieder einschalten... (Hilft bei der Erkennung, ob der DCF-Empfang geklappt hat).
-//    if (mode == STD_MODE_BLANK) {
-//      mode = STD_MODE_NORMAL;
-//      ledDriver.wakeUp();
-//    }
+    if (mode == STD_MODE_BLANK) {
+      mode = STD_MODE_NORMAL;
+      ledDriver.wakeUp();
+    }
   } else {
     DEBUG_PRINTLN(F("DCF77-Time trashed because wrong distances between timestamps."));
     DEBUG_FLUSH();

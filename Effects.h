@@ -45,35 +45,35 @@ extern LedDriverLPD8806 ledDriver;
 
 class Effects {
   public:
-  enum eEffects : byte
-  {
-    NO_EFFECT = 255,
-    EFFECT_FIREWORK = 0,
-    EFFECT_HEART,
-    EFFECT_CANDLE,
-    EFFECT_LOVEU,
-    EFFECT_INTRO,
-  
-    BITMAP_MIN,
-    BITMAP_HEART = BITMAP_MIN,
-    BITMAP_DOTCIRCLE,
-    BITMAP_WEDDINGRING,
-    BITMAP_BDPIE,
-    BITMAP_CHAMPGLASS1,
-    BITMAP_CHAMPGLASS2,
-    BITMAP_CHRISTTREE1,
-    BITMAP_CHRISTTREE2,
-    BITMAP_SMILEY,
-    BITMAP_SMILEY_WINK,
-  
-    ANI_BITMAP_MIN,
-    ANI_BITMAP_CHAMPGLASS = ANI_BITMAP_MIN,
-    ANI_BITMAP_CHRISTTREE,
-    ANI_BITMAP_SMILEY_WINK,
-  };
-    
+    enum eEffects : byte
+    {
+      NO_EFFECT = 255,
+      EFFECT_FIREWORK = 0,
+      EFFECT_HEART,
+      EFFECT_CANDLE,
+      EFFECT_LOVEU,
+      EFFECT_INTRO,
+
+      BITMAP_MIN,
+      BITMAP_HEART = BITMAP_MIN,
+      BITMAP_DOTCIRCLE,
+      BITMAP_WEDDINGRING,
+      BITMAP_BDPIE,
+      BITMAP_CHAMPGLASS1,
+      BITMAP_CHAMPGLASS2,
+      BITMAP_CHRISTTREE1,
+      BITMAP_CHRISTTREE2,
+      BITMAP_SMILEY,
+      BITMAP_SMILEY_WINK,
+
+      ANI_BITMAP_MIN,
+      ANI_BITMAP_CHAMPGLASS = ANI_BITMAP_MIN,
+      ANI_BITMAP_CHRISTTREE,
+      ANI_BITMAP_SMILEY_WINK,
+    };
+
   public:
-    static void showTickerString(String str2disp, byte tickerSpeed);
+    static void showTickerString(const char* str2disp, byte tickerSpeed);
     static void showIntro();
     static void showFireWork(byte posX);
     static void showHeart();

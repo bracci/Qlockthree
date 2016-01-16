@@ -22,7 +22,7 @@
 #include "ShiftRegister.h"
 
 class LedDriverPowerShiftRegister : public LedDriver {
-public:
+  public:
     LedDriverPowerShiftRegister(byte data, byte clock, byte latch, byte outputEnable);
 
     void init();
@@ -41,7 +41,7 @@ public:
 
     void clearData();
 
-private:
+  private:
     byte _brightnessInPercent;
 
     byte _linesToWrite;
