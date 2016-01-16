@@ -30,7 +30,6 @@
 
 extern volatile byte helperSeconds;
 extern Mode mode;
-extern Settings settings;
 extern MyRTC rtc;
 extern bool evtActive;
 
@@ -84,6 +83,7 @@ class LedDriver {
     boolean _transitionCompleted;
     uint16_t _transitionCounter;
     boolean _demoTransition;
+    Settings* _settings;
 };
 
 #endif

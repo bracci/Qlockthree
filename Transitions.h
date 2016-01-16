@@ -32,7 +32,6 @@ class Transitions {
     static byte _remainingCoulumnCount;
     static boolean _ereasingDone;
     static boolean _writingDone;
-
 };
 
 

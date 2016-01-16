@@ -37,11 +37,9 @@
 
 class Renderer {
   public:
-    static Renderer &getInstance() {
-      if (NULL == _instance) {
-        _instance = new Renderer();
-      }
-      return *_instance;
+    static Renderer* getInstance() {
+      static Renderer _instance;
+      return &_instance;
     }
 
     void setMinutes(char hours, byte minutes, byte language, word matrix[16]);
@@ -56,8 +54,6 @@ class Renderer {
   private:
     Renderer(){}
     ~Renderer() {}
-    
-    static Renderer *_instance;
 
     void setHours(byte hours, boolean glatt, byte language, word matrix[16]);
 

@@ -27,7 +27,7 @@ class Event {
           Effects::eEffects effect) :
       _month (month), _date (date),
       _txt (txt), _effect (effect) {
-      _effects = &(Effects::getInstance());
+      _effects = Effects::getInstance();
     };
 
     void show();

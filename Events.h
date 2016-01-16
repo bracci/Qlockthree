@@ -23,13 +23,37 @@
 **************************************************************************************************************/
 Event events[] = {
   Event(7,29,"HAPPY BRA G DAY",Effects::EFFECT_FIREWORK),
-  Event(1,11,"GUTEN MORGEN LIEBSTE",Effects::ANI_BITMAP_SMILEY_WINK),
-  Event(2,14,"QLOCKTHREE",Effects::EFFECT_LOVEU),
+  Event(1,16,"GUTEN MORGEN LIEBSTE",Effects::ANI_BITMAP_SMILEY_WINK),
+  Event(2,14,"QLOCKTHREE",Effects::ANI_BITMAP_CHAMPGLASS),
   Event(12,25,"MERRY CHRISTMAS",Effects::ANI_BITMAP_CHRISTTREE),
   Event(1,1,"HAPPY NEW YEAR",Effects::EFFECT_FIREWORK),
-//  Event(2,14,"",Effects::EFFECT_LOVEU),
+//  Event(2,14,"",Effects::EFFECT_HEART),
 //  Event(7,30,"HAPPY BIRTHDAY",Effects::EFFECT_HEART)
 };
+
+
+//NO_EFFECT = 255,
+//EFFECT_FIREWORK = 0,
+//EFFECT_HEART,
+//EFFECT_CANDLE,
+//
+//BITMAP_MIN,
+//BITMAP_HEART = BITMAP_MIN,
+//BITMAP_DOTCIRCLE,
+//BITMAP_WEDDINGRING,
+//BITMAP_BDPIE,
+//BITMAP_CHAMPGLASS1,
+//BITMAP_CHAMPGLASS2,
+//BITMAP_CHRISTTREE1,
+//BITMAP_CHRISTTREE2,
+//BITMAP_SMILEY,
+//BITMAP_SMILEY_WINK,
+//
+//ANI_BITMAP_MIN,
+//ANI_BITMAP_CHAMPGLASS = ANI_BITMAP_MIN,
+//ANI_BITMAP_CHRISTTREE,
+//ANI_BITMAP_SMILEY_WINK,
+
 
 /**************************************************************************************************************
  * Anzahl definierter Events

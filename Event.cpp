@@ -29,15 +29,15 @@ void Event::show() {
         _effects->showFireWork(2);
         _effects->showFireWork(8);
         break;
-//      case Effects::EFFECT_HEART:
-//        _effects->showHeart();
-//        break;
+      case Effects::EFFECT_HEART:
+        _effects->showHeart();
+        break;
       case Effects::EFFECT_CANDLE:
         _effects->showCandle();
         break;
-      case Effects::EFFECT_LOVEU:
-        _effects->showLoveU();
-        break;
+//      case Effects::EFFECT_LOVEU:
+//        _effects->showLoveU();
+//        break;
       default:
         ;
     }

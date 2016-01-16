@@ -20,67 +20,69 @@
 // #define DEBUG
 #include "Debug.h"
 
+byte MyDCF77::DCFFactors[] = {1, 2, 4, 8, 10, 20, 40, 80};
+
 /**
  * Initialisierung mit dem Pin, an dem das Signal des Empfaengers anliegt
  */
 MyDCF77::MyDCF77(byte signalPin, byte statusLedPin) {
-    _signalPin = signalPin;
+  _signalPin = signalPin;
 #ifndef MYDCF77_SIGNAL_IS_ANALOG
-    pinMode(_signalPin, INPUT);
+  pinMode(_signalPin, INPUT);
 #endif
 
-    _statusLedPin = statusLedPin;
-    pinMode(_statusLedPin, OUTPUT);
-    digitalWrite(_statusLedPin, LOW);
+  _statusLedPin = statusLedPin;
+  pinMode(_statusLedPin, OUTPUT);
+  digitalWrite(_statusLedPin, LOW);
 
-    clearBits();
+  clearBits();
 
-    for (byte i = 0; i < MYDCF77_MEANCOUNT; i++) {
-        _meanvalues[i] = MYDCF77_MEANSTARTVALUE;
-    }
-    _meanpointer = 0;
-    _highcount = 0;
+  for (byte i = 0; i < MYDCF77_MEANCOUNT; i++) {
+    _meanvalues[i] = MYDCF77_MEANSTARTVALUE;
+  }
+  _meanpointer = 0;
+  _highcount = 0;
 }
 
 /**
  * Die LED ein- oder ausschalten.
  */
 void MyDCF77::statusLed(boolean on) {
-    if (on) {
-        digitalWrite(_statusLedPin, HIGH);
-    } else {
-        digitalWrite(_statusLedPin, LOW);
-    }
+  if (on) {
+    digitalWrite(_statusLedPin, HIGH);
+  } else {
+    digitalWrite(_statusLedPin, LOW);
+  }
 }
 
 /**
  * Liegt ein Signal vom Empfaenger an?
  */
 boolean MyDCF77::signal(boolean signalIsInverted) {
-    boolean val;
+  boolean val;
 #ifdef MYDCF77_SIGNAL_IS_ANALOG
-    if (signalIsInverted) {
-        val = analogRead(_signalPin) < MYDCF77_ANALOG_SIGNAL_TRESHOLD;
-    } else {
-        val = analogRead(_signalPin) > MYDCF77_ANALOG_SIGNAL_TRESHOLD;
-    }
+  if (signalIsInverted) {
+    val = analogRead(_signalPin) < MYDCF77_ANALOG_SIGNAL_TRESHOLD;
+  } else {
+    val = analogRead(_signalPin) > MYDCF77_ANALOG_SIGNAL_TRESHOLD;
+  }
 #else
-    if (signalIsInverted) {
-        val = (digitalRead(_signalPin) == LOW);
-    } else {
-        val = (digitalRead(_signalPin) == HIGH);
-    }
+  if (signalIsInverted) {
+    val = (digitalRead(_signalPin) == LOW);
+  } else {
+    val = (digitalRead(_signalPin) == HIGH);
+  }
 #endif
-    return val;
+  return val;
 }
 
 /**
  * Aufsammeln der Zustaende des DCF77-Signals.
  */
 void MyDCF77::poll(boolean signalIsInverted) {
-    if (signal(signalIsInverted)) {
-        _highcount++;
-    }
+  if (signal(signalIsInverted)) {
+    _highcount++;
+  }
 }
 
 /**
@@ -94,304 +96,196 @@ void MyDCF77::poll(boolean signalIsInverted) {
  * alte Informationen.
  */
 boolean MyDCF77::newSecond() {
-    boolean retVal = false;
+  boolean retVal = false;
 
-    if (_highcount != 0) {
-        // Daten
-        _meanvalues[_meanpointer] = _highcount;
-        _meanpointer++;
-        if (_meanpointer > MYDCF77_MEANCOUNT) {
-            _meanpointer = 0;
-        }
-
-        unsigned long average = 0;
-        for (byte i = 0; i < MYDCF77_MEANCOUNT; i++) {
-            average += _meanvalues[i];
-        }
-        average /= MYDCF77_MEANCOUNT;
-
-        DEBUG_PRINT(F("average = "));
-        DEBUG_PRINT(average);
-        DEBUG_PRINT(F("; highcount = "));
-        DEBUG_PRINT(_highcount);
-
-        if (_highcount > average) {
-            _bits |= (uint64_t) 0x01 << _bitsPointer;
-            DEBUG_PRINTLN(F("; HIGH"));
-        } else {
-            _bits |= (uint64_t) 0x00 << _bitsPointer;
-            DEBUG_PRINTLN(F("; LOW"));
-        }
-        _bitsPointer++;
-        if (_bitsPointer > MYDCF77_TELEGRAMMLAENGE) {
-            _bitsPointer = 0;
-        }
-    } else {
-        // Pause
-        DEBUG_PRINTLN(F("PAUSE"));
-        retVal = decode();
-        _bitsPointer = 0;
-        clearBits();
+  if (_highcount != 0) {
+    // Daten
+    _meanvalues[_meanpointer] = _highcount;
+    _meanpointer++;
+    if (_meanpointer > MYDCF77_MEANCOUNT) {
+      _meanpointer = 0;
     }
 
-    _highcount = 0;
+    unsigned long average = 0;
+    for (byte i = 0; i < MYDCF77_MEANCOUNT; i++) {
+      average += _meanvalues[i];
+    }
+    average /= MYDCF77_MEANCOUNT;
 
-    return retVal;
+    DEBUG_PRINT(F("average = "));
+    DEBUG_PRINT(average);
+    DEBUG_PRINT(F("; highcount = "));
+    DEBUG_PRINT(_highcount);
+
+    if (_highcount > average) {
+      _bits |= (uint64_t) 0x01 << _bitsPointer;
+      DEBUG_PRINTLN(F("; HIGH"));
+    } else {
+      _bits |= (uint64_t) 0x00 << _bitsPointer;
+      DEBUG_PRINTLN(F("; LOW"));
+    }
+    _bitsPointer++;
+    if (_bitsPointer > MYDCF77_TELEGRAMMLAENGE) {
+      _bitsPointer = 0;
+    }
+  } else {
+    // Pause
+    DEBUG_PRINTLN(F("PAUSE"));
+    retVal = decode();
+    _bitsPointer = 0;
+    clearBits();
+  }
+
+  _highcount = 0;
+
+  return retVal;
 }
 
 /**
  * Ein Bit im Array zum Debuggen (Anzeigen) bekommen.
  */
 byte MyDCF77::getBitAtPos(byte pos) {
-    return  (_bits >> pos) & 0x01;
+  return  (_bits >> pos) & 0x01;
 }
 
 /**
  * Den Pointer zum Debuggen (Anzeigen) bekommen.
  */
 byte MyDCF77::getBitPointer() {
-    return _bitsPointer;
+  return _bitsPointer;
 }
 
 /**
  * Decodierung des Telegramms...
  */
 boolean MyDCF77::decode() {
-    int c = 0; // bitcount for checkbit
-    boolean ok = true;
+  int c = 0; // bitcount for checkbit
+  boolean ok = true;
 
-    DEBUG_PRINTLN(F("Decoding telegram..."));
+  DEBUG_PRINTLN(F("Decoding telegram..."));
+  DEBUG_FLUSH();
+
+  if (!getBitAtPos(20)) {
+    ok = false;
+    DEBUG_PRINTLN(F("Check-bit S failed."));
     DEBUG_FLUSH();
+  }
 
-    if (!getBitAtPos(20)) {
-        ok = false;
-        DEBUG_PRINTLN(F("Check-bit S failed."));
-        DEBUG_FLUSH();
+  if (getBitAtPos(17) == getBitAtPos(18)) {
+    ok = false;
+    DEBUG_PRINTLN(F("Check Z1 != Z2 failed."));
+    DEBUG_FLUSH();
+  }
+
+  //
+  // minutes
+  //
+  _minutes = 0;
+  c = 0;
+  for (byte i = 0; i < 7; i++, c++) {
+    if (getBitAtPos(21 + i)) {
+      _minutes += DCFFactors[i];
     }
+  }
 
-    if (getBitAtPos(17) == getBitAtPos(18)) {
-        ok = false;
-        DEBUG_PRINTLN(F("Check Z1 != Z2 failed."));
-        DEBUG_FLUSH();
+  DEBUG_PRINT(F("Minutes: "));
+  DEBUG_PRINTLN(_minutes);
+  DEBUG_FLUSH();
+  if ((c + getBitAtPos(28)) % 2 != 0) {
+    ok = false;
+    DEBUG_PRINTLN(F("Check-bit P1: minutes failed."));
+    DEBUG_FLUSH();
+  }
+
+  //
+  // hour
+  //
+  _hours = 0;
+  c = 0;
+  for (byte i = 0; i < 5; i++, c++) {
+    if (getBitAtPos(29 + i)) {
+      _hours += DCFFactors[i];
     }
+  }
+  DEBUG_PRINT(F("Hours: "));
+  DEBUG_PRINTLN(_hours);
+  DEBUG_FLUSH();
+  if ((c + getBitAtPos(35)) % 2 != 0) {
+    ok = false;
+    DEBUG_PRINTLN(F("Check-bit P2: hours failed."));
+    DEBUG_FLUSH();
+  }
 
-    //
-    // minutes
-    //
+  //
+  // date
+  //
+  _date = 0;
+  c = 0;
+  for (byte i = 0; i < 6; i++, c++) {
+    if (getBitAtPos(36 + i)) {
+      _date += DCFFactors[i];
+    }
+  }
+  
+  DEBUG_PRINT(F("Date: "));
+  DEBUG_PRINTLN(_date);
+  DEBUG_FLUSH();
+
+  //
+  // day of week
+  //
+  _dayOfWeek = 0;
+  for (byte i = 0; i < 3; i++, c++) {
+    if (getBitAtPos(42 + i)) {
+      _dayOfWeek += DCFFactors[i];
+    }
+  }
+  DEBUG_PRINT(F("Day of week: "));
+  DEBUG_PRINTLN(_dayOfWeek);
+  DEBUG_FLUSH();
+
+  //
+  // month
+  //
+  _month = 0;
+  for (byte i = 0; i < 5; i++, c++) {
+    if (getBitAtPos(45 + i)) {
+      _month += DCFFactors[i];
+    }
+  }
+  DEBUG_PRINT(F("Month: "));
+  DEBUG_PRINTLN(_month);
+  DEBUG_FLUSH();
+
+  //
+  // year
+  //
+  _year = 0;
+  for (byte i = 0; i < 8; i++, c++) {
+    if (getBitAtPos(50 + i)) {
+      _year += DCFFactors[i];
+    }
+  }
+  DEBUG_PRINT(F("Year: "));
+  DEBUG_PRINTLN(_year);
+  DEBUG_FLUSH();
+  if ((c + getBitAtPos(58)) % 2 != 0) {
+    ok = false;
+    DEBUG_PRINTLN(F("Check-bit P3: date failed."));
+    DEBUG_FLUSH();
+  }
+
+  if (!ok) {
+    // discard date...
     _minutes = 0;
-    c = 0;
-    if (getBitAtPos(21)) {
-        c++;
-        _minutes += 1;
-    }
-    if (getBitAtPos(22)) {
-        c++;
-        _minutes += 2;
-    }
-    if (getBitAtPos(23)) {
-        c++;
-        _minutes += 4;
-    }
-    if (getBitAtPos(24)) {
-        c++;
-        _minutes += 8;
-    }
-    if (getBitAtPos(25)) {
-        c++;
-        _minutes += 10;
-    }
-    if (getBitAtPos(26)) {
-        c++;
-        _minutes += 20;
-    }
-    if (getBitAtPos(27)) {
-        c++;
-        _minutes += 40;
-    }
-    DEBUG_PRINT(F("Minutes: "));
-    DEBUG_PRINTLN(_minutes);
-    DEBUG_FLUSH();
-    if ((c + getBitAtPos(28)) % 2 != 0) {
-        ok = false;
-        DEBUG_PRINTLN(F("Check-bit P1: minutes failed."));
-        DEBUG_FLUSH();
-    }
-
-    //
-    // hour
-    //
     _hours = 0;
-    c = 0;
-    if (getBitAtPos(29)) {
-        c++;
-        _hours += 1;
-    }
-    if (getBitAtPos(30)) {
-        c++;
-        _hours += 2;
-    }
-    if (getBitAtPos(31)) {
-        c++;
-        _hours += 4;
-    }
-    if (getBitAtPos(32)) {
-        c++;
-        _hours += 8;
-    }
-    if (getBitAtPos(33)) {
-        c++;
-        _hours += 10;
-    }
-    if (getBitAtPos(34)) {
-        c++;
-        _hours += 20;
-    }
-    DEBUG_PRINT(F("Hours: "));
-    DEBUG_PRINTLN(_hours);
-    DEBUG_FLUSH();
-    if ((c + getBitAtPos(35)) % 2 != 0) {
-        ok = false;
-        DEBUG_PRINTLN(F("Check-bit P2: hours failed."));
-        DEBUG_FLUSH();
-    }
-
-    //
-    // date
-    //
     _date = 0;
-    c = 0;
-    if (getBitAtPos(36)) {
-        c++;
-        _date += 1;
-    }
-    if (getBitAtPos(37)) {
-        c++;
-        _date += 2;
-    }
-    if (getBitAtPos(38)) {
-        c++;
-        _date += 4;
-    }
-    if (getBitAtPos(39)) {
-        c++;
-        _date += 8;
-    }
-    if (getBitAtPos(40)) {
-        c++;
-        _date += 10;
-    }
-    if (getBitAtPos(41)) {
-        c++;
-        _date += 20;
-    }
-    DEBUG_PRINT(F("Date: "));
-    DEBUG_PRINTLN(_date);
-    DEBUG_FLUSH();
-
-    //
-    // day of week
-    //
     _dayOfWeek = 0;
-    if (getBitAtPos(42)) {
-        c++;
-        _dayOfWeek += 1;
-    }
-    if (getBitAtPos(43)) {
-        c++;
-        _dayOfWeek += 2;
-    }
-    if (getBitAtPos(44)) {
-        c++;
-        _dayOfWeek += 4;
-    }
-    DEBUG_PRINT(F("Day of week: "));
-    DEBUG_PRINTLN(_dayOfWeek);
-    DEBUG_FLUSH();
-
-    //
-    // month
-    //
     _month = 0;
-    if (getBitAtPos(45)) {
-        c++;
-        _month += 1;
-    }
-    if (getBitAtPos(46)) {
-        c++;
-        _month += 2;
-    }
-    if (getBitAtPos(47)) {
-        c++;
-        _month += 4;
-    }
-    if (getBitAtPos(48)) {
-        c++;
-        _month += 8;
-    }
-    if (getBitAtPos(49)) {
-        c++;
-        _month += 10;
-    }
-    DEBUG_PRINT(F("Month: "));
-    DEBUG_PRINTLN(_month);
-    DEBUG_FLUSH();
-
-    //
-    // year
-    //
     _year = 0;
-    if (getBitAtPos(50)) {
-        c++;
-        _year += 1;
-    }
-    if (getBitAtPos(51)) {
-        c++;
-        _year += 2;
-    }
-    if (getBitAtPos(52)) {
-        c++;
-        _year += 4;
-    }
-    if (getBitAtPos(53)) {
-        c++;
-        _year += 8;
-    }
-    if (getBitAtPos(54)) {
-        c++;
-        _year += 10;
-    }
-    if (getBitAtPos(55)) {
-        c++;
-        _year += 20;
-    }
-    if (getBitAtPos(56)) {
-        c++;
-        _year += 40;
-    }
-    if (getBitAtPos(57)) {
-        c++;
-        _year += 80;
-    }
-    DEBUG_PRINT(F("Year: "));
-    DEBUG_PRINTLN(_year);
-    DEBUG_FLUSH();
-    if ((c + getBitAtPos(58)) % 2 != 0) {
-        ok = false;
-        DEBUG_PRINTLN(F("Check-bit P3: date failed."));
-        DEBUG_FLUSH();
-    }
+  }
 
-    if (!ok) {
-        // discard date...
-        _minutes = 0;
-        _hours = 0;
-        _date = 0;
-        _dayOfWeek = 0;
-        _month = 0;
-        _year = 0;
-    }
-
-    return ok;
+  return ok;
 }
 
 /**
@@ -444,8 +338,8 @@ boolean MyDCF77::decode() {
  * Das Bits-Array loeschen.
  */
 void MyDCF77::clearBits() {
-    _bits = 0;
-    _bitsPointer = 0;
+  _bits = 0;
+  _bitsPointer = 0;
 }
 
 //
@@ -453,25 +347,25 @@ void MyDCF77::clearBits() {
 //
 
 byte MyDCF77::getMinutes() {
-    return _minutes;
+  return _minutes;
 }
 
 byte MyDCF77::getHours() {
-    return _hours;
+  return _hours;
 }
 
 byte MyDCF77::getDate() {
-    return _date;
+  return _date;
 }
 
 byte MyDCF77::getDayOfWeek() {
-    return _dayOfWeek;
+  return _dayOfWeek;
 }
 
 byte MyDCF77::getMonth() {
-    return _month;
+  return _month;
 }
 
 byte MyDCF77::getYear() {
-    return _year;
+  return _year;
 }

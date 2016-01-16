@@ -20,7 +20,9 @@
 typedef enum eMode : byte
 {
   STD_MODE_NORMAL,
+#ifdef ALARM
   STD_MODE_ALARM,
+#endif
   STD_MODE_SECONDS,
   STD_MODE_BRIGHTNESS,
   STD_MODE_BLANK,
@@ -35,7 +37,9 @@ typedef enum eMode : byte
   EXT_MODE_START,
   EXT_MODE_LDR_MODE = EXT_MODE_START,
   EXT_MODE_CORNERS,
+#ifdef ALARM
   EXT_MODE_ENABLE_ALARM,
+#endif
   EXT_MODE_RAINBOW,
   EXT_MODE_TRANSITION,
 #ifdef EVENTS

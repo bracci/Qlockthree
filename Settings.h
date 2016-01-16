@@ -31,7 +31,10 @@
 
 class Settings {
   public:
-    Settings();
+    static Settings* getInstance() {
+      static Settings _instance;
+      return &_instance;
+    }
 
     byte getLanguage();
     void setLanguage(byte language);
@@ -68,7 +71,11 @@ class Settings {
     void loadFromEEPROM();
     void saveToEEPROM();
 
+    ~Settings() {}
+
   private:
+    Settings();
+
     byte _language;
     boolean _renderCornersCw;
     boolean _use_ldr;
@@ -80,7 +87,7 @@ class Settings {
     byte _green;
     byte _blue;
     byte _transitionMode;
-byte _event;
+    byte _event;
 };
 
 #endif

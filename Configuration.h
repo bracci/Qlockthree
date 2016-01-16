@@ -36,6 +36,7 @@
  * - SPEAKER_FREQUENCY ist die Tonhoehe, wenn der Speaker ein Lautpsrecher ist.
  * - SPEAKER_IS_BUZZER: wenn einkommentiert wird davon ausgegangen, dass am Pin SPEAKER ein Buzzer haengt (Reichelt: SUMMER TDB 05).
  */
+//#define ALARM
 #define SPEAKER_FREQUENCY 200000
 #define MAX_BUZZ_TIME_IN_MINUTES 10
 #define SPEAKER_IS_BUZZER
@@ -70,11 +71,11 @@
 /*
  * Welche Fernbedienung soll benutzt werden?
  */
-#define REMOTE_NO_REMOTE
+//#define REMOTE_NO_REMOTE
 //#define REMOTE_SPARKFUN
 //#define REMOTE_MOONCANDLES
 //#define REMOTE_LUNARTEC
-//#define REMOTE_CLT
+#define REMOTE_CLT
  
 #define EVENTS
 

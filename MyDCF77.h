@@ -69,6 +69,8 @@ private:
     boolean decode();
 
     void clearBits();
+
+    static byte DCFFactors[];
 };
 
 #endif

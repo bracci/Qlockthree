@@ -16,17 +16,15 @@
 
 // #define DEBUG
 #include "Debug.h"
-
-Effects* Effects::_instance = NULL;
       
-void Effects::showTickerString(String str2disp, byte tickerSpeed) {
+void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   word matrix [16];
 
-  int strLength = str2disp.length();
+  int strLength = strlen(str2disp);//((String)str2disp).length();//sizeof(str2disp) / sizeof(char*);
   long bufLen;
   char actChar;
   char lastChar = 'W';
-  int t = 3;
+  int t = 2;
   boolean finish = false;
   int i = 0;
 
@@ -34,15 +32,15 @@ void Effects::showTickerString(String str2disp, byte tickerSpeed) {
     _renderer->clearScreenBuffer(matrix);
     unsigned int shift = 0; // Schiebekorrektur aufgrund variierender Buchstabenbreite
     for (byte k = 0; k < strLength; k++) {
-      actChar = str2disp.charAt(k);
+      actChar = str2disp[k];
       if (actChar == ' ') {
-        shift += 2;  //bei einem Space eine Lücke von:
+        shift += 3;  //bei einem Space eine Lücke von:
       }
       else {
-        shift -= pgm_read_byte_near(&(staben[lastChar - 'A'][5]));
-        for (byte j = 0; j < 5; j++) {
+        shift -= pgm_read_byte_near(&(stabenBig[lastChar - '!'][7]));
+        for (byte j = 0; j < 7; j++) {
           if (!(actChar == ' ')) {
-            matrix[t + j] |= (pgm_read_byte_near(&(staben[actChar - 'A'][j])) << (1 - shift + i)) & 0b1111111111100000;
+            matrix[t + j] |= (pgm_read_byte_near(&(stabenBig[actChar - '!'][j])) << (1 - shift + i)) & 0b1111111111100000;
           }
         }
         if (k < (strLength - 1)) {
@@ -102,39 +100,39 @@ void Effects::showTickerString(String str2disp, byte tickerSpeed) {
 //  }
 //}
 
-///**
-// * Pulsierender Herz-Effekt
-// */
-//void Effects::showHeart() {
-//  word matrix [16];
-//  for ( int y = 0; y < 3; y++) {
-//    _renderer->clearScreenBuffer(matrix);
-//    for (int j = 0; j < 8; j++) {
-//      matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
-//    }
-//    for (int k = 0; k < 40; k++) {
-//      _ledDriver->writeScreenBufferToMatrix(matrix, true);
-//    }
-//    for ( int i = 0; i < 2; i++) {
-//      _renderer->clearScreenBuffer(matrix);
-//      for (int z = 0; z < 2; z++) {
-//        for (int j = 0; j < 8; j++) {
-//          matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[z][j])) << 5);
-//        }
-//        for (int k = 0; k < 10; k++) {
-//          _ledDriver->writeScreenBufferToMatrix(matrix, true);
-//        }
-//      }
-//    }
-//  }
-//  _renderer->clearScreenBuffer(matrix);
-//  for (int j = 0; j < 8; j++) {
-//    matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
-//  }
-//  for (int k = 0; k < 35; k++) {
-//    _ledDriver->writeScreenBufferToMatrix(matrix, true);
-//  }
-//}
+/**
+ * Pulsierender Herz-Effekt
+ */
+void Effects::showHeart() {
+  word matrix [16];
+  for ( int y = 0; y < 3; y++) {
+    _renderer->clearScreenBuffer(matrix);
+    for (int j = 0; j < 8; j++) {
+      matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
+    }
+    for (int k = 0; k < 40; k++) {
+      _ledDriver->writeScreenBufferToMatrix(matrix, true);
+    }
+    for ( int i = 0; i < 2; i++) {
+      _renderer->clearScreenBuffer(matrix);
+      for (int z = 0; z < 2; z++) {
+        for (int j = 0; j < 8; j++) {
+          matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[z][j])) << 5);
+        }
+        for (int k = 0; k < 10; k++) {
+          _ledDriver->writeScreenBufferToMatrix(matrix, true);
+        }
+      }
+    }
+  }
+  _renderer->clearScreenBuffer(matrix);
+  for (int j = 0; j < 8; j++) {
+    matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
+  }
+  for (int k = 0; k < 35; k++) {
+    _ledDriver->writeScreenBufferToMatrix(matrix, true);
+  }
+}
 
 /**
  * Feuerwerk-Effekt
@@ -191,19 +189,19 @@ void Effects::showCandle() {
   }
 }
 
-/**
- * Love U
- */
-void Effects::showLoveU() {
-  word matrix [16];
-  _renderer->clearScreenBuffer(matrix);
-  for (int i = 0; i < 10; i++) {
-    matrix[i] |= (pgm_read_word_near(&(effectMasks[14][i])) << 5);
-  }
-  for (int i = 0; i < 400; i++) {
-    _ledDriver->writeScreenBufferToMatrix(matrix, true);
-  }
-}
+///**
+// * Love U
+// */
+//void Effects::showLoveU() {
+//  word matrix [16];
+//  _renderer->clearScreenBuffer(matrix);
+//  for (int i = 0; i < 10; i++) {
+//    matrix[i] |= (pgm_read_word_near(&(effectMasks[14][i])) << 5);
+//  }
+//  for (int i = 0; i < 400; i++) {
+//    _ledDriver->writeScreenBufferToMatrix(matrix, true);
+//  }
+//}
 
 /**
  * Bitmap
