@@ -26,7 +26,7 @@
 #include <LPD8806.h>
 
 class LedDriverLPD8806 : public LedDriver {
-public:
+  public:
     LedDriverLPD8806(byte dataPin, byte clockPin);
 
     void init();
@@ -45,7 +45,7 @@ public:
 
     void clearData();
 
-private:
+  private:
     byte _brightnessInPercent;
 
     boolean _dirty;
@@ -56,7 +56,7 @@ private:
     uint32_t _wheel(byte brightness, byte wheelPos);
 
     void _clear();
-    
+
     byte _brightnessScaleColor(byte brightness, byte colorPart);
 
     LPD8806 *_strip;

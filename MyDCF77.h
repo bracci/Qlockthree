@@ -22,7 +22,7 @@
 #include "Configuration.h"
 
 class MyDCF77 {
-public:
+  public:
     MyDCF77(byte signalPin, byte statusLedPin);
 
     void statusLed(boolean on);
@@ -41,11 +41,11 @@ public:
     byte getMonth();
     byte getYear();
 
-//    char* asString();
+    //    char* asString();
 
     boolean signal(boolean signalIsInverted);
 
-private:
+  private:
     byte _signalPin;
     byte _statusLedPin;
 
@@ -61,7 +61,7 @@ private:
     byte _month;
     byte _year;
 
-//    char _cDateTime[17];
+    //    char _cDateTime[17];
 
     uint64_t _bits;
     byte _bitsPointer;

@@ -38,7 +38,7 @@ boolean Transitions::nextSlideStep (word matrixNew[16], word matrix[16]) {
     for (byte i = max(_counter - 22 - 9, 0); i < min( _counter - 21, 12); i++) {
       shiftColumnUp(matrixNew, matrix, i);
     }
-  } 
+  }
   return (_counter > 41);
 }
 
@@ -70,9 +70,9 @@ boolean Transitions::nextMatrixStep(word matrixWeak[16], word matrixTime[16], wo
 
   if (!_ereasingDone) {
     shiftDownMatrixErease(matrixMatrix, matrixWeak);
-    if(random(0,3)>0)
+    if (random(0, 3) > 0)
     {
-      if( (_remainingCoulumnCount < 3) && (_remainingCoulumnCount > 0))
+      if ( (_remainingCoulumnCount < 3) && (_remainingCoulumnCount > 0))
       {
         matrixMatrix[0] |= ~_usedColumns;
         _usedColumns |= matrixMatrix[0];
@@ -93,9 +93,9 @@ boolean Transitions::nextMatrixStep(word matrixWeak[16], word matrixTime[16], wo
   }
   else {
     shiftDownMatrixWrite(matrixMatrix, matrixWeak);
-    if( (random(0,3)>0) && (_remainingCoulumnCount > 0) )
+    if ( (random(0, 3) > 0) && (_remainingCoulumnCount > 0) )
     {
-      if( _remainingCoulumnCount < 3 )
+      if ( _remainingCoulumnCount < 3 )
       {
         matrixMatrix[0] |= ~_usedColumns;
         _usedColumns |= matrixMatrix[0];

@@ -69,7 +69,7 @@ void LedDriverNeoPixel::printSignature() {
 void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onChange) {
   boolean updateWheelColor = false;
 
-  if (isRainbow()&&_transitionCompleted) {
+  if (isRainbow() && _transitionCompleted) {
     if ((millis() - _lastColorUpdate) > 300) {
       updateWheelColor = true;
       _lastColorUpdate = millis();

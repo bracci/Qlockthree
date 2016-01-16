@@ -19,7 +19,7 @@
 #include "TimeStamp.h"
 
 class Alarm {
-public:
+  public:
     Alarm(byte speakerPin);
 
     TimeStamp* getAlarmTime();
@@ -34,7 +34,7 @@ public:
 
     boolean isActive();
 
-private:
+  private:
     TimeStamp *_alarmTime;
     boolean _isActive;
     byte _showAlarmTimeTimer;

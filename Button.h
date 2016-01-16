@@ -23,13 +23,13 @@
 #include "Arduino.h"
 
 class Button {
-public:
+  public:
     Button(byte pin, byte pressedAgainst);
     Button(byte pin1, byte pin2, byte pressedAgainst);
 
     boolean pressed();
 
-private:
+  private:
     byte _pin1;
     byte _pin2;
     boolean _doubleMode;

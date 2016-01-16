@@ -29,13 +29,13 @@
 #include "Configuration.h"
 
 class DCF77Helper {
-public:
+  public:
     DCF77Helper();
 
     void addSample(MyDCF77 dcf77, MyRTC rtc);
     boolean samplesOk();
 
-private:
+  private:
     byte _cursor;
     TimeStamp *_zeitstempelDcf77[DCF77HELPER_MAX_SAMPLES];
     TimeStamp *_zeitstempelRtc[DCF77HELPER_MAX_SAMPLES];

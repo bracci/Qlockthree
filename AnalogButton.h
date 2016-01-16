@@ -17,12 +17,12 @@
 #include "Arduino.h"
 
 class AnalogButton {
-public:
+  public:
     AnalogButton(byte pin, boolean inverse);
 
     boolean pressed();
 
-private:
+  private:
     byte _pin;
     boolean _inverse;
     unsigned long _lastPressTime;

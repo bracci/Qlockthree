@@ -56,10 +56,10 @@
 // #define LED_DRIVER_POWER_SHIFT_REGISTER
 // #define LED_DRIVER_NEOPIXEL
 // #define LED_DRIVER_DOTSTAR
- #define LED_DRIVER_LPD8806
+#define LED_DRIVER_LPD8806
 
 #ifdef LED_DRIVER_LPD8806
-  //#define MATRIX_XXL
+//#define MATRIX_XXL
 #endif
 
 /*
@@ -76,7 +76,7 @@
 //#define REMOTE_MOONCANDLES
 //#define REMOTE_LUNARTEC
 #define REMOTE_CLT
- 
+
 #define EVENTS
 
 /*

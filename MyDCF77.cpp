@@ -226,7 +226,7 @@ boolean MyDCF77::decode() {
       _date += DCFFactors[i];
     }
   }
-  
+
   DEBUG_PRINT(F("Date: "));
   DEBUG_PRINTLN(_date);
   DEBUG_FLUSH();

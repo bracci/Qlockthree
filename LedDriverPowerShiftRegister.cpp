@@ -30,9 +30,9 @@
  * @param outputEnable Pin, an dem OutputEnable haengt.
  */
 LedDriverPowerShiftRegister::LedDriverPowerShiftRegister(byte data, byte clock, byte latch, byte outputEnable) {
-    _outputEnable = outputEnable;
-    _shiftRegister = new ShiftRegister(data, clock, latch);
-    _brightnessInPercent = 100;
+  _outputEnable = outputEnable;
+  _shiftRegister = new ShiftRegister(data, clock, latch);
+  _brightnessInPercent = 100;
 }
 
 /**
@@ -44,7 +44,7 @@ void LedDriverPowerShiftRegister::init() {
 }
 
 void LedDriverPowerShiftRegister::printSignature() {
-    Serial.println(F("Power Shift Register (TPICB595N)"));
+  Serial.println(F("Power Shift Register (TPICB595N)"));
 }
 
 /**
@@ -54,33 +54,33 @@ void LedDriverPowerShiftRegister::printSignature() {
  *                  FALSE, wenn es ein Refresh-Aufruf war.
  */
 void LedDriverPowerShiftRegister::writeScreenBufferToMatrix(word matrix[16], boolean onChange) {
-    if (onChange) {
-        _shiftRegister->prepareShiftregisterWrite();
+  if (onChange) {
+    _shiftRegister->prepareShiftregisterWrite();
 
-        // die letzten 6 Outputs sind frei - padding
-        for (byte p = 0; p < 6; p++) {
-            _shiftRegister->shiftOutABit(false);
-        }
-
-        // dann Ecken...
-        // unten links...
-        _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(11, 3, matrix));
-        // unten rechts...
-        _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(11, 2, matrix));
-        // oben rechts...
-        _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(11, 1, matrix));
-        // oben links...
-        _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(11, 0, matrix));
-
-        // dann weiter...
-        for (int x = 10; x >= 0; x--) {
-            for (int y = 9; y >= 0; y--) {
-                _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(x, y, matrix));
-            }
-        }
-
-        _shiftRegister->finishShiftregisterWrite();
+    // die letzten 6 Outputs sind frei - padding
+    for (byte p = 0; p < 6; p++) {
+      _shiftRegister->shiftOutABit(false);
     }
+
+    // dann Ecken...
+    // unten links...
+    _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(11, 3, matrix));
+    // unten rechts...
+    _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(11, 2, matrix));
+    // oben rechts...
+    _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(11, 1, matrix));
+    // oben links...
+    _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(11, 0, matrix));
+
+    // dann weiter...
+    for (int x = 10; x >= 0; x--) {
+      for (int y = 9; y >= 0; y--) {
+        _shiftRegister->shiftOutABit(getPixelFromScreenBuffer(x, y, matrix));
+      }
+    }
+
+    _shiftRegister->finishShiftregisterWrite();
+  }
 }
 
 /**
@@ -89,14 +89,14 @@ void LedDriverPowerShiftRegister::writeScreenBufferToMatrix(word matrix[16], boo
  * @param brightnessInPercent Die Helligkeit.
  */
 void LedDriverPowerShiftRegister::setBrightness(byte brightnessInPercent) {
-    // wegen eines fehlerhaften Platinen-Layouts geht die Helligkeit hier im Moment nicht.
+  // wegen eines fehlerhaften Platinen-Layouts geht die Helligkeit hier im Moment nicht.
 }
 
 /**
  * Die aktuelle Helligkeit bekommen.
  */
 byte LedDriverPowerShiftRegister::getBrightness() {
-    return _brightnessInPercent;
+  return _brightnessInPercent;
 }
 
 /**
@@ -112,7 +112,7 @@ void LedDriverPowerShiftRegister::setLinesToWrite(byte linesToWrite) {
  * Das Display ausschalten.
  */
 void LedDriverPowerShiftRegister::shutDown() {
-    digitalWrite(_outputEnable, HIGH);
+  digitalWrite(_outputEnable, HIGH);
   _displayOn = false;
 }
 
@@ -120,7 +120,7 @@ void LedDriverPowerShiftRegister::shutDown() {
  * Das Display einschalten.
  */
 void LedDriverPowerShiftRegister::wakeUp() {
-    digitalWrite(_outputEnable, LOW);
+  digitalWrite(_outputEnable, LOW);
   _displayOn = true;
 }
 
@@ -128,7 +128,7 @@ void LedDriverPowerShiftRegister::wakeUp() {
  * Den Dateninhalt des LED-Treibers loeschen.
  */
 void LedDriverPowerShiftRegister::clearData() {
-    for (int sr = 0; sr < 15; sr++) {
-        _shiftRegister->shiftOut(0);
-    }
+  for (int sr = 0; sr < 15; sr++) {
+    _shiftRegister->shiftOut(0);
+  }
 }

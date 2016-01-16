@@ -51,8 +51,8 @@ class Effects {
       EFFECT_FIREWORK = 0,
       EFFECT_HEART,
       EFFECT_CANDLE,
-    EFFECT_LOVEU,
-    EFFECT_INTRO,
+      EFFECT_LOVEU,
+      EFFECT_INTRO,
 
       BITMAP_MIN,
       BITMAP_HEART = BITMAP_MIN,

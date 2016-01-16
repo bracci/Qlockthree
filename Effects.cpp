@@ -16,7 +16,7 @@
 
 // #define DEBUG
 #include "Debug.h"
-      
+
 void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   word matrix [16];
 

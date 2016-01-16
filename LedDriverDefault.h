@@ -24,7 +24,7 @@
 #include "LedDriver.h"
 
 class LedDriverDefault : public LedDriver {
-public:
+  public:
     LedDriverDefault(byte data, byte clock, byte latch, byte outputEnable, byte linesToWrite);
 
     void init();
@@ -43,7 +43,7 @@ public:
 
     void clearData();
 
-private:
+  private:
     byte _brightnessInPercent;
 
     byte _linesToWrite;

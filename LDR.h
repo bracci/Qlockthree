@@ -25,12 +25,12 @@
 #include "Configuration.h"
 
 class LDR {
-public:
+  public:
     LDR(byte pin, boolean isInverted);
 
     byte value();
 
-private:
+  private:
     byte _pin;
     boolean _isInverted;
     int _lastValue;

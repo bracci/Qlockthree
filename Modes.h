@@ -31,9 +31,9 @@ typedef enum eMode : byte
   STD_MODE_NIGHT,
 
 
-/**
- * Die erweiterten Modi.
- */
+  /**
+   * Die erweiterten Modi.
+   */
   EXT_MODE_START,
   EXT_MODE_LDR_MODE = EXT_MODE_START,
   EXT_MODE_CORNERS,
@@ -57,7 +57,7 @@ typedef enum eMode : byte
 // Overload the ControlType++ operator
 inline Mode& operator++(Mode& eDOW, int)  // <--- note -- must be a reference
 {
-  const int i = static_cast<int>(eDOW)+1;
+  const int i = static_cast<int>(eDOW) + 1;
   eDOW = static_cast<Mode>((i) % EXT_MODE_COUNT);
   return eDOW;
 }

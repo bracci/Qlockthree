@@ -25,11 +25,11 @@
  * @param speakerPin Der Pin, an dem der Lautsprecher oder Buzzer haengt.
  */
 Alarm::Alarm(byte speakerPin) {
-    _speakerPin = speakerPin;
-    pinMode(_speakerPin, OUTPUT);
-    _alarmTime = new TimeStamp(0, 7, 0, 0, 0, 0);
-    _isActive = false;
-    _showAlarmTimeTimer = 0;
+  _speakerPin = speakerPin;
+  pinMode(_speakerPin, OUTPUT);
+  _alarmTime = new TimeStamp(0, 7, 0, 0, 0, 0);
+  _isActive = false;
+  _showAlarmTimeTimer = 0;
 }
 
 /**
@@ -40,17 +40,17 @@ Alarm::Alarm(byte speakerPin) {
  */
 void Alarm::buzz(boolean on) {
 #ifdef SPEAKER_IS_BUZZER
-    if (on) {
-        digitalWrite(_speakerPin, HIGH);
-    } else {
-        digitalWrite(_speakerPin, LOW);
-    }
+  if (on) {
+    digitalWrite(_speakerPin, HIGH);
+  } else {
+    digitalWrite(_speakerPin, LOW);
+  }
 #else
-    if (on) {
-        tone(_speakerPin, SPEAKER_FREQUENCY);
-    } else {
-        noTone(_speakerPin);
-    }
+  if (on) {
+    tone(_speakerPin, SPEAKER_FREQUENCY);
+  } else {
+    noTone(_speakerPin);
+  }
 #endif
 }
 
@@ -60,7 +60,7 @@ void Alarm::buzz(boolean on) {
  * @return Eine TimeStamp mit der eingstellten Weckzeit.
  */
 TimeStamp* Alarm::getAlarmTime() {
-    return _alarmTime;
+  return _alarmTime;
 }
 
 /**
@@ -70,7 +70,7 @@ TimeStamp* Alarm::getAlarmTime() {
  * @return Die Zeit in Sekunden.
  */
 byte Alarm::getShowAlarmTimeTimer() {
-    return _showAlarmTimeTimer;
+  return _showAlarmTimeTimer;
 }
 
 /**
@@ -80,7 +80,7 @@ byte Alarm::getShowAlarmTimeTimer() {
  * @param seconds Die Zeit in Sekunden.
  */
 void Alarm::setShowAlarmTimeTimer(byte seconds) {
-    _showAlarmTimeTimer = seconds;
+  _showAlarmTimeTimer = seconds;
 }
 
 /**
@@ -88,9 +88,9 @@ void Alarm::setShowAlarmTimeTimer(byte seconds) {
  * um eine Sekunde verringern.
  */
 void Alarm::decShowAlarmTimeTimer() {
-    if (_showAlarmTimeTimer > 0) {
-        _showAlarmTimeTimer--;
-    }
+  if (_showAlarmTimeTimer > 0) {
+    _showAlarmTimeTimer--;
+  }
 }
 
 /**
@@ -100,20 +100,20 @@ void Alarm::decShowAlarmTimeTimer() {
  *         FALSE, wenn der Wekcer ausgeschaltet ist.
  */
 boolean Alarm::isActive() {
-    return _isActive;
+  return _isActive;
 }
 
 /**
  * Den Wecker einschalten.
  */
 void Alarm::activate() {
-    _isActive = true;
+  _isActive = true;
 }
 
 /**
  * Den Wecker ausschalten.
  */
 void Alarm::deactivate() {
-    _isActive = false;
-    buzz(false);
+  _isActive = false;
+  buzz(false);
 }
