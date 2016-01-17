@@ -209,7 +209,7 @@
  * falls man eine minimale oder maximale
  * Helligkeit vorgeben moechte.
  */
-#define LDR_MIN_PERCENT 5
+#define LDR_MIN_PERCENT 10
 #define LDR_MAX_PERCENT 100
 /*
  * LDR-Check-Raten. Dieser Wert beeinflusst, wie schnell

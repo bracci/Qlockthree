@@ -830,12 +830,12 @@ void loop() {
         if (alarm.isActive()) {
           rtc.readTime();
         }
+#endif
         if (helperSeconds == 0) {
           rtc.readTime();
           helperSeconds = rtc.getSeconds();
         }
         break;
-#endif
       case STD_MODE_SECONDS:
       case STD_MODE_BLANK:
       case STD_MODE_NIGHT:

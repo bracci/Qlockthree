@@ -110,7 +110,7 @@ void Effects::showHeart() {
     for (int j = 0; j < 8; j++) {
       matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
     }
-    for (int k = 0; k < 40; k++) {
+    for (int k = 0; k < 16; k++) {
       ledDriver.writeScreenBufferToMatrix(matrix, true);
     }
     for ( int i = 0; i < 2; i++) {
@@ -119,7 +119,7 @@ void Effects::showHeart() {
         for (int j = 0; j < 8; j++) {
           matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[z][j])) << 5);
         }
-        for (int k = 0; k < 10; k++) {
+        for (int k = 0; k < 4; k++) {
           ledDriver.writeScreenBufferToMatrix(matrix, true);
         }
       }
@@ -129,7 +129,7 @@ void Effects::showHeart() {
   for (int j = 0; j < 8; j++) {
     matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
   }
-  for (int k = 0; k < 35; k++) {
+  for (int k = 0; k < 14; k++) {
     ledDriver.writeScreenBufferToMatrix(matrix, true);
   }
 }
@@ -214,7 +214,7 @@ void Effects::showBitmap(byte bitmapIdx, byte duration) {
       matrix[i] |= ((pgm_read_word_near(&(bitmaps[bitmapIdx - BITMAP_MIN][j])) >> i) & 0x0001) << 15 - j;
     }
   }
-  for (int i = 0; i < duration * 50; i++) {
+  for (int i = 0; i < duration * 15; i++) {
     ledDriver.writeScreenBufferToMatrix(matrix, true);
   }
 }
@@ -235,7 +235,7 @@ void Effects::showAnimatedBitmap(byte animatedBitmap) {
       }
       break;
     case ANI_BITMAP_SMILEY_WINK:
-      showBitmap(BITMAP_SMILEY, 1);
+      showBitmap(BITMAP_SMILEY, 2);
       showBitmap(BITMAP_SMILEY_WINK, 1);
       showBitmap(BITMAP_SMILEY, 1);
       break;

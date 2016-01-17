@@ -144,15 +144,15 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
             break;
         }
       }
-      if (_transitionCompleted) {
-        for (byte i = 0; i < 11; i++) {
-          _matrixOld[i] = 0;
-          _matrixNew[i] = matrix[i];
-          _matrixOverlay[i] = 0;
-        }
-      }
     }
 
+    if (_transitionCompleted) {
+      for (byte i = 0; i < 11; i++) {
+        _matrixOld[i] = 0;
+        _matrixNew[i] = matrix[i];
+        _matrixOverlay[i] = 0;
+      }
+    }
     _demoTransition = false;
 
     if ((_transitionCounter == 0) && !_transitionCompleted) {

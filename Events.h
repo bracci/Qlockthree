@@ -22,13 +22,14 @@
 * werden.
 **************************************************************************************************************/
 Event events[] = {
-  Event(7, 29, "HAPPY BRA G DAY", Effects::EFFECT_FIREWORK),
-  Event(1, 16, "GUTEN MORGEN LIEBSTE", Effects::ANI_BITMAP_SMILEY_WINK),
-  Event(2, 14, "QLOCKTHREE", Effects::ANI_BITMAP_CHAMPGLASS),
-  Event(12, 25, "MERRY CHRISTMAS", Effects::ANI_BITMAP_CHRISTTREE),
-//  Event(1,1,"HAPPY NEW YEAR",Effects::EFFECT_FIREWORK),
+  Event(1,1,"Happy New Year",Effects::ANI_BITMAP_SMILEY_WINK),
+  Event(12, 25, "Merry Christmas", Effects::BITMAP_CHRISTTREE1),
+  Event(14, 2, "Happy Valentine's Day", Effects::EFFECT_HEART),
+  
+  Event(7, 29, "Happy braG-day!", Effects::EFFECT_FIREWORK),
+//  Event(1, 16, "Testevent", Effects::ANI_BITMAP_SMILEY_WINK),
 //  Event(2,14,"",Effects::EFFECT_HEART),
-//  Event(7,30,"HAPPY BIRTHDAY",Effects::EFFECT_HEART)
+//  Event(7,30,"Happy Birthday",Effects::EFFECT_HEART)
 };
 
 //NO_EFFECT = 255,
