@@ -25,7 +25,11 @@
 // #define DEBUG
 #include "Debug.h"
 
+#ifdef MATRIX_XXL
+#define NUM_PIXEL 228
+#else
 #define NUM_PIXEL 114
+#endif
 
 /**
  * Initialisierung.

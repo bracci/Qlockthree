@@ -24,7 +24,11 @@
 #include "Debug.h"
 
 // eigentlich haben wir ja 115 LEDs, aber LPD8806 sind ja immer zweier...
+#ifdef MATRIX_XXL
+#define NUM_PIXEL 228
+#else
 #define NUM_PIXEL 130
+#endif
 
 /**
  * Initialisierung.
