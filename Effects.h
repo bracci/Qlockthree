@@ -32,9 +32,6 @@ extern LedDriverPowerShiftRegister ledDriver;
 #elif defined(LED_DRIVER_NEOPIXEL)
 #include "LedDriverNeoPixel.h"
 extern LedDriverNeoPixel ledDriver;
-#elif defined(LED_DRIVER_NEOPIXEL_CLT)
-#include "LedDriverNeoPixel.h"
-extern LedDriverNeoPixel ledDriver;
 #elif defined(LED_DRIVER_DOTSTAR)
 #include "LedDriverDotStar.h"
 extern LedDriverDotStar ledDriver;
@@ -76,11 +73,11 @@ class Effects {
     static void showTickerString(const char* str2disp, byte tickerSpeed);
     static void showIntro();
     static void showFireWork(byte posX);
-    static void showHeart();
+    static void showHeart(byte duration);
     static void showCandle();
     static void showLoveU();
     static void showBitmap(byte bitmapIdx, byte duration);
-    static void showAnimatedBitmap(byte animatedBitmap);
+    static void showAnimatedBitmap(byte animatedBitmap, byte duration);
 };
 
 const word effectMasks[][10] PROGMEM = {

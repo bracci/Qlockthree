@@ -103,14 +103,14 @@ void Effects::showIntro() {
 /**
  * Pulsierender Herz-Effekt
  */
-void Effects::showHeart() {
+void Effects::showHeart(byte duration) {
   word matrix [16];
   for ( int y = 0; y < 3; y++) {
     renderer.clearScreenBuffer(matrix);
     for (int j = 0; j < 8; j++) {
       matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
     }
-    for (int k = 0; k < 16; k++) {
+    for (int k = 0; k < 16*duration; k++) {
       ledDriver.writeScreenBufferToMatrix(matrix, true);
     }
     for ( int i = 0; i < 2; i++) {
@@ -119,7 +119,7 @@ void Effects::showHeart() {
         for (int j = 0; j < 8; j++) {
           matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[z][j])) << 5);
         }
-        for (int k = 0; k < 4; k++) {
+        for (int k = 0; k < 4*duration; k++) {
           ledDriver.writeScreenBufferToMatrix(matrix, true);
         }
       }
@@ -129,7 +129,7 @@ void Effects::showHeart() {
   for (int j = 0; j < 8; j++) {
     matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
   }
-  for (int k = 0; k < 14; k++) {
+  for (int k = 0; k < 14*duration; k++) {
     ledDriver.writeScreenBufferToMatrix(matrix, true);
   }
 }
@@ -222,22 +222,22 @@ void Effects::showBitmap(byte bitmapIdx, byte duration) {
 /**
  * Bitmap-Effekt
  */
-void Effects::showAnimatedBitmap(byte animatedBitmap) {
+void Effects::showAnimatedBitmap(byte animatedBitmap, byte duration) {
   switch (animatedBitmap) {
     case ANI_BITMAP_CHAMPGLASS:
       for (int i = 0; i < 6; i++) {
-        showBitmap(BITMAP_CHAMPGLASS1 + i % 2, 1);
+        showBitmap(BITMAP_CHAMPGLASS1 + i % 2, duration);
       }
       break;
     case ANI_BITMAP_CHRISTTREE:
       for (int i = 0; i < 4; i++) {
-        showBitmap(BITMAP_CHRISTTREE1 + i % 2, 1);
+        showBitmap(BITMAP_CHRISTTREE1 + i % 2, duration);
       }
       break;
     case ANI_BITMAP_SMILEY_WINK:
-      showBitmap(BITMAP_SMILEY, 2);
-      showBitmap(BITMAP_SMILEY_WINK, 1);
-      showBitmap(BITMAP_SMILEY, 1);
+      showBitmap(BITMAP_SMILEY, 2*duration);
+      showBitmap(BITMAP_SMILEY_WINK, duration);
+      showBitmap(BITMAP_SMILEY, duration);
       break;
   }
 }

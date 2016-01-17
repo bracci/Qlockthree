@@ -30,7 +30,7 @@ void Event::show() {
         Effects::showFireWork(8);
         break;
       case Effects::EFFECT_HEART:
-        Effects::showHeart();
+        Effects::showHeart(DURATION_ANI_BM);
         break;
       case Effects::EFFECT_CANDLE:
         Effects::showCandle();
@@ -46,7 +46,7 @@ void Event::show() {
     Effects::showBitmap(_effect, DURATION_BM);
   }
   if (_effect >= Effects::ANI_BITMAP_MIN) {
-    Effects::showAnimatedBitmap(_effect);
+    Effects::showAnimatedBitmap(_effect, DURATION_ANI_BM);
   }
 }
 
