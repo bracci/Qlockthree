@@ -58,7 +58,7 @@
 // #define LED_DRIVER_DOTSTAR
 #define LED_DRIVER_LPD8806
 
-#ifdef LED_DRIVER_LPD8806
+#if defined(LED_DRIVER_LPD8806) || defined(LED_DRIVER_NEOPIXEL)
 //#define MATRIX_XXL
 #endif
 
