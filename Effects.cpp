@@ -103,7 +103,7 @@ void Effects::showIntro() {
 /**
  * Pulsierender Herz-Effekt
  */
-void Effects::showHeart(byte duration) {
+void Effects::showHeart(byte duration, eColors color) {
   word matrix [16];
   for ( int y = 0; y < 3; y++) {
     renderer.clearScreenBuffer(matrix);
@@ -111,7 +111,7 @@ void Effects::showHeart(byte duration) {
       matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
     }
     for (int k = 0; k < 16*duration; k++) {
-      ledDriver.writeScreenBufferToMatrix(matrix, true);
+      ledDriver.writeScreenBufferToMatrix(matrix, true, color);
     }
     for ( int i = 0; i < 2; i++) {
       renderer.clearScreenBuffer(matrix);
@@ -120,7 +120,7 @@ void Effects::showHeart(byte duration) {
           matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[z][j])) << 5);
         }
         for (int k = 0; k < 4*duration; k++) {
-          ledDriver.writeScreenBufferToMatrix(matrix, true);
+          ledDriver.writeScreenBufferToMatrix(matrix, true, color);
         }
       }
     }
@@ -130,21 +130,21 @@ void Effects::showHeart(byte duration) {
     matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
   }
   for (int k = 0; k < 14*duration; k++) {
-    ledDriver.writeScreenBufferToMatrix(matrix, true);
+    ledDriver.writeScreenBufferToMatrix(matrix, true, color);
   }
 }
 
 /**
  * Feuerwerk-Effekt
  */
-void Effects::showFireWork(byte posX) {
+void Effects::showFireWork(byte posX, eColors color) {
   word matrix [16];
 
   for (int i = 9; i >= 3; i--) {
     renderer.clearScreenBuffer(matrix);
     ledDriver.setPixelInScreenBuffer(posX, i, matrix);
     for (int k = 0; k < 7; k++) {
-      ledDriver.writeScreenBufferToMatrix(matrix, true);
+      ledDriver.writeScreenBufferToMatrix(matrix, true, color);
     }
   }
 
@@ -154,7 +154,7 @@ void Effects::showFireWork(byte posX) {
       matrix[j] |= (pgm_read_word_near(&(effectMasks[i][j])) << 10 - posX) & 0b1111111111100000;
     }
     for (int k = 0; k < (3 + round(10 * (i - 8) / 3)); k++) {
-      ledDriver.writeScreenBufferToMatrix(matrix, true);
+      ledDriver.writeScreenBufferToMatrix(matrix, true, color);
     }
   }
   for (int i = 0; i <= 10; i++) {
@@ -163,7 +163,7 @@ void Effects::showFireWork(byte posX) {
       matrix[j + i] |= (pgm_read_word_near(&(effectMasks[12 + i % 2][j])) << 10 - posX) & 0b1111111111100000;
     }
     for (int k = 0; k < 16; k++) {
-      ledDriver.writeScreenBufferToMatrix(matrix, true);
+      ledDriver.writeScreenBufferToMatrix(matrix, true, color);
     }
   }
 }
@@ -171,7 +171,7 @@ void Effects::showFireWork(byte posX) {
 /**
  * Kerzen-Effekt
  */
-void Effects::showCandle() {
+void Effects::showCandle(eColors color) {
   word matrix [16];
   for (int k = 0; k < 5; k++) {
     for (int j = -4; j < 4; j++) {
@@ -183,7 +183,7 @@ void Effects::showCandle() {
         matrix[i] |= (pgm_read_word_near(&(effectMasks[2 + 4 - abs(j % 4)][i])) << 5);
       }
       for (int i = 0; i < 10; i++) {
-        ledDriver.writeScreenBufferToMatrix(matrix, true);
+        ledDriver.writeScreenBufferToMatrix(matrix, true, color);
       }
     }
   }
@@ -192,21 +192,21 @@ void Effects::showCandle() {
 /**
  * Love U
  */
-void Effects::showLoveU() {
+void Effects::showLoveU(eColors color) {
   word matrix [16];
   renderer.clearScreenBuffer(matrix);
   for (int i = 0; i < 10; i++) {
     matrix[i] |= (pgm_read_word_near(&(effectMasks[14][i])) << 5);
   }
   for (int i = 0; i < 400; i++) {
-    ledDriver.writeScreenBufferToMatrix(matrix, true);
+    ledDriver.writeScreenBufferToMatrix(matrix, true, color);
   }
 }
 
 /**
  * Bitmap
  */
-void Effects::showBitmap(byte bitmapIdx, byte duration) {
+void Effects::showBitmap(byte bitmapIdx, byte duration, eColors color) {
   word matrix [16];
   renderer.clearScreenBuffer(matrix);
   for (int i = 0; i < 10; i++) {
@@ -215,29 +215,29 @@ void Effects::showBitmap(byte bitmapIdx, byte duration) {
     }
   }
   for (int i = 0; i < duration * 15; i++) {
-    ledDriver.writeScreenBufferToMatrix(matrix, true);
+    ledDriver.writeScreenBufferToMatrix(matrix, true, color);
   }
 }
 
 /**
  * Bitmap-Effekt
  */
-void Effects::showAnimatedBitmap(byte animatedBitmap, byte duration) {
+void Effects::showAnimatedBitmap(byte animatedBitmap, byte duration, eColors color) {
   switch (animatedBitmap) {
     case ANI_BITMAP_CHAMPGLASS:
       for (int i = 0; i < 6; i++) {
-        showBitmap(BITMAP_CHAMPGLASS1 + i % 2, duration);
+        showBitmap(BITMAP_CHAMPGLASS1 + i % 2, duration, color);
       }
       break;
     case ANI_BITMAP_CHRISTTREE:
       for (int i = 0; i < 4; i++) {
-        showBitmap(BITMAP_CHRISTTREE1 + i % 2, duration);
+        showBitmap(BITMAP_CHRISTTREE1 + i % 2, duration, color);
       }
       break;
     case ANI_BITMAP_SMILEY_WINK:
-      showBitmap(BITMAP_SMILEY, 2*duration);
-      showBitmap(BITMAP_SMILEY_WINK, duration);
-      showBitmap(BITMAP_SMILEY, duration);
+      showBitmap(BITMAP_SMILEY, 2*duration, color);
+      showBitmap(BITMAP_SMILEY_WINK, duration, color);
+      showBitmap(BITMAP_SMILEY, duration, color);
       break;
   }
 }

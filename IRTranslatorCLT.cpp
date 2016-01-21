@@ -12,6 +12,7 @@
  * V 1.0:  - Erstellt.
  */
 #include "IRTranslatorCLT.h"
+#include "Colors.h"
 
 // #define DEBUG
 #include "Debug.h"
@@ -65,28 +66,28 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
     case CLT_ON_OFF:
       return REMOTE_BUTTON_TOGGLEBLANK;
     case CLT_RED:
-      setColor(255, 0, 0);
+      setColor(defaultColors[color_red].red, defaultColors[color_red].green, defaultColors[color_red].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_GREEN:
-      setColor(0, 255, 0);
+      setColor(defaultColors[color_green].red, defaultColors[color_green].green, defaultColors[color_green].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_DARKBLUE:
-      setColor(0, 0, 255);
+      setColor(defaultColors[color_darkblue].red, defaultColors[color_darkblue].green, defaultColors[color_darkblue].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_PINK:
-      setColor(230, 25, 255);
+      setColor(defaultColors[color_pink].red, defaultColors[color_pink].green, defaultColors[color_pink].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_WHITE:
-      setColor(250, 255, 200);
+      setColor(defaultColors[color_white].red, defaultColors[color_white].green, defaultColors[color_white].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_BRIGHTBLUE:
-      setColor(0, 255, 128);
+      setColor(defaultColors[color_brightblue].red, defaultColors[color_brightblue].green, defaultColors[color_brightblue].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_YELLOW:
-      setColor(255, 255, 0);
+      setColor(defaultColors[color_yellow].red, defaultColors[color_yellow].green, defaultColors[color_yellow].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_RGB:
-      setColor(0, 0, 0);
+      setColor(defaultColors[color_rgb].red, defaultColors[color_rgb].green, defaultColors[color_rgb].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_NORMAL:
       setTransition(TRANSITION_MODE_NORMAL);

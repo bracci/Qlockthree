@@ -69,7 +69,7 @@ void LedDriverLPD8806::printSignature() {
  * @param onChange: TRUE, wenn es Aenderungen in dem Bildschirm-Puffer gab,
  *                  FALSE, wenn es ein Refresh-Aufruf war.
  */
-void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChange) {
+void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
   boolean updateWheelColor = false;
 
   if (isRainbow() && _transitionCompleted) {
@@ -211,8 +211,16 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
       colorOverlay2 = 0;
     }
     else {
+
       color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, getRed()), _brightnessScaleColor(_brightnessInPercent, getBlue()), _brightnessScaleColor(_brightnessInPercent, getGreen()));
-      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, getRed()), _brightnessScaleColor(brightnessNew, getBlue()), _brightnessScaleColor(brightnessNew, getGreen()));
+      if (a_color == color_none)
+      {
+        colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, getRed()), _brightnessScaleColor(brightnessNew, getBlue()), _brightnessScaleColor(brightnessNew, getGreen()));
+      }
+      else
+      {
+        colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)));
+      }
       colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, getRed()), _brightnessScaleColor(brightnessOld, getBlue()), _brightnessScaleColor(brightnessOld, getGreen()));
       colorOverlay1 = 0;
       colorOverlay2 = 0;

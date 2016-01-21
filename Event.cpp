@@ -25,28 +25,28 @@ void Event::show() {
       case Effects::NO_EFFECT:
         break;
       case Effects::EFFECT_FIREWORK:
-        Effects::showFireWork(5);
-        Effects::showFireWork(2);
-        Effects::showFireWork(8);
+        Effects::showFireWork(5, _color);
+        Effects::showFireWork(2, _color);
+        Effects::showFireWork(8, _color);
         break;
       case Effects::EFFECT_HEART:
-        Effects::showHeart(DURATION_ANI_BM);
+        Effects::showHeart(DURATION_ANI_BM, _color);
         break;
       case Effects::EFFECT_CANDLE:
-        Effects::showCandle();
+        Effects::showCandle(_color);
         break;
       case Effects::EFFECT_LOVEU:
-        Effects::showLoveU();
+        Effects::showLoveU(_color);
         break;
       default:
         ;
     }
   }
   if ((_effect >= Effects::BITMAP_MIN) && (_effect < Effects::ANI_BITMAP_MIN)) {
-    Effects::showBitmap(_effect, DURATION_BM);
+    Effects::showBitmap(_effect, DURATION_BM, _color);
   }
   if (_effect >= Effects::ANI_BITMAP_MIN) {
-    Effects::showAnimatedBitmap(_effect, DURATION_ANI_BM);
+    Effects::showAnimatedBitmap(_effect, DURATION_ANI_BM, _color);
   }
 }
 
