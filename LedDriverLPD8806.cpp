@@ -348,18 +348,23 @@ void LedDriverLPD8806::_setPixel(byte num, uint32_t c) {
     switch (num) {
       case 110:
         _strip->setPixelColor(222, c);
+        _strip->setPixelColor(223, c);
         break;
       case 111:
         _strip->setPixelColor(224, c);
+        _strip->setPixelColor(225, c);
         break;
       case 112:
         _strip->setPixelColor(226, c);
+        _strip->setPixelColor(227, c);
         break;
       case 113:
         _strip->setPixelColor(220, c);
+        _strip->setPixelColor(221, c);
         break;
       case 114:
         _strip->setPixelColor(228, c);
+        _strip->setPixelColor(229, c);
         break;
     }
   }
