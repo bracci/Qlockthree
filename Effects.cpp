@@ -40,7 +40,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
         shift -= pgm_read_byte_near(&(stabenBig[lastChar - '!'][7]));
         for (byte j = 0; j < 7; j++) {
           if (!(actChar == ' ')) {
-            matrix[t + j] |= (pgm_read_byte_near(&(stabenBig[actChar - '!'][j])) << (1 - shift + i)) & 0b1111111111100000;
+            matrix[t + j] |= (pgm_read_byte_near(&(stabenBig[actChar - '!'][j])) << (-6 + 1 - shift + i)) & 0b1111111111100000;
           }
         }
         if (k < (strLength - 1)) {
@@ -52,7 +52,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
     for (int k = 0; k < 1 + 3 * (10 - tickerSpeed); k++) {
       ledDriver.writeScreenBufferToMatrix(matrix, true);
     }
-    bufLen = shift + 15;
+    bufLen = shift + 15 + 6;
     if (i == bufLen) {
       finish = true;
     }
