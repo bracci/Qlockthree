@@ -23,7 +23,12 @@
 
 #include "Arduino.h"
 #include "LedDriver.h"
+
+#ifdef MATRIX_XXL
+#include <LPD8806DBL.h>
+#else
 #include <LPD8806.h>
+#endif
 
 class LedDriverLPD8806 : public LedDriver {
   public:
@@ -59,7 +64,12 @@ class LedDriverLPD8806 : public LedDriver {
 
     byte _brightnessScaleColor(byte brightness, byte colorPart);
 
+#ifdef MATRIX_XXL
+    LPD8806DBL *_strip;
+#else
     LPD8806 *_strip;
+#endif
+    
 };
 
 #endif

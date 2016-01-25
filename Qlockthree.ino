@@ -170,6 +170,7 @@
 #include <LedControl.h>
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_DotStar.h>
+#include <LPD8806DBL.h>
 #include <LPD8806.h>
 #include "Configuration.h"
 #include "LedDriver.h"

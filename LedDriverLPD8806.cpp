@@ -25,7 +25,7 @@
 
 // eigentlich haben wir ja 115 LEDs, aber LPD8806 sind ja immer zweier...
 #ifdef MATRIX_XXL
-#define NUM_PIXEL 230
+#define NUM_PIXEL 115
 #else
 #define NUM_PIXEL 130
 #endif
@@ -36,7 +36,12 @@
  * @param data Pin, an dem die Data-Line haengt.
  */
 LedDriverLPD8806::LedDriverLPD8806(byte dataPin, byte clockPin) {
+#ifdef MATRIX_XXL
+  _strip = new LPD8806DBL(NUM_PIXEL, dataPin, clockPin);
+#else
   _strip = new LPD8806(NUM_PIXEL, dataPin, clockPin);
+#endif
+
   _strip->begin();
   _wheelPos = 0;
   _transitionCounter = 0;
@@ -338,33 +343,26 @@ void LedDriverLPD8806::_setPixel(byte num, uint32_t c) {
 #ifdef MATRIX_XXL
   if (num < 110) {
     if ((num / 11) % 2 == 0) {
-      _strip->setPixelColor(num * 2, c);
-      _strip->setPixelColor(num * 2 + 1, c);
+      _strip->setPixelColor(num, c);
     } else {
-      _strip->setPixelColor(((num / 11) * 22) + 21 - ((num % 11) * 2), c);
-      _strip->setPixelColor(((num / 11) * 22) + 20 - ((num % 11) * 2), c);
+      _strip->setPixelColor(((num / 11) * 11) + 10 - (num % 11), c);
     }
   } else {
     switch (num) {
       case 110:
-        _strip->setPixelColor(222, c);
-        _strip->setPixelColor(223, c);
+        _strip->setPixelColor(111, c);
         break;
       case 111:
-        _strip->setPixelColor(224, c);
-        _strip->setPixelColor(225, c);
+        _strip->setPixelColor(112, c);
         break;
       case 112:
-        _strip->setPixelColor(226, c);
-        _strip->setPixelColor(227, c);
+        _strip->setPixelColor(113, c);
         break;
       case 113:
-        _strip->setPixelColor(220, c);
-        _strip->setPixelColor(221, c);
+        _strip->setPixelColor(110, c);
         break;
-      case 114:
-        _strip->setPixelColor(228, c);
-        _strip->setPixelColor(229, c);
+      case 114:                         // die Alarm-LED
+        _strip->setPixelColor(114, c);
         break;
     }
   }
