@@ -77,7 +77,7 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
       setColor(230, 25, 255);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_WHITE:
-      setColor(250, 255, 200);
+      setColor(255, 255, 255);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_BRIGHTBLUE:
       setColor(0, 255, 128);
@@ -86,19 +86,18 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
       setColor(255, 255, 0);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_RGB:
-      setColor(0, 0, 0);
-      return REMOTE_BUTTON_SETCOLOR;
+      return REMOTE_BUTTON_RAINBOW;
     case CLT_NORMAL:
-      setTransition(TRANSITION_MODE_NORMAL);
+      setTransition(Settings::TRANSITION_MODE_NORMAL);
       return REMOTE_BUTTON_TRANSITION;
     case CLT_FADE:
-      setTransition(TRANSITION_MODE_FADE);
+      setTransition(Settings::TRANSITION_MODE_FADE);
       return REMOTE_BUTTON_TRANSITION;
     case CLT_MATRIX:
-      setTransition(TRANSITION_MODE_MATRIX);
+      setTransition(Settings::TRANSITION_MODE_MATRIX);
       return REMOTE_BUTTON_TRANSITION;
     case CLT_SLIDE:
-      setTransition(TRANSITION_MODE_SLIDE);
+      setTransition(Settings::TRANSITION_MODE_SLIDE);
       return REMOTE_BUTTON_TRANSITION;
     case CLT_STD_PLUS:
       return REMOTE_BUTTON_TIME_H_PLUS;

@@ -50,7 +50,6 @@ LedDriverLPD8806::LedDriverLPD8806(byte dataPin, byte clockPin) {
   _displayOn = false;
   _dirty = false;
   _demoTransition = false;
-  setColor(250, 255, 200);
 }
 
 /**
@@ -77,7 +76,7 @@ void LedDriverLPD8806::printSignature() {
 void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChange) {
   boolean updateWheelColor = false;
 
-  if (isRainbow() && _transitionCompleted) {
+  if (settings.getRainbow() && _transitionCompleted) {
     if ((millis() - _lastColorUpdate) > 300) {
       updateWheelColor = true;
       _lastColorUpdate = millis();
@@ -92,7 +91,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     _transitionCounter = 0;
   }
 
-  if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
+  if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
     uint32_t color;
     uint32_t colorNew;
     uint32_t colorOld;
@@ -115,7 +114,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     if (onChange || _demoTransition) {
       if (((helperSeconds == 0) || _demoTransition) && (mode == STD_MODE_NORMAL) && _transitionCompleted && !evtActive) {
         switch (settings.getTransitionMode()) {
-          case TRANSITION_MODE_FADE:
+          case Settings::TRANSITION_MODE_FADE:
             for (byte i = 0; i < 11; i++) {
               _matrixOld[i] = _matrixNew[i];
               if (_demoTransition) {
@@ -129,8 +128,8 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
             _transitionCompleted = false;
             _transitionCounter = FADINGCOUNTERLOAD;
             break;
-          case TRANSITION_MODE_MATRIX:
-          case TRANSITION_MODE_SLIDE:
+          case Settings::TRANSITION_MODE_MATRIX:
+          case Settings::TRANSITION_MODE_SLIDE:
             if (((rtc.getMinutes() % 5) == 0) || _demoTransition) {
               Transitions::resetTransition();
               for (byte i = 0; i < 11; i++) {
@@ -140,7 +139,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
               _transitionCompleted = false;
             }
             break;
-          case TRANSITION_MODE_NORMAL:
+          case Settings::TRANSITION_MODE_NORMAL:
             if (_demoTransition) {
               for (byte i = 0; i < 11; i++) {
                 _matrixNew[i] = 0;
@@ -166,15 +165,15 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
 
     if ((_transitionCounter == 0) && !_transitionCompleted) {
       switch (settings.getTransitionMode()) {
-        case TRANSITION_MODE_MATRIX:
+        case Settings::TRANSITION_MODE_MATRIX:
           _transitionCounter = MATRIXCOUNTERLOAD;
           _transitionCompleted = Transitions::nextMatrixStep(_matrixOld, _matrixNew, _matrixOverlay, matrix);
           break;
-        case TRANSITION_MODE_SLIDE:
+        case Settings::TRANSITION_MODE_SLIDE:
           _transitionCounter = SLIDINGCOUNTERLOAD;
           _transitionCompleted = Transitions::nextSlideStep(_matrixNew, matrix);
           break;
-        case TRANSITION_MODE_NORMAL:
+        case Settings::TRANSITION_MODE_NORMAL:
           _transitionCompleted = true;
           break;
       }
@@ -184,7 +183,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
      * BRIGHTNESS
     **************/
 
-    if ((TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
+    if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
       brightnessOld = map(max(FADINGCOUNTERLOAD / 2, _transitionCounter), FADINGCOUNTERLOAD / 2, FADINGCOUNTERLOAD, 0, _brightnessInPercent);
       brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD, 0 , 0 , _brightnessInPercent);
       if (_transitionCounter == 0) {
@@ -200,7 +199,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
      * COLOR
     **************/
 
-    if (isRainbow()) {
+    if (settings.getRainbow()) {
       if (updateWheelColor) {
         if (_wheelPos >= 254) {
           _wheelPos = 0;
@@ -216,14 +215,14 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
       colorOverlay2 = 0;
     }
     else {
-      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, getRed()), _brightnessScaleColor(_brightnessInPercent, getBlue()), _brightnessScaleColor(_brightnessInPercent, getGreen()));
-      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, getRed()), _brightnessScaleColor(brightnessNew, getBlue()), _brightnessScaleColor(brightnessNew, getGreen()));
-      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, getRed()), _brightnessScaleColor(brightnessOld, getBlue()), _brightnessScaleColor(brightnessOld, getGreen()));
+      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, settings.getRed()), _brightnessScaleColor(_brightnessInPercent, settings.getBlue()), _brightnessScaleColor(_brightnessInPercent, settings.getGreen()));
+      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, settings.getRed()), _brightnessScaleColor(brightnessNew, settings.getBlue()), _brightnessScaleColor(brightnessNew, settings.getGreen()));
+      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, settings.getRed()), _brightnessScaleColor(brightnessOld, settings.getBlue()), _brightnessScaleColor(brightnessOld, settings.getGreen()));
       colorOverlay1 = 0;
       colorOverlay2 = 0;
     }
 
-    if ( (settings.getTransitionMode() == TRANSITION_MODE_MATRIX) && !_transitionCompleted ) {
+    if ( (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) && !_transitionCompleted ) {
       colorOverlay1 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255));
       colorOverlay2 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.5));
       colorOld = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.1));
@@ -237,7 +236,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     for (byte y = 0; y < 10; y++) {
       for (byte x = 5; x < 16; x++) {
         word t = 1 << x;
-        if ((settings.getTransitionMode() == TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t) ) {
+        if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t) ) {
           _setPixel(15 - x, y, color);
         }
         else {
@@ -260,7 +259,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     // wir muessen die Eck-LEDs und die Alarm-LED umsetzen...
     byte cornerLedCount[] = {1, 0, 3, 2, 4};
     for ( byte i = 0; i < 5; i++) {
-      if ((settings.getTransitionMode() == TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
+      if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
         _setPixel(110 + i, color);
       }
       else {

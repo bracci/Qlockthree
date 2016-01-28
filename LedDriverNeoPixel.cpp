@@ -46,7 +46,6 @@ LedDriverNeoPixel::LedDriverNeoPixel(byte dataPin) {
   _displayOn = false;
   _dirty = false;
   _demoTransition = false;
-  setColor(250, 255, 200);
 }
 
 /**
@@ -73,7 +72,7 @@ void LedDriverNeoPixel::printSignature() {
 void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onChange) {
   boolean updateWheelColor = false;
 
-  if (isRainbow() && _transitionCompleted) {
+  if (settings.getRainbow() && _transitionCompleted) {
     if ((millis() - _lastColorUpdate) > 300) {
       updateWheelColor = true;
       _lastColorUpdate = millis();
@@ -88,7 +87,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     _transitionCounter = 0;
   }
 
-  if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
+  if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
     uint32_t color;
     uint32_t colorNew;
     uint32_t colorOld;
@@ -111,7 +110,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     if (onChange || _demoTransition) {
       if (((helperSeconds == 0) || _demoTransition) && (mode == STD_MODE_NORMAL) && _transitionCompleted && !evtActive) {
         switch (settings.getTransitionMode()) {
-          case TRANSITION_MODE_FADE:
+          case Settings::TRANSITION_MODE_FADE:
             for (byte i = 0; i < 11; i++) {
               _matrixOld[i] = _matrixNew[i];
               if (_demoTransition) {
@@ -125,8 +124,8 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
             _transitionCompleted = false;
             _transitionCounter = FADINGCOUNTERLOAD * 2;
             break;
-          case TRANSITION_MODE_MATRIX:
-          case TRANSITION_MODE_SLIDE:
+          case Settings::TRANSITION_MODE_MATRIX:
+          case Settings::TRANSITION_MODE_SLIDE:
             if (((rtc.getMinutes() % 5) == 0) || _demoTransition) {
               Transitions::resetTransition();
               for (byte i = 0; i < 11; i++) {
@@ -136,7 +135,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
               _transitionCompleted = false;
             }
             break;
-          case TRANSITION_MODE_NORMAL:
+          case Settings::TRANSITION_MODE_NORMAL:
             if (_demoTransition) {
               for (byte i = 0; i < 11; i++) {
                 _matrixNew[i] = 0;
@@ -162,15 +161,15 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
 
     if ((_transitionCounter == 0) && !_transitionCompleted) {
       switch (settings.getTransitionMode()) {
-        case TRANSITION_MODE_MATRIX:
+        case Settings::TRANSITION_MODE_MATRIX:
           _transitionCounter = MATRIXCOUNTERLOAD * 2;
           _transitionCompleted = Transitions::nextMatrixStep(_matrixOld, _matrixNew, _matrixOverlay, matrix);
           break;
-        case TRANSITION_MODE_SLIDE:
+        case Settings::TRANSITION_MODE_SLIDE:
           _transitionCounter = SLIDINGCOUNTERLOAD * 2;
           _transitionCompleted = Transitions::nextSlideStep(_matrixNew, matrix);
           break;
-        case TRANSITION_MODE_NORMAL:
+        case Settings::TRANSITION_MODE_NORMAL:
           _transitionCompleted = true;
           break;
       }
@@ -180,7 +179,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
      * BRIGHTNESS
     **************/
 
-    if ((TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
+    if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
       brightnessOld = map(_transitionCounter, 0, FADINGCOUNTERLOAD * 2, 0, _brightnessInPercent);
       brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD * 2, 0 , 0 , _brightnessInPercent);
       if (_transitionCounter == 0) {
@@ -196,7 +195,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
      * COLOR
     **************/
 
-    if (isRainbow()) {
+    if (settings.getRainbow()) {
       if (updateWheelColor) {
         if (_wheelPos >= 254) {
           _wheelPos = 0;
@@ -212,14 +211,14 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
       colorOverlay2 = 0;
     }
     else {
-      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, getRed()), _brightnessScaleColor(_brightnessInPercent, getGreen()), _brightnessScaleColor(_brightnessInPercent, getBlue()));
-      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, getRed()), _brightnessScaleColor(brightnessNew, getGreen()), _brightnessScaleColor(brightnessNew, getBlue()));
-      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, getRed()), _brightnessScaleColor(brightnessOld, getGreen()), _brightnessScaleColor(brightnessOld, getBlue()));
+      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, settings.getRed()), _brightnessScaleColor(_brightnessInPercent, settings.getGreen()), _brightnessScaleColor(_brightnessInPercent, settings.getBlue()));
+      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, settings.getRed()), _brightnessScaleColor(brightnessNew, settings.getGreen()), _brightnessScaleColor(brightnessNew, settings.getBlue()));
+      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, settings.getRed()), _brightnessScaleColor(brightnessOld, settings.getGreen()), _brightnessScaleColor(brightnessOld, settings.getBlue()));
       colorOverlay1 = 0;
       colorOverlay2 = 0;
     }
 
-    if ( (settings.getTransitionMode() == TRANSITION_MODE_MATRIX) && !_transitionCompleted ) {
+    if ( (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) && !_transitionCompleted ) {
       colorOverlay1 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255), _brightnessScaleColor(_brightnessInPercent, 0));
       colorOverlay2 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.5), _brightnessScaleColor(_brightnessInPercent, 0));
       colorOld = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.1), _brightnessScaleColor(_brightnessInPercent, 0));
@@ -234,7 +233,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     for (byte y = 0; y < 10; y++) {
       for (byte x = 5; x < 16; x++) {
         word t = 1 << x;
-        if ((settings.getTransitionMode() == TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t)) {
+        if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t)) {
           _setPixel(15 - x, y, color);
         }
         else {
@@ -257,7 +256,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     // wir muessen die Eck-LEDs und die Alarm-LED umsetzen...
     byte cornerLedCount[] = {1, 0, 3, 2, 4};
     for ( byte i = 0; i < 5; i++) {
-      if ((settings.getTransitionMode() == TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
+      if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
         _setPixel(110 + i, color);
       }
       else {
