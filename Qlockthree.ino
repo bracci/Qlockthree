@@ -170,6 +170,7 @@
 #include <LedControl.h>
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_DotStar.h>
+#include <LPD8806DBL.h>
 #include <LPD8806.h>
 #include "Configuration.h"
 #include "LedDriver.h"
@@ -609,7 +610,6 @@ void setup() {
 
   // LED-Treiber initialisieren
   ledDriver.init();
-  ledDriver.setColor(settings.getRed(), settings.getGreen(), settings.getBlue());
   // Inhalt des Led-Treibers loeschen...
   ledDriver.clearData();
   // und Inhalt des Bildspeichers loeschen
@@ -1009,7 +1009,7 @@ void loop() {
       // Color cycle on/off
       case EXT_MODE_RAINBOW:
         renderer.clearScreenBuffer(matrix);
-        if (ledDriver.isRainbow()) {
+        if (settings.getRainbow()) {
           for (byte i = 0; i < 5; i++) {
             matrix[0 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 11;
             matrix[0 + i] |= pgm_read_byte_near(&(staben['B' - 'A'][i])) << 5;
@@ -1068,7 +1068,7 @@ void loop() {
       case EXT_MODE_TRANSITION:
         renderer.clearScreenBuffer(matrix);
         switch (settings.getTransitionMode()) {
-          case TRANSITION_MODE_NORMAL:
+          case Settings::TRANSITION_MODE_NORMAL:
             for (byte i = 0; i < 5; i++) {
               matrix[0 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 11;
               matrix[0 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 5;
@@ -1076,7 +1076,7 @@ void loop() {
               matrix[5 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 5;
             }
             break;
-          case TRANSITION_MODE_FADE:
+          case Settings::TRANSITION_MODE_FADE:
             for (byte i = 0; i < 5; i++) {
               matrix[0 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 11;
               matrix[0 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 5;
@@ -1084,7 +1084,7 @@ void loop() {
               matrix[5 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 5;
             }
             break;
-          case TRANSITION_MODE_MATRIX:
+          case Settings::TRANSITION_MODE_MATRIX:
             for (byte i = 0; i < 5; i++) {
               matrix[0 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 11;
               matrix[0 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 5;
@@ -1092,7 +1092,7 @@ void loop() {
               matrix[5 + i] |= pgm_read_byte_near(&(staben['X' - 'A'][i])) << 5;
             }
             break;
-          case TRANSITION_MODE_SLIDE:
+          case Settings::TRANSITION_MODE_SLIDE:
             for (byte i = 0; i < 5; i++) {
               matrix[0 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 11;
               matrix[0 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 5;
@@ -1294,7 +1294,9 @@ void loop() {
         break;
       case REMOTE_BUTTON_SETCOLOR:
         settings.setColor(irTranslator.getRed(), irTranslator.getGreen(), irTranslator.getBlue());
-        ledDriver.setColor(irTranslator.getRed(), irTranslator.getGreen(), irTranslator.getBlue());
+        break;
+      case REMOTE_BUTTON_RAINBOW:
+        settings.setRainbow(true);
         break;
       case REMOTE_BUTTON_SAVE:
         settings.saveToEEPROM();
@@ -1516,6 +1518,11 @@ void modePressed() {
     alarm.setShowAlarmTimeTimer(10);
   }
 #endif
+#ifndef RGB_LEDS
+  if (mode == EXT_MODE_RAINBOW){
+    mode++;
+  }
+#endif
 
   DEBUG_PRINT(F("Change mode pressed, mode is now "));
   DEBUG_PRINT(mode);
@@ -1598,15 +1605,7 @@ void hourPlusPressed() {
       break;
 #endif
     case EXT_MODE_RAINBOW:
-      byte c;
-      if (ledDriver.isRainbow()) {
-        c = 255;
-      }
-      else {
-        c = 0;
-      }
-      settings.setColor(c, c, c);
-      ledDriver.setColor(c, c, c);
+      settings.setRainbow(!settings.getRainbow());
       break;
 #ifdef EVENTS
     // Eventwiederholungszeit Auswahl
@@ -1621,9 +1620,14 @@ void hourPlusPressed() {
 #endif
     case EXT_MODE_TRANSITION:
       if (settings.getTransitionMode() == 0) {
-        settings.setTransitionMode(TRANSITION_MODE_COUNT);
+        settings.setTransitionMode(Settings::TRANSITION_MODE_MAX-1);
       } else {
         settings.setTransitionMode(settings.getTransitionMode() - 1);
+#ifndef RGB_LEDS
+        if(settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX){
+          settings.setTransitionMode(settings.getTransitionMode() - 1); 
+        }
+#endif
       }
       break;
     case EXT_MODE_DCF_IS_INVERTED:
@@ -1693,17 +1697,9 @@ void minutePlusPressed() {
       settings.setEnableAlarm(!settings.getEnableAlarm());
       break;
 #endif
-    // Color Cycle On/Off
+    // Rainbow On/Off
     case EXT_MODE_RAINBOW:
-      byte c;
-      if (ledDriver.isRainbow()) {
-        c = 255;
-      }
-      else {
-        c = 0;
-      }
-      settings.setColor(c, c, c);
-      ledDriver.setColor(c, c, c);
+      settings.setRainbow(!settings.getRainbow());
       break;
 #ifdef EVENTS
     // Eventwiederholungszeit Auswahl
@@ -1715,10 +1711,15 @@ void minutePlusPressed() {
       break;
 #endif
     case EXT_MODE_TRANSITION:
-      if (settings.getTransitionMode() == TRANSITION_MODE_COUNT) {
+      if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MAX-1) {
         settings.setTransitionMode(0);
       } else {
         settings.setTransitionMode(settings.getTransitionMode() + 1);
+#ifndef RGB_LEDS
+        if(settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX){
+          settings.setTransitionMode(settings.getTransitionMode() + 1); 
+        }
+#endif
       }
       break;
     case EXT_MODE_DCF_IS_INVERTED:

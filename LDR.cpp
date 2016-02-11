@@ -33,7 +33,7 @@
 LDR::LDR(byte pin, boolean isInverted) {
   _pin = pin;
   _isInverted = isInverted;
-  _lastValue = 0;
+  _lastValue = 1;
   _outputValue = 0;
 #ifdef LDR_AUTOSCALE
   _min = 1023;

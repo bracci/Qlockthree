@@ -41,6 +41,7 @@ Settings::Settings() {
   _red = 255;
   _green = 255;
   _blue = 255;
+  _rainbow = false;
 
   // Versuche alte Einstellungen zu laden...
   loadFromEEPROM();
@@ -117,6 +118,16 @@ void Settings::setColor(byte red, byte green, byte blue) {
   _red = red;
   _green = green;
   _blue = blue;
+
+  _rainbow = false;
+}
+
+void Settings::setRainbow(boolean enableRainbow) {
+  _rainbow = enableRainbow;
+}
+
+bool Settings::getRainbow(void) {
+  return _rainbow;
 }
 
 /**
@@ -177,6 +188,7 @@ void Settings::loadFromEEPROM() {
     _green = EEPROM.read(11);
     _blue = EEPROM.read(12);
     _event = EEPROM.read(13);
+    _rainbow = EEPROM.read(14);
   }
 }
 
@@ -225,5 +237,8 @@ void Settings::saveToEEPROM() {
   }
   if (EEPROM.read(13) != _event) {
     EEPROM.write(13, _event);
+  }
+  if (EEPROM.read(14) != _rainbow) {
+    EEPROM.write(14, _rainbow);
   }
 }

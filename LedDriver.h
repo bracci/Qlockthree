@@ -63,17 +63,8 @@ class LedDriver {
 
     void setPixelInScreenBuffer(byte x, byte y, word matrix[16]);
     boolean getPixelFromScreenBuffer(byte x, byte y, word matrix[16]);
-
-    void setColor(byte red, byte green, byte blue);
-    byte getRed();
-    byte getGreen();
-    byte getBlue();
-    boolean isRainbow();
+    
     void demoTransition();
-
-  private:
-    byte _red, _green, _blue;
-    boolean _rainbow;
 
   protected:
     boolean _displayOn; //Variable, die den Zustand des Displays beschreibt

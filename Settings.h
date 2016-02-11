@@ -23,14 +23,17 @@
 
 #include "Arduino.h"
 
-#define TRANSITION_MODE_NORMAL 0
-#define TRANSITION_MODE_FADE   1
-#define TRANSITION_MODE_MATRIX 2
-#define TRANSITION_MODE_SLIDE  3
-#define TRANSITION_MODE_COUNT  3
-
 class Settings {
   public:
+    enum eTransitions : byte {
+      TRANSITION_MODE_NORMAL,
+      TRANSITION_MODE_FADE,
+      TRANSITION_MODE_MATRIX,
+      TRANSITION_MODE_SLIDE,
+
+      TRANSITION_MODE_MAX
+    };
+
     Settings();
 
     byte getLanguage();
@@ -68,6 +71,9 @@ class Settings {
     void loadFromEEPROM();
     void saveToEEPROM();
 
+    bool getRainbow();
+    void setRainbow(bool enableRainbow);
+
   private:
     byte _language;
     boolean _renderCornersCw;
@@ -81,6 +87,7 @@ class Settings {
     byte _blue;
     byte _transitionMode;
     byte _event;
+    bool _rainbow;
 };
 
 #endif

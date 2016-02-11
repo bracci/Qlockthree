@@ -19,37 +19,6 @@
  */
 #include "LedDriver.h"
 
-void LedDriver::setColor(byte red, byte green, byte blue) {
-  _red = red;
-  _green = green;
-  _blue = blue;
-
-  if ( (_red == 0)   &&
-       (_green == 0) &&
-       (_blue == 0) ) {
-    _rainbow = true;
-  }
-  else {
-    _rainbow = false;
-  }
-}
-
-byte LedDriver::getRed() {
-  return _red;
-}
-
-byte LedDriver::getGreen() {
-  return _green;
-}
-
-byte LedDriver::getBlue() {
-  return _blue;
-}
-
-boolean LedDriver::isRainbow() {
-  return _rainbow;
-}
-
 void LedDriver::setPixelInScreenBuffer(byte x, byte y, word matrix[16]) {
   matrix[y] |= 0b1000000000000000 >> x;
 }
