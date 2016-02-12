@@ -76,7 +76,7 @@ void LedDriverLPD8806::printSignature() {
 void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
   boolean updateWheelColor = false;
 
-  if (settings.getRainbow() && _transitionCompleted) {
+  if (((settings.getColor() == color_rgb)|| (a_color == color_rgb))&& _transitionCompleted) {
     if ((millis() - _lastColorUpdate) > 300) {
       updateWheelColor = true;
       _lastColorUpdate = millis();
@@ -198,8 +198,11 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     /*************
      * COLOR
     **************/
-
-    if (settings.getRainbow()) {
+    if ((a_color != color_none) && (a_color < color_max))
+    {
+      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)));
+    }
+    else if ((settings.getColor() == color_rgb) || (a_color == color_rgb) ) {
       if (updateWheelColor) {
         if (_wheelPos >= 254) {
           _wheelPos = 0;
@@ -215,9 +218,9 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
       colorOverlay2 = 0;
     }
     else {
-      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, settings.getRed()), _brightnessScaleColor(_brightnessInPercent, settings.getBlue()), _brightnessScaleColor(_brightnessInPercent, settings.getGreen()));
-      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, settings.getRed()), _brightnessScaleColor(brightnessNew, settings.getBlue()), _brightnessScaleColor(brightnessNew, settings.getGreen()));
-      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, settings.getRed()), _brightnessScaleColor(brightnessOld, settings.getBlue()), _brightnessScaleColor(brightnessOld, settings.getGreen()));
+      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].green)));
+      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].green)));
+      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)), _brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].green)));
       colorOverlay1 = 0;
       colorOverlay2 = 0;
     }

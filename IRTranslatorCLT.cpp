@@ -66,28 +66,29 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
     case CLT_ON_OFF:
       return REMOTE_BUTTON_TOGGLEBLANK;
     case CLT_RED:
-      setColor(defaultColors[color_red].red, defaultColors[color_red].green, defaultColors[color_red].blue);
+      setColor(color_red);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_GREEN:
-      setColor(defaultColors[color_green].red, defaultColors[color_green].green, defaultColors[color_green].blue);
+      setColor(color_green);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_DARKBLUE:
-      setColor(defaultColors[color_darkblue].red, defaultColors[color_darkblue].green, defaultColors[color_darkblue].blue);
+      setColor(color_darkBlue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_PINK:
-      setColor(defaultColors[color_pink].red, defaultColors[color_pink].green, defaultColors[color_pink].blue);
+      setColor(color_pink);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_WHITE:
-      setColor(defaultColors[color_white].red, defaultColors[color_white].green, defaultColors[color_white].blue);
+      setColor(color_white);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_BRIGHTBLUE:
-      setColor(defaultColors[color_brightblue].red, defaultColors[color_brightblue].green, defaultColors[color_brightblue].blue);
+      setColor(color_brightBlue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_YELLOW:
-      setColor(defaultColors[color_yellow].red, defaultColors[color_yellow].green, defaultColors[color_yellow].blue);
+      setColor(color_yellow);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_RGB:
-      return REMOTE_BUTTON_RAINBOW;
+      setColor(color_rgb);
+      return REMOTE_BUTTON_SETCOLOR;
     case CLT_NORMAL:
       setTransition(Settings::TRANSITION_MODE_NORMAL);
       return REMOTE_BUTTON_TRANSITION;

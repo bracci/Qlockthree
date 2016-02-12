@@ -331,61 +331,61 @@ LedDriverPowerShiftRegister ledDriver(10, 12, 11, 3);
 
 #define PIN_SPEAKER -1
 
-///**
-// * Der LED-Treiber fuer NeoPixel-Stripes an einem BBRTCAD.
-// * Data: 6
-// */
-//#elif defined (LED_DRIVER_NEOPIXEL)
-//LedDriverNeoPixel ledDriver(6);
-//
-//#define PIN_MODE 11
-//#define PIN_M_PLUS 13
-//#define PIN_H_PLUS 12
-//
-//#define BUTTONS_PRESSING_AGAINST LOW
-//
-//#define PIN_IR_RECEIVER A1
-//
-//#define PIN_LDR A0
-//#define IS_INVERTED true
-//
-//#define PIN_SQW_SIGNAL 2
-//#define PIN_DCF77_SIGNAL 3
-//
-//#define PIN_DCF77_PON 4
-//
-//#define PIN_SQW_LED 9
-//#define PIN_DCF77_LED 10
-//
-//#define PIN_SPEAKER -1
-
 /**
-* Der LED-Treiber fuer NeoPixel-Stripes an einer CLT.
-* Data: 13
-*/
+ * Der LED-Treiber fuer NeoPixel-Stripes an einem BBRTCAD.
+ * Data: 6
+ */
 #elif defined (LED_DRIVER_NEOPIXEL)
-LedDriverNeoPixel ledDriver(13);
+LedDriverNeoPixel ledDriver(6);
 
-#define PIN_MODE 7
-#define PIN_M_PLUS 5
-#define PIN_H_PLUS 6
+#define PIN_MODE 11
+#define PIN_M_PLUS 13
+#define PIN_H_PLUS 12
 
-#define BUTTONS_PRESSING_AGAINST HIGH
+#define BUTTONS_PRESSING_AGAINST LOW
 
-#define PIN_IR_RECEIVER 10
+#define PIN_IR_RECEIVER A1
 
-#define PIN_LDR A3
+#define PIN_LDR A0
 #define IS_INVERTED true
 
 #define PIN_SQW_SIGNAL 2
-#define PIN_DCF77_SIGNAL 9
+#define PIN_DCF77_SIGNAL 3
 
-#define PIN_DCF77_PON -1
+#define PIN_DCF77_PON 4
 
-#define PIN_SQW_LED 4
-#define PIN_DCF77_LED 8
+#define PIN_SQW_LED 9
+#define PIN_DCF77_LED 10
 
 #define PIN_SPEAKER -1
+
+///**
+//* Der LED-Treiber fuer NeoPixel-Stripes an einer CLT.
+//* Data: 13
+//*/
+//#elif defined (LED_DRIVER_NEOPIXEL)
+//LedDriverNeoPixel ledDriver(13);
+//
+//#define PIN_MODE 7
+//#define PIN_M_PLUS 5
+//#define PIN_H_PLUS 6
+//
+//#define BUTTONS_PRESSING_AGAINST HIGH
+//
+//#define PIN_IR_RECEIVER 10
+//
+//#define PIN_LDR A3
+//#define IS_INVERTED true
+//
+//#define PIN_SQW_SIGNAL 2
+//#define PIN_DCF77_SIGNAL 9
+//
+//#define PIN_DCF77_PON -1
+//
+//#define PIN_SQW_LED 4
+//#define PIN_DCF77_LED 8
+//
+//#define PIN_SPEAKER -1
 
 
 /**
@@ -1006,26 +1006,6 @@ void loop() {
         }
         break;
 #endif
-      // Color cycle on/off
-      case EXT_MODE_RAINBOW:
-        renderer.clearScreenBuffer(matrix);
-        if (settings.getRainbow()) {
-          for (byte i = 0; i < 5; i++) {
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 11;
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['B' - 'A'][i])) << 5;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
-          }
-        }
-        else {
-          for (byte i = 0; i < 5; i++) {
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 11;
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['B' - 'A'][i])) << 5;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 11;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['A' - 'A'][i])) << 5;
-          }
-        }
-        break;
 #ifdef EVENTS
       // Eventwiederholung einstelleng
       case EXT_MODE_EVENT:
@@ -1102,6 +1082,17 @@ void loop() {
             break;
         }
         break;
+#ifdef RGB_LEDS
+      case EXT_MODE_COLOR:
+        renderer.clearScreenBuffer(matrix);
+        for (byte i = 0; i < 5; i++) {
+          matrix[0 + i] |= pgm_read_byte_near(&(staben['C' - 'A'][i])) << 11;
+          matrix[0 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor()/10][i])) << 10;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor()%10][i])) << 5;
+        }
+        break;
+#endif
       case EXT_MODE_DCF_IS_INVERTED:
         renderer.clearScreenBuffer(matrix);
         if (settings.getDcfSignalIsInverted()) {
@@ -1293,10 +1284,7 @@ void loop() {
         setDisplayToResume();
         break;
       case REMOTE_BUTTON_SETCOLOR:
-        settings.setColor(irTranslator.getRed(), irTranslator.getGreen(), irTranslator.getBlue());
-        break;
-      case REMOTE_BUTTON_RAINBOW:
-        settings.setRainbow(true);
+        settings.setColor(irTranslator.getColor());
         break;
       case REMOTE_BUTTON_SAVE:
         settings.saveToEEPROM();
@@ -1518,11 +1506,6 @@ void modePressed() {
     alarm.setShowAlarmTimeTimer(10);
   }
 #endif
-#ifndef RGB_LEDS
-  if (mode == EXT_MODE_RAINBOW){
-    mode++;
-  }
-#endif
 
   DEBUG_PRINT(F("Change mode pressed, mode is now "));
   DEBUG_PRINT(mode);
@@ -1604,9 +1587,6 @@ void hourPlusPressed() {
       settings.setEnableAlarm(!settings.getEnableAlarm());
       break;
 #endif
-    case EXT_MODE_RAINBOW:
-      settings.setRainbow(!settings.getRainbow());
-      break;
 #ifdef EVENTS
     // Eventwiederholungszeit Auswahl
     case EXT_MODE_EVENT:
@@ -1620,16 +1600,28 @@ void hourPlusPressed() {
 #endif
     case EXT_MODE_TRANSITION:
       if (settings.getTransitionMode() == 0) {
-        settings.setTransitionMode(Settings::TRANSITION_MODE_MAX-1);
+        settings.setTransitionMode(Settings::TRANSITION_MODE_MAX - 1);
       } else {
         settings.setTransitionMode(settings.getTransitionMode() - 1);
 #ifndef RGB_LEDS
-        if(settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX){
-          settings.setTransitionMode(settings.getTransitionMode() - 1); 
+        if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) {
+          settings.setTransitionMode(settings.getTransitionMode() - 1);
         }
 #endif
       }
       break;
+#ifdef RGB_LEDS
+    case EXT_MODE_COLOR:
+      if (settings.getColor() == 0)
+      {
+        settings.setColor(color_max);
+      }
+      else
+      {
+        settings.setColor((eColors)(settings.getColor() - 1));
+      }
+      break;
+#endif
     case EXT_MODE_DCF_IS_INVERTED:
       settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
       break;
@@ -1697,10 +1689,6 @@ void minutePlusPressed() {
       settings.setEnableAlarm(!settings.getEnableAlarm());
       break;
 #endif
-    // Rainbow On/Off
-    case EXT_MODE_RAINBOW:
-      settings.setRainbow(!settings.getRainbow());
-      break;
 #ifdef EVENTS
     // Eventwiederholungszeit Auswahl
     case EXT_MODE_EVENT:
@@ -1711,17 +1699,29 @@ void minutePlusPressed() {
       break;
 #endif
     case EXT_MODE_TRANSITION:
-      if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MAX-1) {
+      if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MAX - 1) {
         settings.setTransitionMode(0);
       } else {
         settings.setTransitionMode(settings.getTransitionMode() + 1);
 #ifndef RGB_LEDS
-        if(settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX){
-          settings.setTransitionMode(settings.getTransitionMode() + 1); 
+        if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) {
+          settings.setTransitionMode(settings.getTransitionMode() + 1);
         }
 #endif
       }
       break;
+#ifdef RGB_LEDS
+    case EXT_MODE_COLOR:
+      if (settings.getColor() == color_max)
+      {
+        settings.setColor((eColors)0);
+      }
+      else
+      {
+        settings.setColor((eColors)(settings.getColor() + 1));
+      }
+      break;
+#endif
     case EXT_MODE_DCF_IS_INVERTED:
       settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
       break;

@@ -22,6 +22,7 @@
 #define SETTINGS_H
 
 #include "Arduino.h"
+#include "Colors.h"
 
 class Settings {
   public:
@@ -51,10 +52,8 @@ class Settings {
     byte getBrightness();
     void setBrightness(byte brightness);
 
-    byte getRed();
-    byte getGreen();
-    byte getBlue();
-    void setColor(byte red, byte green, byte blue);
+    void setColor(eColors color);
+    eColors getColor();
 
     boolean getEnableAlarm();
     void setEnableAlarm(boolean enableAlarm);
@@ -82,9 +81,7 @@ class Settings {
     boolean _enableAlarm;
     boolean _dcfSignalIsInverted;
     char _timeShift;
-    byte _red;
-    byte _green;
-    byte _blue;
+    eColors _color;
     byte _transitionMode;
     byte _event;
     bool _rainbow;
