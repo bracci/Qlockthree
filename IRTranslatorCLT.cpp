@@ -78,11 +78,7 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
       setColor(defaultColors[color_pink].red, defaultColors[color_pink].green, defaultColors[color_pink].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_WHITE:
-<<<<<<< HEAD
       setColor(defaultColors[color_white].red, defaultColors[color_white].green, defaultColors[color_white].blue);
-=======
-      setColor(255, 255, 255);
->>>>>>> refs/remotes/origin/master
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_BRIGHTBLUE:
       setColor(defaultColors[color_brightblue].red, defaultColors[color_brightblue].green, defaultColors[color_brightblue].blue);
@@ -91,12 +87,7 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
       setColor(defaultColors[color_yellow].red, defaultColors[color_yellow].green, defaultColors[color_yellow].blue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_RGB:
-<<<<<<< HEAD
-      setColor(defaultColors[color_rgb].red, defaultColors[color_rgb].green, defaultColors[color_rgb].blue);
-      return REMOTE_BUTTON_SETCOLOR;
-=======
       return REMOTE_BUTTON_RAINBOW;
->>>>>>> refs/remotes/origin/master
     case CLT_NORMAL:
       setTransition(Settings::TRANSITION_MODE_NORMAL);
       return REMOTE_BUTTON_TRANSITION;

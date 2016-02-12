@@ -215,23 +215,9 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
       colorOverlay2 = 0;
     }
     else {
-<<<<<<< HEAD
-
-      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, getRed()), _brightnessScaleColor(_brightnessInPercent, getBlue()), _brightnessScaleColor(_brightnessInPercent, getGreen()));
-      if (a_color == color_none)
-      {
-        colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, getRed()), _brightnessScaleColor(brightnessNew, getBlue()), _brightnessScaleColor(brightnessNew, getGreen()));
-      }
-      else
-      {
-        colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)));
-      }
-      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, getRed()), _brightnessScaleColor(brightnessOld, getBlue()), _brightnessScaleColor(brightnessOld, getGreen()));
-=======
       color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, settings.getRed()), _brightnessScaleColor(_brightnessInPercent, settings.getBlue()), _brightnessScaleColor(_brightnessInPercent, settings.getGreen()));
       colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, settings.getRed()), _brightnessScaleColor(brightnessNew, settings.getBlue()), _brightnessScaleColor(brightnessNew, settings.getGreen()));
       colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, settings.getRed()), _brightnessScaleColor(brightnessOld, settings.getBlue()), _brightnessScaleColor(brightnessOld, settings.getGreen()));
->>>>>>> refs/remotes/origin/master
       colorOverlay1 = 0;
       colorOverlay2 = 0;
     }
