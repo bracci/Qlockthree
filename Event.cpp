@@ -16,7 +16,18 @@
 // #define DEBUG
 #include "Debug.h"
 
+Event::Event(byte month,
+             byte date,
+             const char* txt,
+             Effects::eEffects effect,
+             eColors color) :
+  _month (month), _date (date),
+  _txt (txt), _effect (effect),
+  _color(color) {};
+
 void Event::show() {
+  DEBUG_PRINT(F("Ticker String: "));
+  DEBUG_PRINTLN(_txt);
   if (_txt != "")
     Effects::showTickerString(_txt, TICKER_SPEED);
   if (_effect < Effects::BITMAP_MIN) {

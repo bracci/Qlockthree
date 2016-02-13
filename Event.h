@@ -35,10 +35,7 @@ class Event {
           byte date,
           const char* txt,
           Effects::eEffects effect,
-          eColors color) :
-      _month (month), _date (date),
-      _txt (txt), _effect (effect),
-      _color(color) {};
+          eColors color);
 
     void show();
     byte getMonth();

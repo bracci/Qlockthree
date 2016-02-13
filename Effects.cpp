@@ -19,15 +19,17 @@
 
 void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   word matrix [16];
-
-  int strLength = strlen(str2disp);//((String)str2disp).length();//sizeof(str2disp) / sizeof(char*);
+  
+  int strLength = strlen(str2disp);
   long bufLen;
   char actChar;
   char lastChar = 'W';
   int t = 2;
   boolean finish = false;
   int i = 0;
-
+  DEBUG_PRINT(F("String: "));
+  DEBUG_PRINTLN(str2disp);
+  
   while (!finish) {
     renderer.clearScreenBuffer(matrix);
     unsigned int shift = 0; // Schiebekorrektur aufgrund variierender Buchstabenbreite
