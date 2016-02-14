@@ -102,14 +102,14 @@ void Effects::showHeart(byte duration, eColors color) {
     for (int j = 0; j < 8; j++) {
       matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
     }
-    writeToBuffer(matrix, color, 16 * duration);
+    writeToBuffer(matrix, 16 * duration, color);
     for ( int i = 0; i < 2; i++) {
       renderer.clearScreenBuffer(matrix);
       for (int z = 0; z < 2; z++) {
         for (int j = 0; j < 8; j++) {
           matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[z][j])) << 5);
         }
-        writeToBuffer(matrix, color, 4 * duration);
+        writeToBuffer(matrix, 4 * duration, color);
       }
     }
   }
@@ -117,7 +117,7 @@ void Effects::showHeart(byte duration, eColors color) {
   for (int j = 0; j < 8; j++) {
     matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
   }
-  writeToBuffer(matrix, color, 14 * duration);
+  writeToBuffer(matrix, 14 * duration, color);
 }
 
 /**
@@ -129,7 +129,7 @@ void Effects::showFireWork(byte posX, eColors color) {
   for (int i = 9; i >= 3; i--) {
     renderer.clearScreenBuffer(matrix);
     ledDriver.setPixelInScreenBuffer(posX, i, matrix);
-    writeToBuffer(matrix, color, 7);
+    writeToBuffer(matrix, 7, color);
   }
 
   for (int i = 8; i <= 10; i++) {
@@ -137,14 +137,14 @@ void Effects::showFireWork(byte posX, eColors color) {
     for (int j = 0; j < 10; j++) {
       matrix[j] |= (pgm_read_word_near(&(effectMasks[i][j])) << 10 - posX) & 0b1111111111100000;
     }
-    writeToBuffer(matrix, color, 3 + round(10 * (i - 8) / 3));
+    writeToBuffer(matrix, 3 + round(10 * (i - 8) / 3), color);
   }
   for (int i = 0; i <= 10; i++) {
     renderer.clearScreenBuffer(matrix);
     for (int j = 0; j < 10 - i; j++) {
       matrix[j + i] |= (pgm_read_word_near(&(effectMasks[12 + i % 2][j])) << 10 - posX) & 0b1111111111100000;
     }
-    writeToBuffer(matrix, color, 16);
+    writeToBuffer(matrix, 16, color);
   }
 }
 
@@ -162,7 +162,7 @@ void Effects::showCandle(eColors color) {
       for (int i = 0; i < 5; i++) {
         matrix[i] |= (pgm_read_word_near(&(effectMasks[2 + 4 - abs(j % 4)][i])) << 5);
       }
-      writeToBuffer(matrix, color, 10);
+      writeToBuffer(matrix, 10, color);
     }
   }
 }
@@ -176,7 +176,7 @@ void Effects::showLoveU(eColors color) {
   for (int i = 0; i < 10; i++) {
     matrix[i] |= (pgm_read_word_near(&(effectMasks[14][i])) << 5);
   }
-  writeToBuffer(matrix, color, 400);
+  writeToBuffer(matrix, 400, color);
 }
 
 /**
@@ -190,7 +190,7 @@ void Effects::showBitmap(byte bitmapIdx, byte duration, eColors color) {
       matrix[i] |= ((pgm_read_word_near(&(bitmaps[bitmapIdx - BITMAP_MIN][j])) >> i) & 0x0001) << 15 - j;
     }
   }
-  writeToBuffer(matrix, color, 15 * duration);
+  writeToBuffer(matrix, 15 * duration, color);
 }
 
 /**
@@ -216,14 +216,14 @@ void Effects::showAnimatedBitmap(byte animatedBitmap, byte duration, eColors col
   }
 }
 
-void Effects::writeToBuffer(word aMatrix[], eColors color, unsigned int aDuration)
+void Effects::writeToBuffer(word aMatrix[], unsigned int aDuration, eColors color)
 {
 #ifdef RGB_LEDS
-  ledDriver.writeScreenBufferToMatrix(aMatrix, true);
+  ledDriver.writeScreenBufferToMatrix(aMatrix, true, color);
   delay(aDuration * 9);
 #else
   for (int i = 0; i < aDuration; i++) {
-    ledDriver.writeScreenBufferToMatrix(aMatrix, true);
+    ledDriver.writeScreenBufferToMatrix(aMatrix, true, color);
   }
 #endif
 }

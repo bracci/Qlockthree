@@ -14,6 +14,12 @@
 #include "Event.h"
 #include "Colors.h"
 
+const char* eventText[]{
+  "Happy New Year",
+  "Happy Valentine's Day",
+  "Merry Christmas",
+  "Happy Birthday"
+};
 /**************************************************************************************************************
 * Instanzierung und Initialisierung jährlicher Events. Ein Event enthält eine Laufschrift, gefolgt
 * von einem Bildeffekt (Herz, Feuerwerk, etc.). Diese werden am definierten Jahrestag jeweils zur vollen Stunde
@@ -23,15 +29,15 @@
 * werden.
 **************************************************************************************************************/
 Event events[] = {
-  Event(1,1,"Happy New Year",Effects::EFFECT_FIREWORK,color_rgb),
-  Event(12, 25, "Merry Christmas", Effects::EFFECT_CANDLE,color_orange1),
-  Event(2, 14, "Happy Valentine", Effects::EFFECT_HEART,color_red),
-  Event(7, 30, "Happy Birthday", Effects::EFFECT_FIREWORK,color_rgb),
-  Event(7, 29, "Happy Manu Day", Effects::ANI_BITMAP_SMILEY_WINK,color_yellow),
+  Event(1, 1, eventText[0], Effects::EFFECT_FIREWORK, color_rgb),
+  Event(2, 14, eventText[1], Effects::EFFECT_HEART, color_red),
+  Event(12, 25, eventText[2], Effects::EFFECT_CANDLE, color_orange1),
+  Event(7, 30, eventText[3], Effects::EFFECT_FIREWORK, color_rgb),
+//  Event(7, 29, "Happy Manu Day", Effects::ANI_BITMAP_SMILEY_WINK, color_yellow),
 
-//  Event(1, 16, "Testevent", Effects::ANI_BITMAP_SMILEY_WINK),
-//  Event(2,14,"",Effects::EFFECT_HEART),
-//  Event(7,30,"Happy Birthday",Effects::EFFECT_HEART)
+  //  Event(1, 16, "Testevent", Effects::ANI_BITMAP_SMILEY_WINK),
+  //  Event(2,14,"",Effects::EFFECT_HEART),
+  //  Event(7,30,"Happy Birthday",Effects::EFFECT_HEART)
 };
 
 //NO_EFFECT = 255,

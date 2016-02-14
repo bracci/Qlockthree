@@ -80,7 +80,7 @@ class Effects {
     static void showLoveU(eColors color);
     static void showBitmap(byte bitmapIdx, byte duration, eColors color);
     static void showAnimatedBitmap(byte animatedBitmap, byte duration, eColors color);
-    static void writeToBuffer(word aMatrix[], eColors color, unsigned int aDuration);
+    static void writeToBuffer(word aMatrix[], unsigned int aDuration, eColors color = color_none);
 };
 
 const word effectMasks[][10] PROGMEM = {
