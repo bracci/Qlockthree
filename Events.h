@@ -23,10 +23,10 @@
 **************************************************************************************************************/
 Event events[] = {
   Event(1,1,"Happy New Year",Effects::EFFECT_FIREWORK),
-  Event(12, 25, "Merry Christmas", Effects::ANI_BITMAP_CHRISTTREE),
-  Event(14, 2, "Happy Valentine's Day", Effects::EFFECT_HEART),
-  
-  Event(7, 29, "Happy braG-day!", Effects::EFFECT_FIREWORK),
+  Event(12, 25, "Merry Christmas", Effects::EFFECT_CANDLE),
+  Event(2, 14, "Happy Valentine's Day", Effects::EFFECT_HEART),
+//  Event(7, 30, "Happy Birthday Sweetheart", Effects::EFFECT_FIREWORK),
+//  Event(7, 29, "Happy Manu Day", Effects::ANI_BITMAP_SMILEY_WINK),
 //  Event(1, 16, "Testevent", Effects::ANI_BITMAP_SMILEY_WINK),
 //  Event(2,14,"",Effects::EFFECT_HEART),
 //  Event(7,30,"Happy Birthday",Effects::EFFECT_HEART)

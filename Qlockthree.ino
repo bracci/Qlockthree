@@ -769,6 +769,11 @@ void setup() {
  */
 void loop() {
 
+//  Serial.print(F("Free ram: "));
+//  Serial.print(freeRam());
+//  Serial.println(F(" bytes."));
+//  Serial.flush();
+
   //
   // FPS
   //
@@ -1519,7 +1524,7 @@ void modePressed() {
   }
 #endif
 #ifndef RGB_LEDS
-  if (mode == EXT_MODE_RAINBOW){
+  if (mode == EXT_MODE_RAINBOW) {
     mode++;
   }
 #endif
@@ -1620,12 +1625,12 @@ void hourPlusPressed() {
 #endif
     case EXT_MODE_TRANSITION:
       if (settings.getTransitionMode() == 0) {
-        settings.setTransitionMode(Settings::TRANSITION_MODE_MAX-1);
+        settings.setTransitionMode(Settings::TRANSITION_MODE_MAX - 1);
       } else {
         settings.setTransitionMode(settings.getTransitionMode() - 1);
 #ifndef RGB_LEDS
-        if(settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX){
-          settings.setTransitionMode(settings.getTransitionMode() - 1); 
+        if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) {
+          settings.setTransitionMode(settings.getTransitionMode() - 1);
         }
 #endif
       }
@@ -1711,13 +1716,13 @@ void minutePlusPressed() {
       break;
 #endif
     case EXT_MODE_TRANSITION:
-      if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MAX-1) {
+      if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MAX - 1) {
         settings.setTransitionMode(0);
       } else {
         settings.setTransitionMode(settings.getTransitionMode() + 1);
 #ifndef RGB_LEDS
-        if(settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX){
-          settings.setTransitionMode(settings.getTransitionMode() + 1); 
+        if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) {
+          settings.setTransitionMode(settings.getTransitionMode() + 1);
         }
 #endif
       }
