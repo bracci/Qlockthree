@@ -17,13 +17,8 @@
 #include "Effects.h"
 #include "Configuration.h"
 
-#if defined(LED_DRIVER_LPD8806) || defined(LED_DRIVER_NEOPIXEL)
-#define DURATION_BM   5
-#define TICKER_SPEED  8
-#else
 #define DURATION_BM   15
 #define TICKER_SPEED  6
-#endif
 
 #define DURATION_ANI_BM  (DURATION_BM/5)
 

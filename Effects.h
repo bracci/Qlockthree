@@ -78,6 +78,7 @@ class Effects {
     static void showLoveU();
     static void showBitmap(byte bitmapIdx, byte duration);
     static void showAnimatedBitmap(byte animatedBitmap, byte duration);
+    static void writeToBuffer(word aMatrix[], unsigned int aDuration);
 };
 
 const word effectMasks[][10] PROGMEM = {
