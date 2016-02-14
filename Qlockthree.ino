@@ -769,6 +769,11 @@ void setup() {
  */
 void loop() {
 
+//  Serial.print(F("Free ram: "));
+//  Serial.print(freeRam());
+//  Serial.println(F(" bytes."));
+//  Serial.flush();
+
   //
   // FPS
   //

@@ -23,11 +23,12 @@
 * werden.
 **************************************************************************************************************/
 Event events[] = {
-  Event(1, 1, "Happy New Year", Effects::EFFECT_FIREWORK,color_rgb),
-  Event(2, 14, "Happy Valentine's Day", Effects::EFFECT_HEART, color_red),
-  Event(12, 25, "Merry Christmas", Effects::ANI_BITMAP_CHRISTTREE, color_green),
-  
-  Event(7, 29, "Happy braG-day!", Effects::EFFECT_FIREWORK, color_white),
+  Event(1,1,"Happy New Year",Effects::EFFECT_FIREWORK,color_rgb),
+  Event(12, 25, "Merry Christmas", Effects::EFFECT_CANDLE,color_orange1),
+  Event(2, 14, "Happy Valentine", Effects::EFFECT_HEART,color_red),
+  Event(7, 30, "Happy Birthday", Effects::EFFECT_FIREWORK,color_rgb),
+  Event(7, 29, "Happy Manu Day", Effects::ANI_BITMAP_SMILEY_WINK,color_yellow),
+
 //  Event(1, 16, "Testevent", Effects::ANI_BITMAP_SMILEY_WINK),
 //  Event(2,14,"",Effects::EFFECT_HEART),
 //  Event(7,30,"Happy Birthday",Effects::EFFECT_HEART)
