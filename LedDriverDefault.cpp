@@ -124,7 +124,6 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
   if ((_transitionCounter == 0) && !_transitionCompleted) {
     switch (settings.getTransitionMode()) {
       case Settings::TRANSITION_MODE_SLIDE:
-        Serial.println("slide");
         _transitionCounter = SLIDINGCOUNTERLOAD / 50;
         _transitionCompleted = Transitions::nextSlideStep(_matrixNew, matrix);
         break;

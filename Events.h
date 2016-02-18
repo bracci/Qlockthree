@@ -10,6 +10,8 @@
  * Versionshistorie:
  * V 1.0:  - Erstellt.
  */
+#ifndef EVENTS_H
+#define EVENTS_H
 
 #include "Event.h"
 #include "Colors.h"
@@ -63,3 +65,4 @@ Event events[] = {
  * Anzahl definierter Events
  **************************************************************************************************************/
 int nbrOfEvts = sizeof(events) / sizeof(Event);
+#endif // EVENTS_H

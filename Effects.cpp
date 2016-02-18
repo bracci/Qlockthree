@@ -1,14 +1,14 @@
 /**
-* Effects.cpp
-* Klasse für diverse Effekte
-*
-* @mc       Arduino/UNO
-* @autor    Manuel Bracher / manuel.bracher@gmail.com
-* @version  1.0
-* @created  02.01.15
-*
-* Versionshistorie:
-* V 1.0:  - Erstellt.
+  Effects.cpp
+  Klasse für diverse Effekte
+
+  @mc       Arduino/UNO
+  @autor    Manuel Bracher / manuel.bracher@gmail.com
+  @version  1.0
+  @created  02.01.15
+
+  Versionshistorie:
+  V 1.0:  - Erstellt.
 */
 
 #include "Effects.h"
@@ -24,14 +24,15 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   long bufLen;
   char actChar;
   char lastChar = 'W';
-  int t = 2;
-  boolean finish = false;
+  int offsetV = 2;
+  bool finish = false;
   int i = 0;
-  DEBUG_PRINT(F("String: "));
-  DEBUG_PRINTLN(str2disp);
+
+  // Diesen Serial print einfach drin lassen! Keine Ahnung weshalb, aber ohne werden die Eventtexte auf mysteriöse Weise manipuliert...
+  Serial.print(F("testtest"));
 
   while (!finish) {
-    renderer.clearScreenBuffer(matrix);
+  renderer.clearScreenBuffer(matrix);
     unsigned int shift = 0; // Schiebekorrektur aufgrund variierender Buchstabenbreite
     for (byte k = 0; k < strLength; k++) {
       actChar = str2disp[k];
@@ -41,9 +42,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
       else {
         shift -= pgm_read_byte_near(&(stabenBig[lastChar - '!'][7]));
         for (byte j = 0; j < 7; j++) {
-          if (!(actChar == ' ')) {
-            matrix[t + j] |= (pgm_read_byte_near(&(stabenBig[actChar - '!'][j])) << (-6 + 1 - shift + i)) & 0b1111111111100000;
-          }
+          matrix[offsetV + j] |= (pgm_read_byte_near(&(stabenBig[actChar - '!'][j])) << (1 - shift + i)) & 0b1111111111100000;
         }
         if (k < (strLength - 1)) {
           shift += 6; // Max. Buchstabenbreite + ein Pixel Lücke
@@ -52,7 +51,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
       }
     }
     writeToBuffer(matrix, 3 * (10 - tickerSpeed));
-    bufLen = shift + 15 + 6;
+    bufLen = shift + 15;
     if (i == bufLen) {
       finish = true;
     }
@@ -63,8 +62,8 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
 }
 
 /**
- * Intro
- */
+   Intro
+*/
 void Effects::showIntro() {
   word matrix [16];
 
@@ -93,8 +92,8 @@ void Effects::showIntro() {
 }
 
 /**
- * Pulsierender Herz-Effekt
- */
+   Pulsierender Herz-Effekt
+*/
 void Effects::showHeart(byte duration, eColors color) {
   word matrix [16];
   for ( int y = 0; y < 3; y++) {
@@ -121,8 +120,8 @@ void Effects::showHeart(byte duration, eColors color) {
 }
 
 /**
- * Feuerwerk-Effekt
- */
+   Feuerwerk-Effekt
+*/
 void Effects::showFireWork(byte posX, eColors color) {
   word matrix [16];
 
@@ -149,8 +148,8 @@ void Effects::showFireWork(byte posX, eColors color) {
 }
 
 /**
- * Kerzen-Effekt
- */
+   Kerzen-Effekt
+*/
 void Effects::showCandle(eColors color) {
   word matrix [16];
   for (int k = 0; k < 5; k++) {
@@ -168,8 +167,8 @@ void Effects::showCandle(eColors color) {
 }
 
 /**
- * Love U
- */
+   Love U
+*/
 void Effects::showLoveU(eColors color) {
   word matrix [16];
   renderer.clearScreenBuffer(matrix);
@@ -180,8 +179,8 @@ void Effects::showLoveU(eColors color) {
 }
 
 /**
- * Bitmap
- */
+   Bitmap
+*/
 void Effects::showBitmap(byte bitmapIdx, byte duration, eColors color) {
   word matrix [16];
   renderer.clearScreenBuffer(matrix);
@@ -194,8 +193,8 @@ void Effects::showBitmap(byte bitmapIdx, byte duration, eColors color) {
 }
 
 /**
- * Bitmap-Effekt
- */
+   Bitmap-Effekt
+*/
 void Effects::showAnimatedBitmap(byte animatedBitmap, byte duration, eColors color) {
   switch (animatedBitmap) {
     case ANI_BITMAP_CHAMPGLASS:
