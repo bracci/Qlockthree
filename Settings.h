@@ -1,28 +1,29 @@
 /**
- * Settings
- * Die vom Benutzer getaetigten Einstellungen werden hier verwaltet
- * und im EEPROM persistiert.
- *
- * @mc       Arduino/RBBB
- * @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.3
- * @created  23.1.2013
- * @updated  16.2.2015
- *
- * Versionshistorie:
- * V 1.0:  - Erstellt.
- * V 1.1:  - LDR-Modus aufgenommen.
- * V 1.2:  - Brightness aufgenommen.
- *         - EnableAlarm aufgenommen.
- *         - DcfSignalIsInverted aufgenommen.
- *         - TimeShift aufgenommen.
- * V 1.3:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
- */
+   Settings
+   Die vom Benutzer getaetigten Einstellungen werden hier verwaltet
+   und im EEPROM persistiert.
+
+   @mc       Arduino/RBBB
+   @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
+   @version  1.3
+   @created  23.1.2013
+   @updated  16.2.2015
+
+   Versionshistorie:
+   V 1.0:  - Erstellt.
+   V 1.1:  - LDR-Modus aufgenommen.
+   V 1.2:  - Brightness aufgenommen.
+           - EnableAlarm aufgenommen.
+           - DcfSignalIsInverted aufgenommen.
+           - TimeShift aufgenommen.
+   V 1.3:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
+*/
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
 #include "Arduino.h"
 #include "Colors.h"
+#include "TimeStamp.h"
 
 class Settings {
   public:
@@ -70,8 +71,11 @@ class Settings {
     void loadFromEEPROM();
     void saveToEEPROM();
 
-    bool getRainbow();
-    void setRainbow(bool enableRainbow);
+    void incFiveMinNightMode(bool onTime);
+    TimeStamp getOffTime();
+
+    void incHoursNightMode(bool onTime);
+    TimeStamp getNightModeTime(bool onTime);
 
   private:
     byte _language;
@@ -84,7 +88,7 @@ class Settings {
     eColors _color;
     byte _transitionMode;
     byte _event;
-    bool _rainbow;
+    TimeStamp* _nightModeTime[2];
 };
 
 #endif

@@ -33,6 +33,7 @@ class TimeStamp {
     TimeStamp(MyRTC rtc);
 
     void incMinutes();
+    void incFiveMinutes();
     void incHours();
 
     byte getMinutes();

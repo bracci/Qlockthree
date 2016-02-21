@@ -143,7 +143,7 @@ void Effects::showFireWork(byte posX, eColors color) {
     for (int j = 0; j < 10 - i; j++) {
       matrix[j + i] |= (pgm_read_word_near(&(effectMasks[12 + i % 2][j])) << 10 - posX) & 0b1111111111100000;
     }
-    writeToBuffer(matrix, 16, color);
+    writeToBuffer(matrix, 20, color);
   }
 }
 
@@ -219,7 +219,7 @@ void Effects::writeToBuffer(word aMatrix[], unsigned int aDuration, eColors colo
 {
 #ifdef RGB_LEDS
   ledDriver.writeScreenBufferToMatrix(aMatrix, true, color);
-  delay(aDuration * 9);
+  delay(aDuration * 14);
 #else
   for (int i = 0; i < aDuration; i++) {
     ledDriver.writeScreenBufferToMatrix(aMatrix, true, color);

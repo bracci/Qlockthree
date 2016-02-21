@@ -23,7 +23,7 @@
 #include "Renderer.h"
 
 #define SETTINGS_MAGIC_NUMBER 0xCA
-#define SETTINGS_VERSION 4
+#define SETTINGS_VERSION 5
 
 /**
  *  Konstruktor.
@@ -39,6 +39,10 @@ Settings::Settings() {
   _dcfSignalIsInverted = false;
   _timeShift = 0;
   _color = color_white;
+  // um 3 Uhr Display abschalten (Minuten, Stunden, -, -, -, -)
+  _nightModeTime[0] = new TimeStamp(0, 3, 0, 0, 0, 0);
+  // um 4:30 Uhr Display wieder anschalten (Minuten, Stunden, -, -, -, -)
+  _nightModeTime[1] = new TimeStamp(30, 4, 0, 0, 0, 0);
 
   // Versuche alte Einstellungen zu laden...
   loadFromEEPROM();
@@ -148,6 +152,18 @@ void Settings::setTransitionMode(byte transitionMode) {
   _transitionMode = transitionMode;
 }
 
+void Settings::incFiveMinNightMode(bool onTime) {
+  _nightModeTime[onTime]->incFiveMinutes();
+}
+
+void Settings::incHoursNightMode(bool onTime) {
+  _nightModeTime[onTime]->incHours();
+}
+
+TimeStamp Settings::getNightModeTime(bool onTime) {
+  return *_nightModeTime[onTime];
+}
+
 /**
  * Die Einstellungen laden.
  */
@@ -164,6 +180,8 @@ void Settings::loadFromEEPROM() {
     _transitionMode = EEPROM.read(9);
     _color = (eColors)EEPROM.read(10);
     _event = EEPROM.read(11);
+    _nightModeTime[0]->set(EEPROM.read(12), EEPROM.read(13), 0, 0, 0, 0);
+    _nightModeTime[1]->set(EEPROM.read(14), EEPROM.read(15), 0, 0, 0, 0);
   }
 }
 
@@ -206,5 +224,17 @@ void Settings::saveToEEPROM() {
   }
   if (EEPROM.read(11) != _event) {
     EEPROM.write(11, _event);
+  }
+  if (EEPROM.read(12) != _nightModeTime[0]->getMinutes()) {
+    EEPROM.write(12, _nightModeTime[0]->getMinutes());
+  }
+  if (EEPROM.read(13) != _nightModeTime[0]->getHours()) {
+    EEPROM.write(13, _nightModeTime[0]->getHours());
+  }
+  if (EEPROM.read(14) != _nightModeTime[1]->getMinutes()) {
+    EEPROM.write(14, _nightModeTime[1]->getMinutes());
+  }
+  if (EEPROM.read(15) != _nightModeTime[1]->getHours()) {
+    EEPROM.write(15, _nightModeTime[1]->getHours());
   }
 }
