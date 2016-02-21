@@ -23,7 +23,7 @@
 #include "Renderer.h"
 
 #define SETTINGS_MAGIC_NUMBER 0xCA
-#define SETTINGS_VERSION 4
+#define SETTINGS_VERSION 5
 
 /**
  *  Konstruktor.
@@ -38,10 +38,11 @@ Settings::Settings() {
   _transitionMode = TRANSITION_MODE_NORMAL;
   _dcfSignalIsInverted = false;
   _timeShift = 0;
-  _red = 255;
-  _green = 255;
-  _blue = 255;
-  _rainbow = false;
+  _color = color_white;
+  // um 3 Uhr Display abschalten (Minuten, Stunden, -, -, -, -)
+  _nightModeTime[0] = new TimeStamp(0, 3, 0, 0, 0, 0);
+  // um 4:30 Uhr Display wieder anschalten (Minuten, Stunden, -, -, -, -)
+  _nightModeTime[1] = new TimeStamp(30, 4, 0, 0, 0, 0);
 
   // Versuche alte Einstellungen zu laden...
   loadFromEEPROM();
@@ -102,32 +103,13 @@ void Settings::setBrightness(byte brightness) {
 /**
  * Die Farbe.
  */
-byte Settings::getRed() {
-  return _red;
+
+void Settings::setColor(eColors color) {
+  _color = color;
 }
 
-byte Settings::getGreen() {
-  return _green;
-}
-
-byte Settings::getBlue() {
-  return _blue;
-}
-
-void Settings::setColor(byte red, byte green, byte blue) {
-  _red = red;
-  _green = green;
-  _blue = blue;
-
-  _rainbow = false;
-}
-
-void Settings::setRainbow(boolean enableRainbow) {
-  _rainbow = enableRainbow;
-}
-
-bool Settings::getRainbow(void) {
-  return _rainbow;
+eColors Settings::getColor() {
+  return _color;
 }
 
 /**
@@ -170,6 +152,18 @@ void Settings::setTransitionMode(byte transitionMode) {
   _transitionMode = transitionMode;
 }
 
+void Settings::incFiveMinNightMode(bool onTime) {
+  _nightModeTime[onTime]->incFiveMinutes();
+}
+
+void Settings::incHoursNightMode(bool onTime) {
+  _nightModeTime[onTime]->incHours();
+}
+
+TimeStamp Settings::getNightModeTime(bool onTime) {
+  return *_nightModeTime[onTime];
+}
+
 /**
  * Die Einstellungen laden.
  */
@@ -184,11 +178,10 @@ void Settings::loadFromEEPROM() {
     _dcfSignalIsInverted = EEPROM.read(7);
     _timeShift = EEPROM.read(8);
     _transitionMode = EEPROM.read(9);
-    _red = EEPROM.read(10);
-    _green = EEPROM.read(11);
-    _blue = EEPROM.read(12);
-    _event = EEPROM.read(13);
-    _rainbow = EEPROM.read(14);
+    _color = (eColors)EEPROM.read(10);
+    _event = EEPROM.read(11);
+    _nightModeTime[0]->set(EEPROM.read(12), EEPROM.read(13), 0, 0, 0, 0);
+    _nightModeTime[1]->set(EEPROM.read(14), EEPROM.read(15), 0, 0, 0, 0);
   }
 }
 
@@ -226,19 +219,22 @@ void Settings::saveToEEPROM() {
   if (EEPROM.read(9) != _transitionMode) {
     EEPROM.write(9, _transitionMode);
   }
-  if (EEPROM.read(10) != _red) {
-    EEPROM.write(10, _red);
+  if (EEPROM.read(10) != _color) {
+    EEPROM.write(10, _color);
   }
-  if (EEPROM.read(11) != _green) {
-    EEPROM.write(11, _green);
+  if (EEPROM.read(11) != _event) {
+    EEPROM.write(11, _event);
   }
-  if (EEPROM.read(12) != _blue) {
-    EEPROM.write(12, _blue);
+  if (EEPROM.read(12) != _nightModeTime[0]->getMinutes()) {
+    EEPROM.write(12, _nightModeTime[0]->getMinutes());
   }
-  if (EEPROM.read(13) != _event) {
-    EEPROM.write(13, _event);
+  if (EEPROM.read(13) != _nightModeTime[0]->getHours()) {
+    EEPROM.write(13, _nightModeTime[0]->getHours());
   }
-  if (EEPROM.read(14) != _rainbow) {
-    EEPROM.write(14, _rainbow);
+  if (EEPROM.read(14) != _nightModeTime[1]->getMinutes()) {
+    EEPROM.write(14, _nightModeTime[1]->getMinutes());
+  }
+  if (EEPROM.read(15) != _nightModeTime[1]->getHours()) {
+    EEPROM.write(15, _nightModeTime[1]->getHours());
   }
 }

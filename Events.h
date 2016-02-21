@@ -10,8 +10,11 @@
  * Versionshistorie:
  * V 1.0:  - Erstellt.
  */
+#ifndef EVENTS_H
+#define EVENTS_H
 
 #include "Event.h"
+#include "Colors.h"
 
 /**************************************************************************************************************
 * Instanzierung und Initialisierung jährlicher Events. Ein Event enthält eine Laufschrift, gefolgt
@@ -22,14 +25,15 @@
 * werden.
 **************************************************************************************************************/
 Event events[] = {
-  Event(1,1,"Happy New Year",Effects::EFFECT_FIREWORK),
-  Event(12, 25, "Merry Christmas", Effects::EFFECT_CANDLE),
-  Event(2, 14, "Happy Valentine", Effects::EFFECT_HEART),
-  Event(7, 30, "Happy Birthday", Effects::EFFECT_FIREWORK),
-  Event(7, 29, "Happy Manu Day", Effects::ANI_BITMAP_SMILEY_WINK),
-//  Event(1, 16, "Testevent", Effects::ANI_BITMAP_SMILEY_WINK),
-//  Event(2,14,"",Effects::EFFECT_HEART),
-//  Event(7,30,"Happy Birthday",Effects::EFFECT_HEART)
+  Event(1, 1, "Happy New Year", Effects::EFFECT_FIREWORK, color_rgb),
+  Event(2, 14, "Happy Valentine's Day", Effects::EFFECT_HEART, color_red),
+  Event(12, 25, "Merry Christmas", Effects::EFFECT_CANDLE, color_orange1),
+  Event(7, 30, "Happy Birthday", Effects::EFFECT_FIREWORK, color_rgb),
+//  Event(7, 29, "Happy Manu Day", Effects::ANI_BITMAP_SMILEY_WINK, color_yellow),
+
+  //  Event(1, 16, "Testevent", Effects::ANI_BITMAP_SMILEY_WINK),
+  //  Event(2,14,"",Effects::EFFECT_HEART),
+  //  Event(7,30,"Happy Birthday",Effects::EFFECT_HEART)
 };
 
 //NO_EFFECT = 255,
@@ -61,3 +65,4 @@ Event events[] = {
  * Anzahl definierter Events
  **************************************************************************************************************/
 int nbrOfEvts = sizeof(events) / sizeof(Event);
+#endif // EVENTS_H

@@ -12,6 +12,7 @@
  * V 1.0:  - Erstellt.
  */
 #include "IRTranslatorCLT.h"
+#include "Colors.h"
 
 // #define DEBUG
 #include "Debug.h"
@@ -65,28 +66,29 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
     case CLT_ON_OFF:
       return REMOTE_BUTTON_TOGGLEBLANK;
     case CLT_RED:
-      setColor(255, 0, 0);
+      setColor(color_red);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_GREEN:
-      setColor(0, 255, 0);
+      setColor(color_green);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_DARKBLUE:
-      setColor(0, 0, 255);
+      setColor(color_darkBlue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_PINK:
-      setColor(230, 25, 255);
+      setColor(color_pink);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_WHITE:
-      setColor(255, 255, 255);
+      setColor(color_white);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_BRIGHTBLUE:
-      setColor(0, 255, 128);
+      setColor(color_brightBlue);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_YELLOW:
-      setColor(255, 255, 0);
+      setColor(color_yellow);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_RGB:
-      return REMOTE_BUTTON_RAINBOW;
+      setColor(color_rgb);
+      return REMOTE_BUTTON_SETCOLOR;
     case CLT_NORMAL:
       setTransition(Settings::TRANSITION_MODE_NORMAL);
       return REMOTE_BUTTON_TRANSITION;

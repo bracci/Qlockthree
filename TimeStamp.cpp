@@ -116,6 +116,15 @@ void TimeStamp::incMinutes() {
 }
 
 /**
+ * Die Minuten erhoehen.
+ */
+void TimeStamp::incFiveMinutes() {
+  for(byte i = 0; i < 5; i++){
+    incMinutes();
+  }
+}
+
+/**
  * Die Stunden erhoehen.
  */
 void TimeStamp::incHours() {

@@ -14,16 +14,8 @@
  */
 #include "IRTranslator.h"
 
-byte IRTranslator::getRed() {
-  return _red;
-}
-
-byte IRTranslator::getGreen() {
-  return _green;
-}
-
-byte IRTranslator::getBlue() {
-  return _blue;
+eColors IRTranslator::getColor() {
+  return _color;
 }
 
 Mode IRTranslator::getMode() {
@@ -34,10 +26,8 @@ byte IRTranslator::getTransition() {
   return _transition;
 }
 
-void IRTranslator::setColor(byte red, byte green, byte blue) {
-  _red = red;
-  _green = green;
-  _blue = blue;
+void IRTranslator::setColor(eColors color) {
+  _color = color;
 }
 
 void IRTranslator::setMode(Mode mode) {

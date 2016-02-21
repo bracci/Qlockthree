@@ -27,6 +27,7 @@
 #include "Transitions.h"
 #include "Modes.h"
 #include "Configuration.h"
+#include "Colors.h"
 
 extern volatile byte helperSeconds;
 extern Mode mode;
@@ -48,7 +49,7 @@ class LedDriver {
 
     virtual void printSignature();
 
-    virtual void writeScreenBufferToMatrix(word matrix[16], boolean onChange);
+    virtual void writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color);
 
     virtual void setBrightness(byte brightnessInPercent);
     virtual byte getBrightness();

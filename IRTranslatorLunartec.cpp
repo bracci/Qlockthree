@@ -61,16 +61,16 @@ byte IRTranslatorLunartec::buttonForCode(unsigned long code) {
     case LUNBARTEC_ON:
       return REMOTE_BUTTON_RESUME;
     case LUNBARTEC_R:
-      setColor(255, 0, 0);
+      setColor(color_red);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_G:
-      setColor(0, 255, 0);
+      setColor(color_green);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_B:
-      setColor(0, 0, 255);
+      setColor(color_darkBlue);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_W:
-      setColor(255, 255, 225);
+      setColor(color_white);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_FLASH:
       return REMOTE_BUTTON_MODE;
@@ -82,42 +82,42 @@ byte IRTranslatorLunartec::buttonForCode(unsigned long code) {
       return REMOTE_BUTTON_EXTMODE;
 
     case LUNBARTEC_ROTGELB_1:
-      setColor(255, 64, 0);
+      setColor(color_orange1);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_ROTGELB_2:
-      setColor(255, 128, 0);
+      setColor(color_orange2);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_ROTGELB_3:
-      setColor(255, 196, 0);
+      setColor(color_orange3);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_ROTGELB_4:
-      setColor(255, 255, 0);
+      setColor(color_orange4);
       return REMOTE_BUTTON_SETCOLOR;
 
     case LUNBARTEC_GRUENBLAU_1:
-      setColor(0, 255, 64);
+      setColor(color_turquois1);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_GRUENBLAU_2:
-      setColor(0, 255, 128);
+      setColor(color_turquois2);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_GRUENBLAU_3:
-      setColor(0, 255, 196);
+      setColor(color_turquois3);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_GRUENBLAU_4:
-      setColor(0, 255, 255);
+      setColor(color_turquois4);
       return REMOTE_BUTTON_SETCOLOR;
 
     case LUNBARTEC_BLAUROT_1:
-      setColor(64, 0, 255);
+      setColor(color_purple1);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_BLAUROT_2:
-      setColor(128, 0, 255);
+      setColor(color_purple2);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_BLAUROT_3:
-      setColor(196, 0, 255);
+      setColor(color_purple3);
       return REMOTE_BUTTON_SETCOLOR;
     case LUNBARTEC_BLAUROT_4:
-      setColor(255, 0, 255);
+      setColor(color_purple4);
       return REMOTE_BUTTON_SETCOLOR;
 
     default:

@@ -16,6 +16,7 @@
 
 #include "Effects.h"
 #include "Configuration.h"
+#include "Colors.h"
 
 #define DURATION_BM   15
 #define TICKER_SPEED  6
@@ -28,9 +29,8 @@ class Event {
     Event(byte month,
           byte date,
           const char* txt,
-          Effects::eEffects effect) :
-      _month (month), _date (date),
-      _txt (txt), _effect (effect) {};
+          Effects::eEffects effect,
+          eColors color);
 
     void show();
     byte getMonth();
@@ -41,6 +41,7 @@ class Event {
     byte _date;
     const char* _txt;
     Effects::eEffects _effect;
+    eColors _color;
 };
 
 #endif //EVENT_H

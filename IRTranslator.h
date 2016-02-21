@@ -18,6 +18,7 @@
 #include "Arduino.h"
 #include "Settings.h"
 #include "Modes.h"
+#include "Colors.h"
 
 #define REMOTE_BUTTON_UNDEFINED    0
 // diese Buttons braucht man haeufig und sollten alle Fernbedienungen koennen...
@@ -43,26 +44,24 @@
 #define REMOTE_BUTTON_TIME_H_MINUS 105
 #define REMOTE_BUTTON_TIME_M_PLUS  106
 #define REMOTE_BUTTON_TIME_M_MINUS 107
-#define REMOTE_BUTTON_RAINBOW      108
-#define REMOTE_BUTTON_TRANSITION   109
+#define REMOTE_BUTTON_TRANSITION   108
 
 class IRTranslator {
   public:
     virtual void printSignature();
     virtual byte buttonForCode(unsigned long code);
-    byte getRed();
-    byte getGreen();
-    byte getBlue();
+    eColors getColor();
     Mode getMode();
     byte getTransition();
 
   protected:
-    void setColor(byte red, byte green, byte blue);
+    void setColor(eColors);
     void setMode(Mode mode);
     void setTransition(byte transition);
 
   private:
-    byte _red, _green, _blue, _transition;
+    byte _transition;
+    eColors _color;
     Mode _mode;
 };
 

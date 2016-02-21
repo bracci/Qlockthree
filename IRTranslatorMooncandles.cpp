@@ -61,43 +61,43 @@ byte IRTranslatorMooncandles::buttonForCode(unsigned long code) {
       return REMOTE_BUTTON_EXTMODE;
 
     case MOONCANDLES_ROT:
-      setColor(255, 0, 0);
+      setColor(color_red);
       return REMOTE_BUTTON_SETCOLOR;
     case MOONCANDLES_GRUEN:
-      setColor(0, 255, 0);
+      setColor(color_green);
       return REMOTE_BUTTON_SETCOLOR;
     case MOONCANDLES_BLAU:
-      setColor(0, 0, 255);
+      setColor(color_darkBlue);
       return REMOTE_BUTTON_SETCOLOR;
 
     case MOONCANDLES_ORANGE:
-      setColor(255, 128, 0);
+      setColor(color_orange1);
       return REMOTE_BUTTON_SETCOLOR;
     case MOONCANDLES_HELLGRUEN:
-      setColor(0, 255, 64);
+      setColor(color_turquois1);
       return REMOTE_BUTTON_SETCOLOR;
     case MOONCANDLES_HELLERES_BLAU:
-      setColor(64, 0, 255);
+      setColor(color_purple1);
       return REMOTE_BUTTON_SETCOLOR;
 
     case MOONCANDLES_GELB:
-      setColor(255, 255, 0);
+      setColor(color_yellow);
       return REMOTE_BUTTON_SETCOLOR;
     case MOONCANDLES_TUERKIS:
-      setColor(0, 255, 128);
+      setColor(color_turquois2);
       return REMOTE_BUTTON_SETCOLOR;
     case MOONCANDLES_PINK:
-      setColor(128, 0, 255);
+      setColor(color_purple2);
       return REMOTE_BUTTON_SETCOLOR;
 
     case MOONCANDLES_WEISS:
-      setColor(255, 255, 255);
+      setColor(color_white);
       return REMOTE_BUTTON_SETCOLOR;
     case MOONCANDLES_HELLBLAU:
-      setColor(0, 255, 196);
+      setColor(color_turquois3);
       return REMOTE_BUTTON_SETCOLOR;
     case MOONCANDLES_MAGENTA:
-      setColor(196, 0, 255);
+      setColor(color_purple3);
       return REMOTE_BUTTON_SETCOLOR;
 
     default:

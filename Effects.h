@@ -17,6 +17,7 @@
 #include <avr/pgmspace.h>
 #include "Renderer.h"
 #include "Configuration.h"
+#include "Colors.h"
 
 extern Renderer renderer;
 
@@ -72,13 +73,14 @@ class Effects {
   public:
     static void showTickerString(const char* str2disp, byte tickerSpeed);
     static void showIntro();
-    static void showFireWork(byte posX);
-    static void showHeart(byte duration);
-    static void showCandle();
-    static void showLoveU();
-    static void showBitmap(byte bitmapIdx, byte duration);
-    static void showAnimatedBitmap(byte animatedBitmap, byte duration);
-    static void writeToBuffer(word aMatrix[], unsigned int aDuration);
+
+    static void showFireWork(byte posX, eColors color);
+    static void showHeart(byte duration, eColors color);
+    static void showCandle(eColors color);
+    static void showLoveU(eColors color);
+    static void showBitmap(byte bitmapIdx, byte duration, eColors color);
+    static void showAnimatedBitmap(byte animatedBitmap, byte duration, eColors color);
+    static void writeToBuffer(word aMatrix[], unsigned int aDuration, eColors color = color_none);
 };
 
 const word effectMasks[][10] PROGMEM = {
