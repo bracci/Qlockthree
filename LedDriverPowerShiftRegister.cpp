@@ -53,7 +53,7 @@ void LedDriverPowerShiftRegister::printSignature() {
  * @param onChange: TRUE, wenn es Aenderungen in dem Bildschirm-Puffer gab,
  *                  FALSE, wenn es ein Refresh-Aufruf war.
  */
-void LedDriverPowerShiftRegister::writeScreenBufferToMatrix(word matrix[16], boolean onChange) {
+void LedDriverPowerShiftRegister::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
   if (onChange) {
     _shiftRegister->prepareShiftregisterWrite();
 

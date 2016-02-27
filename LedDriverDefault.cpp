@@ -66,7 +66,7 @@ void LedDriverDefault::printSignature() {
  * @param onChange: TRUE, wenn es Aenderungen in dem Bildschirm-Puffer gab,
  *                  FALSE, wenn es ein Refresh-Aufruf war.
  */
-void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChange) {
+void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
 
   if (!_transitionCompleted && (_transitionCounter > 0)) {
     _transitionCounter--;

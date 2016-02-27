@@ -31,7 +31,7 @@ class LedDriverDefault : public LedDriver {
 
     void printSignature();
 
-    void writeScreenBufferToMatrix(word matrix[16], boolean onChange);
+    void writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color = color_none);
 
     void setBrightness(byte brightnessInPercent);
     byte getBrightness();

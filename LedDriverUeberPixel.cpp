@@ -60,7 +60,7 @@ void LedDriverUeberPixel::printSignature() {
  * @param onChange: TRUE, wenn es Aenderungen in dem Bildschirm-Puffer gab,
  *                  FALSE, wenn es ein Refresh-Aufruf war.
  */
-void LedDriverUeberPixel::writeScreenBufferToMatrix(word matrix[16], boolean onChange) {
+void LedDriverUeberPixel::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
   if (onChange) {
     for (byte y = 0; y < 10; y++) {
       for (byte x = 5; x < 16; x++) {
