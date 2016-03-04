@@ -63,7 +63,7 @@
 //#define USE_INDIVIDUAL_CATHODES
 
 // Beim Einschalten leuchten alle LEDs während 5s
-#define LED_TEST_INTRO_ENABLED
+//#define LED_TEST_INTRO_ENABLED
 
 /*
  * Alarmfunktion einschalten?
@@ -118,9 +118,9 @@
 #endif
 
 #if defined(LED_DRIVER_LPD8806) || defined(LED_DRIVER_NEOPIXEL)
-#define RGB_LEDS
-//#define RGBW_LEDS
-//#define MATRIX_XXL
+//#define RGB_LEDS
+#define RGBW_LEDS
+#define MATRIX_XXL
 #endif
 
 /*
