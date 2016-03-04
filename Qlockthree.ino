@@ -821,7 +821,9 @@ void loop() {
     }
 
     if (counter == 1) {
-      mode = STD_MODE_NORMAL;
+      if ( (mode != EXT_MODE_NIGHT_OFF) || (mode != EXT_MODE_NIGHT_ON) ) {
+      mode = lastMode;
+    }
     }
 
     //
@@ -1100,43 +1102,43 @@ void loop() {
 #endif
       case EXT_MODE_NIGHT_OFF:
         renderer.clearScreenBuffer(matrix);
-//        if (settings.getDcfSignalIsInverted()) {
-//          for (byte i = 0; i < 5; i++) {
-//            matrix[0 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 11;
-//            matrix[0 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 5;
-//            matrix[5 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 7;
-//          }
-//        }
-//        else
-//        {
+        if (!counter) {
+          for (byte i = 0; i < 5; i++) {
+            matrix[0 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 11;
+            matrix[0 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 5;
+            matrix[5 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 11;
+            matrix[5 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 5;
+          }
+        }
+        else
+        {
         renderer.clearScreenBuffer(matrix);
         renderer.setMinutes(settings.getNightModeTime(false).getHours(), settings.getNightModeTime(false).getMinutes(), settings.getLanguage(), matrix);
         renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
         if ( (settings.getNightModeTime(false).getHours() >= 12) ) {
           renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
         }
-//        }
+        }
 
         break;
       case EXT_MODE_NIGHT_ON:
         renderer.clearScreenBuffer(matrix);
-//        if (settings.getDcfSignalIsInverted()) {
-//          for (byte i = 0; i < 5; i++) {
-//            matrix[0 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 11;
-//            matrix[0 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
-//            matrix[5 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 11;
-//            matrix[5 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
-//          }
-//        }
-//        else
-//        {
+        if (!counter) {
+          for (byte i = 0; i < 5; i++) {
+            matrix[0 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 8;
+            matrix[5 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 11;
+            matrix[5 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
+          }
+        }
+        else
+        {
           renderer.clearScreenBuffer(matrix);
           renderer.setMinutes(settings.getNightModeTime(true).getHours(), settings.getNightModeTime(true).getMinutes(), settings.getLanguage(), matrix);
           renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if ( (settings.getNightModeTime(true).getHours() >= 12) ) {
             renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
           }
-//        }
+        }
 
         break;
 
@@ -1670,10 +1672,16 @@ void hourPlusPressed() {
       break;
 #endif
     case EXT_MODE_NIGHT_OFF:
+      if (counter > 0) {
       settings.incHoursNightMode(false);
+      }
+      enableCounter(2);
       break;
     case EXT_MODE_NIGHT_ON:
+      if (counter > 0) {
       settings.incHoursNightMode(true);
+      }
+      enableCounter(2);
       break;
     case EXT_MODE_DCF_IS_INVERTED:
       settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
@@ -1776,10 +1784,16 @@ void minutePlusPressed() {
       break;
 #endif
     case EXT_MODE_NIGHT_OFF:
+      if (counter > 0) {
       settings.incFiveMinNightMode(false);
+      }
+      enableCounter(2);
       break;
     case EXT_MODE_NIGHT_ON:
+      if (counter > 0) {
       settings.incFiveMinNightMode(true);
+      }
+      enableCounter(2);
       break;
     case EXT_MODE_DCF_IS_INVERTED:
       settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
