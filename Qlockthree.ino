@@ -170,9 +170,12 @@
 #include <LedControl.h>
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_DotStar.h>
-#include <LPD8806DBL.h>
-#include <LPD8806.h>
 #include "Configuration.h"
+#ifdef MATRIX_XXL
+#include <LPD8806DBL.h>
+#else
+#include <LPD8806.h>
+#endif
 #include "LedDriver.h"
 #include "LedDriverDefault.h"
 #include "LedDriverUeberPixel.h"
@@ -223,19 +226,6 @@
    Die persistenten (im EEPROM gespeicherten) Einstellungen.
 */
 Settings settings;
-
-///**
-//   Hier definiert man die Ab- und Anschaltzeiten fuer das Display. Die Abschaltung des
-//   Displays verbessert den Empfang des DCF77-Empfaengers. Und hilft, falls die Uhr im
-//   Schlafzimmer haengt.
-//   Sind alle Werte auf 0 wird das Display nie abgeschaltet. Nach einer Minute kann man das
-//   Display manuell wieder ein- / ausschalten.
-//   Achtung! Wenn sich die Uhr nachmittags abschaltet ist sie in der falschen Tageshaelfte!
-//*/
-//// um 3 Uhr Display abschalten (Minuten, Stunden, -, -, -, -)
-//TimeStamp offTime(0, 3, 0, 0, 0, 0);
-//// um 4:30 Uhr Display wieder anschalten (Minuten, Stunden, -, -, -, -)
-//TimeStamp onTime(30, 4, 0, 0, 0, 0);
 
 /**
    Der Renderer, der die Woerter auf die Matrix ausgibt.
@@ -492,6 +482,11 @@ IRTranslatorCLT irTranslator;
 #endif
 #endif
 
+// Ueber die Wire-Library festgelegt:
+// Arduino analog input 4 = I2C SDA
+// Arduino analog input 5 = I2C SCL
+// Werden zur Kommunikation mit der 
+// RTC verwendet.
 /**
    Die Real-Time-Clock mit der Status-LED fuer das SQW-Signal.
 */
@@ -504,10 +499,10 @@ volatile byte helperSeconds;
 MyDCF77 dcf77(PIN_DCF77_SIGNAL, PIN_DCF77_LED);
 DCF77Helper dcf77Helper;
 
-#ifdef ALARM
 /**
    Variablen fuer den Alarm.
 */
+#ifdef ALARM
 Alarm alarm(PIN_SPEAKER);
 #endif
 
@@ -535,10 +530,6 @@ Mode mode = STD_MODE_NORMAL;
 // Merker fuer den Modus vor der Abschaltung...
 Mode lastMode = mode;
 
-// Ueber die Wire-Library festgelegt:
-// Arduino analog input 4 = I2C SDA
-// Arduino analog input 5 = I2C SCL
-
 // Die Matrix, eine Art Bildschirmspeicher
 word matrix[16];
 
@@ -546,14 +537,16 @@ word matrix[16];
 volatile boolean needsUpdateFromRtc = true;
 
 // Fuer den Bildschirm-Test
-byte x, y;
+byte testColumn;
 
 // Fuer fps-Anzeige
 word frames = 0;
 unsigned long lastFpsCheck = 0;
 
+// Zähler für Timer im Menu
 byte counter = 0;
 
+// Indiziert, ob Event aktiv ist.
 bool evtActive = false;
 
 /**
@@ -598,8 +591,10 @@ void setup() {
   DEBUG_PRINTLN(F("... and starting in debug-mode..."));
   Serial.flush();
 
+  // DCF konfigurieren
   pinMode(PIN_DCF77_PON, OUTPUT);
   enableDcf(false);
+  
 #ifdef ALARM
   if (settings.getEnableAlarm()) {
     // als Wecker Display nicht abschalten...
@@ -647,12 +642,6 @@ void setup() {
   Serial.print(F(__TIME__));
   Serial.print(F(" / "));
   Serial.println(F(__DATE__));
-
-  /*
-    // Uhrzeit nach Compile-Zeit stellen...
-    rtc.set(__DATE__, __TIME__);
-    rtc.writeTime();
-  */
 
   // RTC starten...
   rtc.readTime();
@@ -1050,6 +1039,14 @@ void loop() {
         }
         break;
 #endif
+      ///**
+      //   Hier definiert man die Ab- und Anschaltzeiten fuer das Display. Die Abschaltung des
+      //   Displays verbessert den Empfang des DCF77-Empfaengers. Und hilft, falls die Uhr im
+      //   Schlafzimmer haengt.
+      //   Sind alle Werte auf 0 wird das Display nie abgeschaltet. Nach einer Minute kann man das
+      //   Display manuell wieder ein- / ausschalten.
+      //   Achtung! Wenn sich die Uhr nachmittags abschaltet ist sie in der falschen Tageshaelfte!
+      //*/
       case EXT_MODE_NIGHT_OFF:
         renderer.clearScreenBuffer(matrix);
         if (!counter) {
@@ -1151,11 +1148,11 @@ void loop() {
         }
 #endif
         for (int i = 0; i < 11; i++) {
-          ledDriver.setPixelInScreenBuffer(x, i, matrix);
+          ledDriver.setPixelInScreenBuffer(testColumn, i, matrix);
         }
-        x++;
-        if (x > 10) {
-          x = 0;
+        testColumn++;
+        if (testColumn > 10) {
+          testColumn = 0;
         }
         break;
       case EXT_MODE_DCF_DEBUG:

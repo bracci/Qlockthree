@@ -24,8 +24,11 @@
 #include "Arduino.h"
 #include "LedDriver.h"
 
+#ifdef MATRIX_XXL
 #include <LPD8806DBL.h>
+#else
 #include <LPD8806.h>
+#endif
 
 class LedDriverLPD8806 : public LedDriver {
   public:
