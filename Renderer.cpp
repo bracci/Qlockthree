@@ -1,22 +1,22 @@
 /**
- * Renderer
- * Diese Klasse rendert die Woerter auf die Matrix.
- *
- * @mc       Arduino/RBBB
- * @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.5
- * @created  21.1.2013
- * @updated  16.2.2015
- *
- * Versionshistorie:
- * V 1.0:  - Erstellt.
- * V 1.1:  - Spanisch hinzugefuegt.
- * V 1.2:  - setMinutes - hours auf char umgestellt, damit Zeitverschiebung geht...
- * V 1.3:  - Alle Deutsch-Varianten zusammengefasst, um Platz zu sparen.
- *         - Fehler im Italienischen behoben.
- * V 1.4:  - Stundenbegrenzung (die ja wegen der Zeitverschiebungsmoeglichkeit existiert) auf den Bereich 0 <= h <= 24 ausgeweitet, dank Tipp aus dem Forum.
- * V 1.5:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
- */
+   Renderer
+   Diese Klasse rendert die Woerter auf die Matrix.
+
+   @mc       Arduino/RBBB
+   @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
+   @version  1.5
+   @created  21.1.2013
+   @updated  16.2.2015
+
+   Versionshistorie:
+   V 1.0:  - Erstellt.
+   V 1.1:  - Spanisch hinzugefuegt.
+   V 1.2:  - setMinutes - hours auf char umgestellt, damit Zeitverschiebung geht...
+   V 1.3:  - Alle Deutsch-Varianten zusammengefasst, um Platz zu sparen.
+           - Fehler im Italienischen behoben.
+   V 1.4:  - Stundenbegrenzung (die ja wegen der Zeitverschiebungsmoeglichkeit existiert) auf den Bereich 0 <= h <= 24 ausgeweitet, dank Tipp aus dem Forum.
+   V 1.5:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
+*/
 #include "Renderer.h"
 
 #include "Woerter_DE.h"
@@ -27,6 +27,8 @@
 #include "Woerter_IT.h"
 #include "Woerter_NL.h"
 #include "Woerter_ES.h"
+#include "Staben.h"
+#include "Zahlen.h"
 
 // #define DEBUG
 #include "Debug.h"
@@ -35,8 +37,8 @@ Renderer::Renderer() {
 }
 
 /**
- * Ein Zufallsmuster erzeugen (zum Testen der LEDs)
- */
+   Ein Zufallsmuster erzeugen (zum Testen der LEDs)
+*/
 void Renderer::scrambleScreenBuffer(word matrix[16]) {
   for (byte i = 0; i < 16; i++) {
     matrix[i] = random(65536);
@@ -44,9 +46,9 @@ void Renderer::scrambleScreenBuffer(word matrix[16]) {
 }
 
 /**
- * Die Matrix loeschen (zum Stromsparen, DCF77-Empfang
- * verbessern etc.)
- */
+   Die Matrix loeschen (zum Stromsparen, DCF77-Empfang
+   verbessern etc.)
+*/
 void Renderer::clearScreenBuffer(word matrix[16]) {
   for (byte i = 0; i < 16; i++) {
     matrix[i] = 0;
@@ -54,8 +56,8 @@ void Renderer::clearScreenBuffer(word matrix[16]) {
 }
 
 /**
- * Die Matrix komplett einschalten (zum Testen der LEDs)
- */
+   Die Matrix komplett einschalten (zum Testen der LEDs)
+*/
 void Renderer::setAllScreenBuffer(word matrix[16]) {
   for (byte i = 0; i < 16; i++) {
     matrix[i] = 65535;
@@ -63,8 +65,8 @@ void Renderer::setAllScreenBuffer(word matrix[16]) {
 }
 
 /**
- * Setzt die Wortminuten, je nach hours/minutes.
- */
+   Setzt die Wortminuten, je nach hours/minutes.
+*/
 void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[16]) {
   while (hours < 0) {
     hours += 12;
@@ -708,11 +710,11 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
 }
 
 /**
- * Setzt die Stunden, je nach hours. 'glatt' bedeutet,
- * es ist genau diese Stunde und wir muessen 'UHR'
- * dazuschreiben und EIN statt EINS, falls es 1 ist.
- * (Zumindest im Deutschen)
- */
+   Setzt die Stunden, je nach hours. 'glatt' bedeutet,
+   es ist genau diese Stunde und wir muessen 'UHR'
+   dazuschreiben und EIN statt EINS, falls es 1 ist.
+   (Zumindest im Deutschen)
+*/
 void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16]) {
   switch (language) {
     //
@@ -1132,11 +1134,11 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
 }
 
 /**
- * Setzt die vier Punkte in den Ecken, je nach minutes % 5 (Rest).
- *
- * @param ccw: TRUE -> clock wise -> im Uhrzeigersinn.
- *             FALSE -> counter clock wise -> gegen den Uhrzeigersinn.
- */
+   Setzt die vier Punkte in den Ecken, je nach minutes % 5 (Rest).
+
+   @param ccw: TRUE -> clock wise -> im Uhrzeigersinn.
+               FALSE -> counter clock wise -> gegen den Uhrzeigersinn.
+*/
 void Renderer::setCorners(byte minutes, boolean cw, word matrix[16]) {
   if (cw) {
     // im Uhrzeigersinn
@@ -1190,8 +1192,8 @@ void Renderer::setCorners(byte minutes, boolean cw, word matrix[16]) {
 }
 
 /**
- * Im Alarm-Einstell-Modus muessen bestimmte Woerter weg, wie z.B. "ES IST" im Deutschen.
- */
+   Im Alarm-Einstell-Modus muessen bestimmte Woerter weg, wie z.B. "ES IST" im Deutschen.
+*/
 void Renderer::cleanWordsForAlarmSettingMode(byte language, word matrix[16]) {
   switch (language) {
     case LANGUAGE_DE_DE:
@@ -1258,3 +1260,38 @@ void Renderer::cleanWordsForAlarmSettingMode(byte language, word matrix[16]) {
 //        ES_SONLAS;
 //    }
 //}
+
+void Renderer::setMenuText(const char* menuText, eTextPos textPos, word matrix[16]) {
+  if ( strlen(menuText) == 2 ) {
+    for (byte i = 0; i < 5; i++) {
+      for (byte j = 0; j < strlen(menuText); j++) {
+        if (!isNumber(menuText[j])) {
+        matrix[textPos + i] |= pgm_read_byte_near(&(staben[menuText[j] - 'A'][i])) << 5 + ((j + 1) % 2) * 6;
+        }
+        else {
+          matrix[textPos + i] |= pgm_read_byte_near(&(ziffernB[menuText[j] - '0'][i])) << 5 + ((j + 1) % 2) * 5;
+        }
+      }
+    }
+  }
+  else if ( strlen(menuText) == 1 ) {
+    for (byte i = 0; i < 5; i++) {
+      if (!isNumber(menuText[0])) {
+      matrix[textPos + i] |= pgm_read_byte_near(&(staben[menuText[0] - 'A'][i])) << 8;
+      }
+      else {
+        matrix[textPos + i] |= pgm_read_byte_near(&(ziffernB[menuText[0] - '0'][i])) << 8;
+      }
+    }
+  }
+}
+
+boolean Renderer::isNumber(char symbol) {
+  if ( (symbol >= '0') && (symbol <= '9') ){
+  return true;
+}
+else {
+  return false;
+}
+}
+

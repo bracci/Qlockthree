@@ -19,8 +19,8 @@
 
 #include <avr/pgmspace.h>
 
-extern const char ziffern[][7] PROGMEM;
-const char ziffern[][7] = {
+//extern const char ziffern[][7] PROGMEM;
+const char ziffern[][7] PROGMEM = {
   { // 0:0
     0b00001110,
     0b00010001,

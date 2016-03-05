@@ -26,8 +26,8 @@
 **************************************************************************************************************/
 Event events[] = {
   Event(1, 1, "Happy New Year", Effects::EFFECT_FIREWORK, color_rgb),
-  Event(2, 14, "Happy Valentine's Day", Effects::EFFECT_HEART, color_red),
-  Event(12, 25, "Merry Christmas", Effects::EFFECT_CANDLE, color_orange1),
+//  Event(2, 14, "Happy Valentine's Day", Effects::EFFECT_HEART, color_red),
+//  Event(12, 25, "Merry Christmas", Effects::EFFECT_CANDLE, color_orange1),
 //  Event(7, 30, "Happy Birthday", Effects::EFFECT_FIREWORK, color_rgb),
 //  Event(7, 29, "Happy Manu Day", Effects::ANI_BITMAP_SMILEY_WINK, color_yellow),
 

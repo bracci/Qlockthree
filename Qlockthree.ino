@@ -822,8 +822,8 @@ void loop() {
 
     if (counter == 1) {
       if ( (mode != EXT_MODE_NIGHT_OFF) || (mode != EXT_MODE_NIGHT_ON) ) {
-      mode = lastMode;
-    }
+        mode = lastMode;
+      }
     }
 
     //
@@ -957,11 +957,11 @@ void loop() {
         renderer.clearScreenBuffer(matrix);
         if (settings.getUseLdr()) {
           for (byte i = 0; i < 5; i++) {
-            matrix[2 + i] |= pgm_read_byte_near(&(staben['A' - 'A'][i])) << 8;
+            renderer.setMenuText("A", Renderer::TEXT_POS_MIDDLE, matrix);
           }
         } else {
           for (byte i = 0; i < 5; i++) {
-            matrix[2 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 8;
+            renderer.setMenuText("M", Renderer::TEXT_POS_MIDDLE, matrix);
           }
         }
         break;
@@ -981,35 +981,20 @@ void loop() {
       case EXT_MODE_CORNERS:
         renderer.clearScreenBuffer(matrix);
         if (settings.getRenderCornersCw()) {
-          for (byte i = 0; i < 5; i++) {
-            matrix[2 + i] |= pgm_read_byte_near(&(staben['C' - 'A'][i])) << 11;
-            matrix[2 + i] |= pgm_read_byte_near(&(staben['W' - 'A'][i])) << 5;
-          }
+          renderer.setMenuText("CW", Renderer::TEXT_POS_MIDDLE, matrix);
         } else {
-          for (byte i = 0; i < 5; i++) {
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['C' - 'A'][i])) << 8;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['C' - 'A'][i])) << 11;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['W' - 'A'][i])) << 5;
-          }
+          renderer.setMenuText("C", Renderer::TEXT_POS_TOP, matrix);
+          renderer.setMenuText("CW", Renderer::TEXT_POS_BOTTOM, matrix);
         }
         break;
 #ifdef ALARM
       case EXT_MODE_ENABLE_ALARM:
         renderer.clearScreenBuffer(matrix);
+        renderer.setMenuText("AL", Renderer::TEXT_POS_TOP, matrix);
         if (settings.getEnableAlarm()) {
-          for (byte i = 0; i < 5; i++) {
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['A' - 'A'][i])) << 11;
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
-          }
+          renderer.setMenuText("EN", Renderer::TEXT_POS_BOTTOM, matrix);
         } else {
-          for (byte i = 0; i < 5; i++) {
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['A' - 'A'][i])) << 11;
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 11;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['A' - 'A'][i])) << 5;
-          }
+          renderer.setMenuText("DA", Renderer::TEXT_POS_BOTTOM, matrix);
         }
         break;
 #endif
@@ -1017,84 +1002,49 @@ void loop() {
       // Eventwiederholung einstelleng
       case EXT_MODE_EVENT:
         renderer.clearScreenBuffer(matrix);
-        for (byte i = 0; i < 5; i++) {
-          switch (settings.getEvent()) {
-            case 0:
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['V' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(ziffernB['5' - '0'][i])) << 7;
-              break;
-            case 1:
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['V' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(ziffernB['1' - '0'][i])) << 10;
-              matrix[5 + i] |= pgm_read_byte_near(&(ziffernB['5' - '0'][i])) << 5;
-              break;
-            case 2:
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['V' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(ziffernB['3' - '0'][i])) << 10;
-              matrix[5 + i] |= pgm_read_byte_near(&(ziffernB['0' - '0'][i])) << 5;
-              break;
-            case 3:
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['V' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(ziffernB['4' - '0'][i])) << 10;
-              matrix[5 + i] |= pgm_read_byte_near(&(ziffernB['5' - '0'][i])) << 5;
-              break;
-            case 4:
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['V' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(ziffernB['6' - '0'][i])) << 10;
-              matrix[5 + i] |= pgm_read_byte_near(&(ziffernB['0' - '0'][i])) << 5;
-              break;
-          }
+        renderer.setMenuText("EV", Renderer::TEXT_POS_TOP, matrix);
+        switch (settings.getEvent()) {
+          case 0:
+            renderer.setMenuText("5", Renderer::TEXT_POS_BOTTOM, matrix);
+            break;
+          case 1:
+            renderer.setMenuText("15", Renderer::TEXT_POS_BOTTOM, matrix);
+            break;
+          case 2:
+            renderer.setMenuText("30", Renderer::TEXT_POS_BOTTOM, matrix);
+            break;
+          case 3:
+            renderer.setMenuText("45", Renderer::TEXT_POS_BOTTOM, matrix);
+            break;
+          case 4:
+            renderer.setMenuText("60", Renderer::TEXT_POS_BOTTOM, matrix);
+            break;
         }
         break;
 #endif
       case EXT_MODE_TRANSITION:
         renderer.clearScreenBuffer(matrix);
+        renderer.setMenuText("TM", Renderer::TEXT_POS_TOP, matrix);
         switch (settings.getTransitionMode()) {
           case Settings::TRANSITION_MODE_NORMAL:
-            for (byte i = 0; i < 5; i++) {
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 11;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 5;
-            }
+            renderer.setMenuText("NO", Renderer::TEXT_POS_BOTTOM, matrix);
             break;
           case Settings::TRANSITION_MODE_FADE:
-            for (byte i = 0; i < 5; i++) {
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 11;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 5;
-            }
+            renderer.setMenuText("FD", Renderer::TEXT_POS_BOTTOM, matrix);
             break;
           case Settings::TRANSITION_MODE_MATRIX:
-            for (byte i = 0; i < 5; i++) {
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 11;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['X' - 'A'][i])) << 5;
-            }
+            renderer.setMenuText("MX", Renderer::TEXT_POS_BOTTOM, matrix);
             break;
           case Settings::TRANSITION_MODE_SLIDE:
-            for (byte i = 0; i < 5; i++) {
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['M' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 11;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 5;
-            }
+            renderer.setMenuText("SD", Renderer::TEXT_POS_BOTTOM, matrix);
             break;
         }
         break;
 #ifdef RGB_LEDS
       case EXT_MODE_COLOR:
         renderer.clearScreenBuffer(matrix);
+        renderer.setMenuText("CL", Renderer::TEXT_POS_TOP, matrix);
         for (byte i = 0; i < 5; i++) {
-          matrix[0 + i] |= pgm_read_byte_near(&(staben['C' - 'A'][i])) << 11;
-          matrix[0 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor() / 10][i])) << 10;
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor() % 10][i])) << 5;
         }
@@ -1103,32 +1053,25 @@ void loop() {
       case EXT_MODE_NIGHT_OFF:
         renderer.clearScreenBuffer(matrix);
         if (!counter) {
-          for (byte i = 0; i < 5; i++) {
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 11;
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 5;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 11;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 5;
-          }
+          renderer.setMenuText("NO", Renderer::TEXT_POS_TOP, matrix);
+          renderer.setMenuText("FF", Renderer::TEXT_POS_BOTTOM, matrix);
         }
         else
         {
-        renderer.clearScreenBuffer(matrix);
-        renderer.setMinutes(settings.getNightModeTime(false).getHours(), settings.getNightModeTime(false).getMinutes(), settings.getLanguage(), matrix);
-        renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
-        if ( (settings.getNightModeTime(false).getHours() >= 12) ) {
-          renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
-        }
+          renderer.clearScreenBuffer(matrix);
+          renderer.setMinutes(settings.getNightModeTime(false).getHours(), settings.getNightModeTime(false).getMinutes(), settings.getLanguage(), matrix);
+          renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
+          if ( (settings.getNightModeTime(false).getHours() >= 12) ) {
+            renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
+          }
         }
 
         break;
       case EXT_MODE_NIGHT_ON:
         renderer.clearScreenBuffer(matrix);
         if (!counter) {
-          for (byte i = 0; i < 5; i++) {
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 8;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 11;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
-          }
+          renderer.setMenuText("N", Renderer::TEXT_POS_TOP, matrix);
+          renderer.setMenuText("ON", Renderer::TEXT_POS_BOTTOM, matrix);
         }
         else
         {
@@ -1144,79 +1087,60 @@ void loop() {
 
       case EXT_MODE_DCF_IS_INVERTED:
         renderer.clearScreenBuffer(matrix);
+        renderer.setMenuText("RS", Renderer::TEXT_POS_TOP, matrix);
         if (settings.getDcfSignalIsInverted()) {
-          for (byte i = 0; i < 5; i++) {
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 11;
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 5;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['I' - 'A'][i])) << 11;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
-          }
+          renderer.setMenuText("IN", Renderer::TEXT_POS_BOTTOM, matrix);
         } else {
-          for (byte i = 0; i < 5; i++) {
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 11;
-            matrix[0 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 5;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 11;
-            matrix[5 + i] |= pgm_read_byte_near(&(staben['O' - 'A'][i])) << 5;
-          }
+          renderer.setMenuText("NO", Renderer::TEXT_POS_BOTTOM, matrix);
         }
         break;
       case EXT_MODE_LANGUAGE:
         renderer.clearScreenBuffer(matrix);
-        for (byte i = 0; i < 5; i++) {
-          switch (settings.getLanguage()) {
-            case LANGUAGE_DE_DE:
-              matrix[2 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 11;
-              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 5;
-              break;
-            case LANGUAGE_DE_SW:
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 11;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['W' - 'A'][i])) << 5;
-              break;
-            case LANGUAGE_DE_BA:
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['B' - 'A'][i])) << 11;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['A' - 'A'][i])) << 5;
-              break;
-            case LANGUAGE_DE_SA:
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['D' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 11;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['A' - 'A'][i])) << 5;
-              break;
-            case LANGUAGE_CH:
-              matrix[2 + i] |= pgm_read_byte_near(&(staben['C' - 'A'][i])) << 11;
-              matrix[2 + i] |= pgm_read_byte_near(&(staben['H' - 'A'][i])) << 5;
-              break;
-            case LANGUAGE_CH_X:
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['C' - 'A'][i])) << 11;
-              matrix[0 + i] |= pgm_read_byte_near(&(staben['H' - 'A'][i])) << 5;
-              matrix[5 + i] |= pgm_read_byte_near(&(staben['X' - 'A'][i])) << 8;
-              break;
-              //            case LANGUAGE_EN:
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
-              //              break;
-              //            case LANGUAGE_FR:
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 11;
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 5;
-              //              break;
-              //            case LANGUAGE_IT:
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['I' - 'A'][i])) << 11;
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 5;
-              //              break;
-              //            case LANGUAGE_NL:
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 11;
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
-              //              break;
-              //            case LANGUAGE_ES:
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-              //              matrix[2 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 5;
-              //              break;
-          }
+        switch (settings.getLanguage()) {
+          case LANGUAGE_DE_DE:
+            renderer.setMenuText("DE", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_DE_SW:
+            renderer.setMenuText("DE", Renderer::TEXT_POS_TOP, matrix);
+            renderer.setMenuText("SW", Renderer::TEXT_POS_BOTTOM, matrix);
+            break;
+          case LANGUAGE_DE_BA:
+            renderer.setMenuText("DE", Renderer::TEXT_POS_TOP, matrix);
+            renderer.setMenuText("BA", Renderer::TEXT_POS_BOTTOM, matrix);
+            break;
+          case LANGUAGE_DE_SA:
+            renderer.setMenuText("DE", Renderer::TEXT_POS_TOP, matrix);
+            renderer.setMenuText("SA", Renderer::TEXT_POS_BOTTOM, matrix);
+            break;
+          case LANGUAGE_CH:
+            renderer.setMenuText("CH", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_CH_X:
+            renderer.setMenuText("CH", Renderer::TEXT_POS_TOP, matrix);
+            renderer.setMenuText("X", Renderer::TEXT_POS_BOTTOM, matrix);
+            break;
+            //            case LANGUAGE_EN:
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
+            //              break;
+            //            case LANGUAGE_FR:
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 11;
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 5;
+            //              break;
+            //            case LANGUAGE_IT:
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['I' - 'A'][i])) << 11;
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 5;
+            //              break;
+            //            case LANGUAGE_NL:
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 11;
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
+            //              break;
+            //            case LANGUAGE_ES:
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
+            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 5;
+            //              break;
         }
+
         break;
       case EXT_MODE_TEST:
         renderer.clearScreenBuffer(matrix);
@@ -1366,32 +1290,16 @@ void loop() {
         }
         break;
       case REMOTE_BUTTON_TIME_H_PLUS:
-        rtc.incHours();
-        rtc.setSeconds(0);
-        rtc.writeTime();
-        rtc.readTime();
-        helperSeconds = 0;
+        incDecHours(true);
         break;
       case REMOTE_BUTTON_TIME_H_MINUS:
-        rtc.decHours();
-        rtc.setSeconds(0);
-        rtc.writeTime();
-        rtc.readTime();
-        helperSeconds = 0;
+        incDecHours(false);
         break;
       case REMOTE_BUTTON_TIME_M_PLUS:
-        rtc.incMinutes();
-        rtc.setSeconds(0);
-        rtc.writeTime();
-        rtc.readTime();
-        helperSeconds = 0;
+        incDecMinutes(true);
         break;
       case REMOTE_BUTTON_TIME_M_MINUS:
-        rtc.decMinutes();
-        rtc.setSeconds(0);
-        rtc.writeTime();
-        rtc.readTime();
-        helperSeconds = 0;
+        incDecMinutes(false);
         break;
       case REMOTE_BUTTON_TRANSITION:
         settings.setTransitionMode(irTranslator.getTransition());
@@ -1593,14 +1501,7 @@ void hourPlusPressed() {
 
   switch (mode) {
     case EXT_MODE_TIMESET:
-      rtc.incHours();
-      rtc.setSeconds(0);
-      rtc.writeTime();
-      rtc.readTime();
-      helperSeconds = 0;
-      DEBUG_PRINT(F("H is now "));
-      DEBUG_PRINTLN(rtc.getHours());
-      DEBUG_FLUSH();
+      incDecHours(true);
       break;
     case EXT_MODE_TIME_SHIFT:
       if (settings.getTimeShift() > -13) {
@@ -1673,13 +1574,13 @@ void hourPlusPressed() {
 #endif
     case EXT_MODE_NIGHT_OFF:
       if (counter > 0) {
-      settings.incHoursNightMode(false);
+        settings.incHoursNightMode(false);
       }
       enableCounter(2);
       break;
     case EXT_MODE_NIGHT_ON:
       if (counter > 0) {
-      settings.incHoursNightMode(true);
+        settings.incHoursNightMode(true);
       }
       enableCounter(2);
       break;
@@ -1707,14 +1608,7 @@ void minutePlusPressed() {
 
   switch (mode) {
     case EXT_MODE_TIMESET:
-      rtc.incMinutes();
-      rtc.setSeconds(0);
-      rtc.writeTime();
-      rtc.readTime();
-      helperSeconds = 0;
-      DEBUG_PRINT(F("M is now "));
-      DEBUG_PRINTLN(rtc.getMinutes());
-      DEBUG_FLUSH();
+      incDecMinutes(true);
       break;
     case EXT_MODE_TIME_SHIFT:
       if (settings.getTimeShift() < 13) {
@@ -1785,13 +1679,13 @@ void minutePlusPressed() {
 #endif
     case EXT_MODE_NIGHT_OFF:
       if (counter > 0) {
-      settings.incFiveMinNightMode(false);
+        settings.incFiveMinNightMode(false);
       }
       enableCounter(2);
       break;
     case EXT_MODE_NIGHT_ON:
       if (counter > 0) {
-      settings.incFiveMinNightMode(true);
+        settings.incFiveMinNightMode(true);
       }
       enableCounter(2);
       break;
@@ -1932,3 +1826,36 @@ void setDisplayDarker() {
 void enableCounter(byte value) {
   counter = value + 1;
 }
+
+void incDecMinutes(boolean inc) {
+  if (inc) {
+    rtc.incMinutes();
+  }
+  else {
+    rtc.decMinutes();
+  }
+  rtc.setSeconds(0);
+  rtc.writeTime();
+  rtc.readTime();
+  helperSeconds = 0;
+  DEBUG_PRINT(F("M is now "));
+  DEBUG_PRINTLN(rtc.getMinutes());
+  DEBUG_FLUSH();
+}
+
+void incDecHours(boolean inc) {
+  if (inc) {
+    rtc.incHours();
+  }
+  else {
+    rtc.decHours();
+  }
+  rtc.setSeconds(0);
+  rtc.writeTime();
+  rtc.readTime();
+  helperSeconds = 0;
+  DEBUG_PRINT(F("H is now "));
+  DEBUG_PRINTLN(rtc.getHours());
+  DEBUG_FLUSH();
+}
+
