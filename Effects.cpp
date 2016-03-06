@@ -21,7 +21,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   word matrix [16];
 
   byte strLength = strlen(str2disp);
-  long bufLen;
+  int bufLen;
   char actChar;
   char lastChar = 'W';
   byte offsetV = 2;

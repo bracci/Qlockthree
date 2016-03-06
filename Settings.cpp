@@ -137,7 +137,7 @@ void Settings::setDcfSignalIsInverted(boolean dcfSignalIsInverted) {
 /**
  * Zeitverschiebung
  */
-char Settings::getTimeShift() {
+byte Settings::getTimeShift() {
   return _timeShift;
 }
 
