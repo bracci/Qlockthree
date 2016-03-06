@@ -34,7 +34,7 @@ class LDR {
     byte _pin;
     boolean _isInverted;
     int _lastValue;
-    int _outputValue;
+    byte _outputValue;
     int _min;
     int _max;
 };

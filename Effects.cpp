@@ -20,13 +20,13 @@
 void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   word matrix [16];
 
-  int strLength = strlen(str2disp);
+  byte strLength = strlen(str2disp);
   long bufLen;
   char actChar;
   char lastChar = 'W';
-  int offsetV = 2;
+  byte offsetV = 2;
   bool finish = false;
-  int i = 0;
+  unsigned int i = 0;
 
   while (!finish) {
   renderer.clearScreenBuffer(matrix);
@@ -93,16 +93,16 @@ void Effects::showIntro() {
 */
 void Effects::showHeart(byte duration, eColors color) {
   word matrix [16];
-  for ( int y = 0; y < 3; y++) {
+  for (byte y = 0; y < 3; y++) {
     renderer.clearScreenBuffer(matrix);
-    for (int j = 0; j < 8; j++) {
+    for (byte j = 0; j < 8; j++) {
       matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
     }
     writeToBuffer(matrix, 16 * duration, color);
-    for ( int i = 0; i < 2; i++) {
+    for (byte i = 0; i < 2; i++) {
       renderer.clearScreenBuffer(matrix);
-      for (int z = 0; z < 2; z++) {
-        for (int j = 0; j < 8; j++) {
+      for (byte z = 0; z < 2; z++) {
+        for (byte j = 0; j < 8; j++) {
           matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[z][j])) << 5);
         }
         writeToBuffer(matrix, 4 * duration, color);
@@ -110,7 +110,7 @@ void Effects::showHeart(byte duration, eColors color) {
     }
   }
   renderer.clearScreenBuffer(matrix);
-  for (int j = 0; j < 8; j++) {
+  for (byte j = 0; j < 8; j++) {
     matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
   }
   writeToBuffer(matrix, 14 * duration, color);
@@ -122,22 +122,22 @@ void Effects::showHeart(byte duration, eColors color) {
 void Effects::showFireWork(byte posX, eColors color) {
   word matrix [16];
 
-  for (int i = 9; i >= 3; i--) {
+  for (byte i = 9; i >= 3; i--) {
     renderer.clearScreenBuffer(matrix);
     ledDriver.setPixelInScreenBuffer(posX, i, matrix);
     writeToBuffer(matrix, 7, color);
   }
 
-  for (int i = 8; i <= 10; i++) {
+  for (byte i = 8; i <= 10; i++) {
     renderer.clearScreenBuffer(matrix);
-    for (int j = 0; j < 10; j++) {
+    for (byte j = 0; j < 10; j++) {
       matrix[j] |= (pgm_read_word_near(&(effectMasks[i][j])) << 10 - posX) & 0b1111111111100000;
     }
     writeToBuffer(matrix, 3 + round(10 * (i - 8) / 3), color);
   }
-  for (int i = 0; i <= 10; i++) {
+  for (byte i = 0; i <= 10; i++) {
     renderer.clearScreenBuffer(matrix);
-    for (int j = 0; j < 10 - i; j++) {
+    for (byte j = 0; j < 10 - i; j++) {
       matrix[j + i] |= (pgm_read_word_near(&(effectMasks[12 + i % 2][j])) << 10 - posX) & 0b1111111111100000;
     }
     writeToBuffer(matrix, 20, color);
@@ -149,13 +149,13 @@ void Effects::showFireWork(byte posX, eColors color) {
 */
 void Effects::showCandle(eColors color) {
   word matrix [16];
-  for (int k = 0; k < 5; k++) {
-    for (int j = -4; j < 4; j++) {
+  for (byte k = 0; k < 5; k++) {
+    for (byte j = -4; j < 4; j++) {
       renderer.clearScreenBuffer(matrix);
-      for (int i = 5; i < 10; i++) {
+      for (byte i = 5; i < 10; i++) {
         matrix[i] |= (pgm_read_word_near(&(effectMasks[7][i])) << 5);
       }
-      for (int i = 0; i < 5; i++) {
+      for (byte i = 0; i < 5; i++) {
         matrix[i] |= (pgm_read_word_near(&(effectMasks[2 + 4 - abs(j % 4)][i])) << 5);
       }
       writeToBuffer(matrix, 10, color);
@@ -169,7 +169,7 @@ void Effects::showCandle(eColors color) {
 void Effects::showLoveU(eColors color) {
   word matrix [16];
   renderer.clearScreenBuffer(matrix);
-  for (int i = 0; i < 10; i++) {
+  for (byte i = 0; i < 10; i++) {
     matrix[i] |= (pgm_read_word_near(&(effectMasks[14][i])) << 5);
   }
   writeToBuffer(matrix, 400, color);
@@ -181,8 +181,8 @@ void Effects::showLoveU(eColors color) {
 void Effects::showBitmap(byte bitmapIdx, byte duration, eColors color) {
   word matrix [16];
   renderer.clearScreenBuffer(matrix);
-  for (int i = 0; i < 10; i++) {
-    for (int j = 0; j < 11; j++) {
+  for (byte i = 0; i < 10; i++) {
+    for (byte j = 0; j < 11; j++) {
       matrix[i] |= ((pgm_read_word_near(&(bitmaps[bitmapIdx - BITMAP_MIN][j])) >> i) & 0x0001) << 15 - j;
     }
   }
@@ -195,12 +195,12 @@ void Effects::showBitmap(byte bitmapIdx, byte duration, eColors color) {
 void Effects::showAnimatedBitmap(byte animatedBitmap, byte duration, eColors color) {
   switch (animatedBitmap) {
     case ANI_BITMAP_CHAMPGLASS:
-      for (int i = 0; i < 6; i++) {
+      for (byte i = 0; i < 6; i++) {
         showBitmap(BITMAP_CHAMPGLASS1 + i % 2, duration, color);
       }
       break;
     case ANI_BITMAP_CHRISTTREE:
-      for (int i = 0; i < 4; i++) {
+      for (byte i = 0; i < 4; i++) {
         showBitmap(BITMAP_CHRISTTREE1 + i % 2, duration, color);
       }
       break;

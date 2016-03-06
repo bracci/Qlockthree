@@ -68,7 +68,7 @@ byte LDR::value() {
 #else
     val = constrain(val, _min, _max);
 #endif
-    int mapVal = map(val, _min, _max, 0, 100);
+    byte mapVal = map(val, _min, _max, 0, 100);
     mapVal = constrain(mapVal, LDR_MIN_PERCENT, LDR_MAX_PERCENT);
     DEBUG_PRINT(F("rawVal: "));
     DEBUG_PRINT(rawVal);

@@ -570,7 +570,6 @@ void updateFromRtc() {
   if (counter > 0) {
     counter--;
   }
-
 }
 
 /**
@@ -745,7 +744,6 @@ void setup() {
   DEBUG_PRINT(F("Free ram: "));
   DEBUG_PRINT(freeRam());
   DEBUG_PRINTLN(F(" bytes."));
-
   DEBUG_FLUSH();
 
   // DCF77-Empfaenger einschalten...
@@ -760,10 +758,10 @@ void setup() {
 */
 void loop() {
 
-//    Serial.print(F("Free ram: "));
-    Serial.print(freeRam());
-//    Serial.println(F(" bytes."));
-//    Serial.flush();
+//  Serial.print(F("Free ram: "));
+//  Serial.println(freeRam());
+//  Serial.println(F(" bytes."));
+//  Serial.flush();
 
   //
   // FPS
@@ -1066,7 +1064,6 @@ void loop() {
             renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
           }
         }
-
         break;
       case EXT_MODE_NIGHT_ON:
         renderer.clearScreenBuffer(matrix);
@@ -1083,7 +1080,6 @@ void loop() {
             renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
           }
         }
-
         break;
 
       case EXT_MODE_DCF_IS_INVERTED:
@@ -1171,9 +1167,7 @@ void loop() {
   }
 
   /*
-
      Tasten abfragen (Code mit 3.3.0 ausgelagert, wegen der Fernbedienung)
-
   */
   // M+ und H+ im STD_MODE_BLANK gedrueckt?
   if ((mode == STD_MODE_BLANK) && extModeDoubleButton.pressed()) {
@@ -1305,8 +1299,6 @@ void loop() {
       case REMOTE_BUTTON_TRANSITION:
         settings.setTransitionMode(irTranslator.getTransition());
         ledDriver.demoTransition();
-        //mode = EXT_MODE_TRANSITION;
-        //enableCounter(2);
         break;
     }
     irrecv.resume();
@@ -1315,10 +1307,8 @@ void loop() {
 #endif
 
   /*
-
      Display zeitgesteuert abschalten?
      Das Verbessert den DCF77-Empfang bzw. ermoeglicht ein dunkles Schlafzimmer.
-
   */
   if ((settings.getNightModeTime(false).getMinutesOfDay() != 0) && (settings.getNightModeTime(false).getMinutesOfDay() != 0)) {
     if ((mode != STD_MODE_NIGHT) && (settings.getNightModeTime(false).getMinutesOfDay() == rtc.getMinutesOfDay())) {
@@ -1332,9 +1322,7 @@ void loop() {
   }
 
   /*
-
      Alarm?
-
   */
 #ifdef ALARM
   if ((mode == STD_MODE_ALARM) && (alarm.getShowAlarmTimeTimer() == 0) && !alarm.isActive()) {
@@ -1357,19 +1345,16 @@ void loop() {
     }
   }
 #endif
+
   /*
-
      Die Matrix auf die LEDs multiplexen, hier 'Refresh-Zyklen'.
-
   */
   if ((mode != STD_MODE_BLANK) && (mode != STD_MODE_NIGHT)) {
     ledDriver.writeScreenBufferToMatrix(matrix, false);
   }
 
   /*
-
      Status-LEDs ausgeben
-
   */
 #ifdef ENABLE_DCF_LED
   dcf77.statusLed(dcf77.signal(settings.getDcfSignalIsInverted()));
@@ -1379,9 +1364,7 @@ void loop() {
 #endif
 
   /*
-
      DCF77-Empfaenger anticken...
-
   */
   dcf77.poll(settings.getDcfSignalIsInverted());
 }
@@ -1814,7 +1797,7 @@ void setDisplayBrighter() {
 */
 void setDisplayDarker() {
   if ((!settings.getUseLdr()) && (settings.getBrightness() > 1)) {
-    int i = settings.getBrightness() - 10;
+    byte i = settings.getBrightness() - 10;
     if (i < 2) {
       i = 1;
     }
@@ -1835,10 +1818,7 @@ void incDecMinutes(boolean inc) {
   else {
     rtc.decMinutes();
   }
-  rtc.setSeconds(0);
-  rtc.writeTime();
-  rtc.readTime();
-  helperSeconds = 0;
+  resetSeconds()
   DEBUG_PRINT(F("M is now "));
   DEBUG_PRINTLN(rtc.getMinutes());
   DEBUG_FLUSH();
@@ -1851,12 +1831,17 @@ void incDecHours(boolean inc) {
   else {
     rtc.decHours();
   }
-  rtc.setSeconds(0);
-  rtc.writeTime();
-  rtc.readTime();
-  helperSeconds = 0;
+  resetSeconds()
   DEBUG_PRINT(F("H is now "));
   DEBUG_PRINTLN(rtc.getHours());
   DEBUG_FLUSH();
 }
+
+void resetSeconds() {
+  rtc.setSeconds(0);
+  rtc.writeTime();
+  rtc.readTime();
+  helperSeconds = 0;
+}
+
 

@@ -13,7 +13,7 @@
 
 #include "Transitions.h"
 
-int Transitions::_counter;
+byte Transitions::_counter;
 word Transitions::_usedColumns;
 byte Transitions::_remainingCoulumnCount;
 boolean Transitions::_ereasingDone;
@@ -65,8 +65,8 @@ void Transitions::shiftColumnUp (word matrixNew[16], word matrix[16], byte colum
 }
 
 boolean Transitions::nextMatrixStep(word matrixWeak[16], word matrixTime[16], word matrixMatrix[16], word matrix[16]) {
-  int loopCount = random(0, 5);
-  int column;
+  byte loopCount = random(0, 5);
+  byte column;
 
   if (!_ereasingDone) {
     shiftDownMatrixErease(matrixMatrix, matrixWeak);
@@ -80,7 +80,7 @@ boolean Transitions::nextMatrixStep(word matrixWeak[16], word matrixTime[16], wo
       }
       else
       {
-        for ( int i = 0; i < loopCount; i++) {
+        for ( byte i = 0; i < loopCount; i++) {
           column = random(4, 16);
           if (!(_usedColumns & (0x01 << column))) {
             _usedColumns |= (0x01 << column);
@@ -103,7 +103,7 @@ boolean Transitions::nextMatrixStep(word matrixWeak[16], word matrixTime[16], wo
       }
       else
       {
-        for ( int i = 0; i < loopCount; i++) {
+        for ( byte i = 0; i < loopCount; i++) {
           column = random(4, 16);
           if (!(_usedColumns & (0x01 << column))) {
             _usedColumns |= (0x01 << column);

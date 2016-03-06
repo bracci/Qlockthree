@@ -27,7 +27,7 @@ class Transitions {
     static void shiftColumnUp (word matrixNew[16], word matrix[16], byte column);
     static void shiftDownMatrixErease(word matrixMatrix[16], word matrixWeak[16]);
     static void shiftDownMatrixWrite(word matrixMatrix[16], word matrixWeak[16]);
-    static int _counter;
+    static byte _counter;
     static word _usedColumns;
     static byte _remainingCoulumnCount;
     static boolean _ereasingDone;

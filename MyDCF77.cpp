@@ -159,7 +159,7 @@ byte MyDCF77::getBitPointer() {
  * Decodierung des Telegramms...
  */
 boolean MyDCF77::decode() {
-  int c = 0; // bitcount for checkbit
+  byte c = 0; // bitcount for checkbit
   boolean ok = true;
 
   DEBUG_PRINTLN(F("Decoding telegram..."));
