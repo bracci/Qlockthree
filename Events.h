@@ -16,53 +16,20 @@
 #include "Event.h"
 #include "Colors.h"
 
-/**************************************************************************************************************
-* Instanzierung und Initialisierung jährlicher Events. Ein Event enthält eine Laufschrift, gefolgt
-* von einem Bildeffekt (Herz, Feuerwerk, etc.). Diese werden am definierten Jahrestag jeweils zur vollen Stunde
-* während einer definierten Dauer nonstop angezeigt. Soll nur eine Laufschrift (ohne Bildeffekt) angezeigt werden,
-* ist als Effekt-Input NO_EFFECT zu wählen. Soll nur ein Bildeffekt (ohne Laufschrift) gezeigt werden, ist als
-* Text-Input "" zu definieren. (Monat, Tag, Text, Effekt, Effektfarbe) Das Event-Array kann "beliebig" ergänzt
-* werden.
-**************************************************************************************************************/
-Event events[] = {
-  Event(1, 1, "Happy New Year", Effects::EFFECT_FIREWORK, color_rgb),
-//  Event(2, 14, "Happy Valentine's Day", Effects::EFFECT_HEART, color_red),
-//  Event(12, 25, "Merry Christmas", Effects::EFFECT_CANDLE, color_orange1),
-//  Event(7, 30, "Happy Birthday", Effects::EFFECT_FIREWORK, color_rgb),
-//  Event(7, 29, "Happy Manu Day", Effects::ANI_BITMAP_SMILEY_WINK, color_yellow),
+#define DURATION_BM   15
+#define TICKER_SPEED  6
 
-  //  Event(1, 16, "Testevent", Effects::ANI_BITMAP_SMILEY_WINK),
-  //  Event(2,14,"",Effects::EFFECT_HEART),
-  //  Event(7,30,"Happy Birthday",Effects::EFFECT_HEART)
+#define DURATION_ANI_BM  (DURATION_BM/5)
+
+class Events{
+public:
+Events();
+
+static Event events[];
+static byte nbrOfEvts;
+
+static void show(byte eventID);
+
 };
 
-//NO_EFFECT = 255,
-//EFFECT_FIREWORK = 0,
-//EFFECT_HEART,
-//EFFECT_CANDLE,
-//EFFECT_LOVEU,
-//EFFECT_INTRO,
-//
-//BITMAP_MIN,
-//BITMAP_HEART = BITMAP_MIN,
-//BITMAP_DOTCIRCLE,
-//BITMAP_WEDDINGRING,
-//BITMAP_BDPIE,
-//BITMAP_CHAMPGLASS1,
-//BITMAP_CHAMPGLASS2,
-//BITMAP_CHRISTTREE1,
-//BITMAP_CHRISTTREE2,
-//BITMAP_SMILEY,
-//BITMAP_SMILEY_WINK,
-//
-//ANI_BITMAP_MIN,
-//ANI_BITMAP_CHAMPGLASS = ANI_BITMAP_MIN,
-//ANI_BITMAP_CHRISTTREE,
-//ANI_BITMAP_SMILEY_WINK,
-
-
-/**************************************************************************************************************
- * Anzahl definierter Events
- **************************************************************************************************************/
-int nbrOfEvts = sizeof(events) / sizeof(Event);
 #endif // EVENTS_H

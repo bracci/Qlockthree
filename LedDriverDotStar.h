@@ -1,21 +1,21 @@
 /**
- * LedDriverDotStar
- * Implementierung auf der Basis von APA102-Streifen wie sie die Adafruit-Dot-Stars verwenden.
- *
- * @mc       Arduino/RBBB
- * @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.1
- * @created  9.2.2015
- * @updated  16.2.2015
- *
- * Versionshistorie:
- * V 1.0:  - Erstellt.
- * V 1.1:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
- *
- * Verkabelung: Einspeisung oben links, dann schlangenfoermig runter,
- * dann Ecke unten links, oben links, oben rechts, unten rechts.
- *
- */
+   LedDriverDotStar
+   Implementierung auf der Basis von APA102-Streifen wie sie die Adafruit-Dot-Stars verwenden.
+
+   @mc       Arduino/RBBB
+   @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
+   @version  1.1
+   @created  9.2.2015
+   @updated  16.2.2015
+
+   Versionshistorie:
+   V 1.0:  - Erstellt.
+   V 1.1:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
+
+   Verkabelung: Einspeisung oben links, dann schlangenfoermig runter,
+   dann Ecke unten links, oben links, oben rechts, unten rechts.
+
+*/
 #ifndef LED_DRIVER_DOTSTAR_H
 #define LED_DRIVER_DOTSTAR_H
 
@@ -56,6 +56,14 @@ class LedDriverDotStar : public LedDriver {
     void _clear();
 
     byte _brightnessScaleColor(byte brightness, byte colorPart);
+
+    uint32_t _color;
+    uint32_t _colorNew;
+    uint32_t _colorOld;
+    uint32_t _colorOverlay1;
+    uint32_t _colorOverlay2;
+    byte _brightnessOld;
+    byte _brightnessNew;
 
     Adafruit_DotStar *_strip;
 };

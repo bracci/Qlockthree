@@ -64,6 +64,14 @@ class LedDriverLPD8806 : public LedDriver {
 
     byte _brightnessScaleColor(byte brightness, byte colorPart);
 
+    uint32_t _color;
+    uint32_t _colorNew;
+    uint32_t _colorOld;
+    uint32_t _colorOverlay1;
+    uint32_t _colorOverlay2;
+    byte _brightnessOld;
+    byte _brightnessNew;
+
 #ifdef MATRIX_XXL
     LPD8806DBL *_strip;
 #else

@@ -88,14 +88,6 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
   }
 
   if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
-    uint32_t color;
-    uint32_t colorNew;
-    uint32_t colorOld;
-    uint32_t colorOverlay1;
-    uint32_t colorOverlay2;
-    byte brightnessOld;
-    byte brightnessNew;
-
     _dirty = false;
 
     if (mode != STD_MODE_NORMAL) {
@@ -180,15 +172,15 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     **************/
 
     if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
-      brightnessOld = map(_transitionCounter, 0, FADINGCOUNTERLOAD * 2, 0, _brightnessInPercent);
-      brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD * 2, 0 , 0 , _brightnessInPercent);
+      _brightnessOld = map(_transitionCounter, 0, FADINGCOUNTERLOAD * 2, 0, _brightnessInPercent);
+      _brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD * 2, 0 , 0 , _brightnessInPercent);
       if (_transitionCounter == 0) {
         _transitionCompleted = true;
       }
     }
     else {
-      brightnessOld = 0;
-      brightnessNew = _brightnessInPercent;
+      _brightnessOld = 0;
+      _brightnessNew = _brightnessInPercent;
     }
 
     /*************
@@ -196,7 +188,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     **************/
     if ((a_color != color_none) && (a_color < color_max))
     {
-      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue)));
+      _colorNew = _strip->Color(_brightnessScaleColor(_brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(_brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)), _brightnessScaleColor(_brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue)));
     }
     else if ((settings.getColor() == color_rgb) || (a_color == color_rgb) ) {
       if (updateWheelColor) {
@@ -207,24 +199,24 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
           _wheelPos += 2;
         }
       }
-      color = _wheel(_brightnessInPercent, _wheelPos);
-      colorNew = _wheel(brightnessNew, _wheelPos);
-      colorOld = _wheel(brightnessOld, _wheelPos);
-      colorOverlay1 = 0;
-      colorOverlay2 = 0;
+      _color = _wheel(_brightnessInPercent, _wheelPos);
+      _colorNew = _wheel(_brightnessNew, _wheelPos);
+      _colorNew = _wheel(_brightnessOld, _wheelPos);
+      _colorOverlay1 = 0;
+      _colorOverlay2 = 0;
     }
     else {
-      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].green)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)));
-      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].green)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)));
-      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].green)), _brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)));
-      colorOverlay1 = 0;
-      colorOverlay2 = 0;
+      _color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].green)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)));
+      _colorNew = _strip->Color(_brightnessScaleColor(_brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(_brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].green)), _brightnessScaleColor(_brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)));
+      _colorNew = _strip->Color(_brightnessScaleColor(_brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(_brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].green)), _brightnessScaleColor(_brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)));
+      _colorOverlay1 = 0;
+      _colorOverlay2 = 0;
     }
 
     if ( (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) && !_transitionCompleted ) {
-      colorOverlay1 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255), _brightnessScaleColor(_brightnessInPercent, 0));
-      colorOverlay2 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.5), _brightnessScaleColor(_brightnessInPercent, 0));
-      colorOld = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.1), _brightnessScaleColor(_brightnessInPercent, 0));
+      _colorOverlay1 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255), _brightnessScaleColor(_brightnessInPercent, 0));
+      _colorOverlay2 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.5), _brightnessScaleColor(_brightnessInPercent, 0));
+      _colorNew = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.1), _brightnessScaleColor(_brightnessInPercent, 0));
     }
 
     /*************
@@ -237,20 +229,20 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
       for (byte x = 5; x < 16; x++) {
         word t = 1 << x;
         if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t)) {
-          _setPixel(15 - x, y, color);
+          _setPixel(15 - x, y, _color);
         }
         else {
           if ((_matrixOverlay[y] & t) == t) {
-            _setPixel(15 - x, y, colorOverlay1);
+            _setPixel(15 - x, y, _colorOverlay1);
           }
           else if ((_matrixOverlay[y + 1] & t) == t) {
-            _setPixel(15 - x, y, colorOverlay2);
+            _setPixel(15 - x, y, _colorOverlay2);
           }
           else if ((_matrixOld[y] & t) == t) {
-            _setPixel(15 - x, y, colorOld);
+            _setPixel(15 - x, y, _colorNew);
           }
           else if ((_matrixNew[y] & t) == t) {
-            _setPixel(15 - x, y, colorNew);
+            _setPixel(15 - x, y, _colorNew);
           }
         }
       }
@@ -260,14 +252,14 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     byte cornerLedCount[] = {1, 0, 3, 2, 4};
     for ( byte i = 0; i < 5; i++) {
       if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
-        _setPixel(110 + i, color);
+        _setPixel(110 + i, _color);
       }
       else {
         if (((_matrixOld[cornerLedCount[i]] & 0b0000000000010000) > 0) ) {
-          _setPixel(110 + i, colorOld);
+          _setPixel(110 + i, _colorNew);
         }
         else if (((_matrixNew[cornerLedCount[i]] & 0b0000000000010000) > 0) ) {
-          _setPixel(110 + i, colorNew);
+          _setPixel(110 + i, _colorNew);
         }
       }
     }

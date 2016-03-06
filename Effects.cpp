@@ -18,8 +18,6 @@
 #include "Debug.h"
 
 void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
-  word matrix [16];
-
   byte strLength = strlen(str2disp);
   int bufLen;
   char actChar;
@@ -62,8 +60,6 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
    Intro
 */
 void Effects::showIntro() {
-  word matrix [16];
-
   renderer.clearScreenBuffer(matrix);
   for (int j = 0; j < 11; j++) {
     for (byte i = 0; i < 10; i++) {
@@ -92,7 +88,10 @@ void Effects::showIntro() {
    Pulsierender Herz-Effekt
 */
 void Effects::showHeart(byte duration, eColors color) {
-  word matrix [16];
+  Serial.print("duration: ");
+  Serial.println(duration);
+  Serial.print("color: ");
+  Serial.println(color);
   for (byte y = 0; y < 3; y++) {
     renderer.clearScreenBuffer(matrix);
     for (byte j = 0; j < 8; j++) {
@@ -120,8 +119,6 @@ void Effects::showHeart(byte duration, eColors color) {
    Feuerwerk-Effekt
 */
 void Effects::showFireWork(byte posX, eColors color) {
-  word matrix [16];
-
   for (byte i = 9; i >= 3; i--) {
     renderer.clearScreenBuffer(matrix);
     ledDriver.setPixelInScreenBuffer(posX, i, matrix);
@@ -148,9 +145,8 @@ void Effects::showFireWork(byte posX, eColors color) {
    Kerzen-Effekt
 */
 void Effects::showCandle(eColors color) {
-  word matrix [16];
   for (byte k = 0; k < 5; k++) {
-    for (byte j = -4; j < 4; j++) {
+    for (int j = -4; j < 4; j++) {
       renderer.clearScreenBuffer(matrix);
       for (byte i = 5; i < 10; i++) {
         matrix[i] |= (pgm_read_word_near(&(effectMasks[7][i])) << 5);
@@ -167,7 +163,6 @@ void Effects::showCandle(eColors color) {
    Love U
 */
 void Effects::showLoveU(eColors color) {
-  word matrix [16];
   renderer.clearScreenBuffer(matrix);
   for (byte i = 0; i < 10; i++) {
     matrix[i] |= (pgm_read_word_near(&(effectMasks[14][i])) << 5);
@@ -179,7 +174,6 @@ void Effects::showLoveU(eColors color) {
    Bitmap
 */
 void Effects::showBitmap(byte bitmapIdx, byte duration, eColors color) {
-  word matrix [16];
   renderer.clearScreenBuffer(matrix);
   for (byte i = 0; i < 10; i++) {
     for (byte j = 0; j < 11; j++) {
