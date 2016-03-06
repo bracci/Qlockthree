@@ -33,6 +33,7 @@
 #define REMOTE_BUTTON_RESUME       9
 #define REMOTE_BUTTON_SETCOLOR     10
 // ... weitere koennen dann die konkreten Implementierungen hinzufuegen.
+#define REMOTE_BUTTON_START_YOUR_OWN_AT  100
 
 // für CLT Remote
 #define REMOTE_BUTTON_SAVE         100

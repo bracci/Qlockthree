@@ -850,41 +850,41 @@ void loop() {
       case STD_MODE_NORMAL:
         // Event Abfrage
 #ifdef EVENTS
-        for (byte evtID = 0; evtID < Events::nbrOfEvts; evtID++) {
-          if ((rtc.getDate() == Events::events[evtID].getDate()) & (rtc.getMonth() == Events::events[evtID].getMonth())) {
+        for (byte evtID = 0; evtID < nbrOfEvts; evtID++) {
+          if ((rtc.getDate() == events[evtID].getDate()) & (rtc.getMonth() == events[evtID].getMonth())) {
             switch (settings.getEvent()) {
               case 0:
                 while (!(rtc.getMinutes() % 5)) {
                   evtActive = true;
-                  Events::show(evtID);
+                  events[evtID].show();
                   rtc.readTime();
                 }
                 break;
               case 1:
                 while (!(rtc.getMinutes() % 15)) {
                   evtActive = true;
-                  Events::show(evtID);
+                  events[evtID].show();
                   rtc.readTime();
                 }
                 break;
               case 2:
                 while (!(rtc.getMinutes() % 30)) {
                   evtActive = true;
-                  Events::show(evtID);
+                  events[evtID].show();
                   rtc.readTime();
                 }
                 break;
               case 3:
                 while (!(rtc.getMinutes() % 45)) {
                   evtActive = true;
-                  Events::show(evtID);
+                  events[evtID].show();
                   rtc.readTime();
                 }
                 break;
               case 4:
                 while (!(rtc.getMinutes() % 60)) {
                   evtActive = true;
-                  Events::show(evtID);
+                  events[evtID].show();
                   rtc.readTime();
                 }
                 break;
@@ -1116,21 +1116,21 @@ void loop() {
             renderer.setMenuText("CH", Renderer::TEXT_POS_TOP, matrix);
             renderer.setMenuText("X", Renderer::TEXT_POS_BOTTOM, matrix);
             break;
-//          case LANGUAGE_EN:
-//            renderer.setMenuText("EN", Renderer::TEXT_POS_MIDDLE, matrix);
-//            break;
-//          case LANGUAGE_FR:
-//            renderer.setMenuText("FR", Renderer::TEXT_POS_MIDDLE, matrix);
-//            break;
-//          case LANGUAGE_IT:
-//            renderer.setMenuText("IT", Renderer::TEXT_POS_MIDDLE, matrix);
-//            break;
-//          case LANGUAGE_NL:
-//            renderer.setMenuText("NL", Renderer::TEXT_POS_MIDDLE, matrix);
-//            break;
-//          case LANGUAGE_ES:
-//            renderer.setMenuText("ES", Renderer::TEXT_POS_MIDDLE, matrix);
-//            break;
+          case LANGUAGE_EN:
+            renderer.setMenuText("EN", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_FR:
+            renderer.setMenuText("FR", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_IT:
+            renderer.setMenuText("IT", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_NL:
+            renderer.setMenuText("NL", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_ES:
+            renderer.setMenuText("ES", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
         }
 
         break;
@@ -1389,11 +1389,11 @@ void doubleEvtModePressed() {
   DEBUG_FLUSH();
   while (minutesPlusButton.pressed());
   while (hoursPlusButton.pressed());
-  if (Events::nbrOfEvts > 0) {
-    Events::show(i);
+  if (nbrOfEvts > 0) {
+    events[i].show();
     i++;
   }
-  if (i >= Events::nbrOfEvts) {
+  if (i >= nbrOfEvts) {
     i = 0;
   }
   DEBUG_PRINT(F("Entering EXT_MODEs, mode is now "));

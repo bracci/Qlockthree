@@ -81,6 +81,14 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
   }
 
   if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
+    uint32_t color;
+    uint32_t colorNew;
+    uint32_t colorOld;
+    uint32_t colorOverlay1;
+    uint32_t colorOverlay2;
+    byte brightnessOld;
+    byte brightnessNew;
+
     _dirty = false;
 
     if (mode != STD_MODE_NORMAL) {
@@ -165,15 +173,15 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     **************/
 
     if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
-      _brightnessOld = map(_transitionCounter, 0, FADINGCOUNTERLOAD, 0, _brightnessInPercent);
-      _brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD, 0 , 0 , _brightnessInPercent);
+      brightnessOld = map(_transitionCounter, 0, FADINGCOUNTERLOAD, 0, _brightnessInPercent);
+      brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD, 0 , 0 , _brightnessInPercent);
       if (_transitionCounter == 0) {
         _transitionCompleted = true;
       }
     }
     else {
-      _brightnessOld = 0;
-      _brightnessNew = _brightnessInPercent;
+      brightnessOld = 0;
+      brightnessNew = _brightnessInPercent;
     }
 
     /*************
@@ -181,7 +189,7 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     **************/
     if ((a_color != color_none) && (a_color < color_max))
     {
-      _colorNew = _strip->Color(_brightnessScaleColor(_brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(_brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue)), _brightnessScaleColor(_brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)));
+      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)));
     }
     else if ((settings.getColor() == color_rgb) || (a_color == color_rgb) ) {
       if (updateWheelColor) {
@@ -192,24 +200,24 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
           _wheelPos += 2;
         }
       }
-      _color = _wheel(_brightnessInPercent, _wheelPos);
-      _colorNew = _wheel(_brightnessNew, _wheelPos);
-      _colorOld = _wheel(_brightnessOld, _wheelPos);
-      _colorOverlay1 = 0;
-      _colorOverlay2 = 0;
+      color = _wheel(_brightnessInPercent, _wheelPos);
+      colorNew = _wheel(brightnessNew, _wheelPos);
+      colorOld = _wheel(brightnessOld, _wheelPos);
+      colorOverlay1 = 0;
+      colorOverlay2 = 0;
     }
     else {
-      _color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, defaultColors[settings.getColor()].red), _brightnessScaleColor(_brightnessInPercent, defaultColors[settings.getColor()].blue), _brightnessScaleColor(_brightnessInPercent, defaultColors[settings.getColor()].green));
-      _colorNew = _strip->Color(_brightnessScaleColor(_brightnessNew, defaultColors[settings.getColor()].red), _brightnessScaleColor(_brightnessNew, defaultColors[settings.getColor()].blue), _brightnessScaleColor(_brightnessNew, defaultColors[settings.getColor()].green));
-      _colorOld = _strip->Color(_brightnessScaleColor(_brightnessOld, defaultColors[settings.getColor()].red), _brightnessScaleColor(_brightnessOld, defaultColors[settings.getColor()].blue), _brightnessScaleColor(_brightnessOld, defaultColors[settings.getColor()].green));
-      _colorOverlay1 = 0;
-      _colorOverlay2 = 0;
+      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, defaultColors[settings.getColor()].red), _brightnessScaleColor(_brightnessInPercent, defaultColors[settings.getColor()].blue), _brightnessScaleColor(_brightnessInPercent, defaultColors[settings.getColor()].green));
+      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, defaultColors[settings.getColor()].red), _brightnessScaleColor(brightnessNew, defaultColors[settings.getColor()].blue), _brightnessScaleColor(brightnessNew, defaultColors[settings.getColor()].green));
+      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, defaultColors[settings.getColor()].red), _brightnessScaleColor(brightnessOld, defaultColors[settings.getColor()].blue), _brightnessScaleColor(brightnessOld, defaultColors[settings.getColor()].green));
+      colorOverlay1 = 0;
+      colorOverlay2 = 0;
     }
 
     if ( (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) && !_transitionCompleted ) {
-      _colorOverlay1 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255));
-      _colorOverlay2 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.5));
-      _colorOld = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.1));
+      colorOverlay1 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255));
+      colorOverlay2 = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.5));
+      colorOld = _strip->Color(_brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 0), _brightnessScaleColor(_brightnessInPercent, 255 * 0.1));
     }
 
     /*************
@@ -221,20 +229,20 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
       for (byte x = 5; x < 16; x++) {
         word t = 1 << x;
         if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[y] & t) == t) && ((_matrixNew[y] & t) == t) ) {
-          _setPixel(15 - x, y, _color);
+          _setPixel(15 - x, y, color);
         }
         else {
           if ((_matrixOverlay[y] & t) == t) {
-            _setPixel(15 - x, y, _colorOverlay1);
+            _setPixel(15 - x, y, colorOverlay1);
           }
           else if ((_matrixOverlay[y + 1] & t) == t) {
-            _setPixel(15 - x, y, _colorOverlay2);
+            _setPixel(15 - x, y, colorOverlay2);
           }
           else if ((_matrixOld[y] & t) == t) {
-            _setPixel(15 - x, y, _colorOld);
+            _setPixel(15 - x, y, colorOld);
           }
           else if ((_matrixNew[y] & t) == t) {
-            _setPixel(15 - x, y, _colorNew);
+            _setPixel(15 - x, y, colorNew);
           }
         }
       }
@@ -244,14 +252,14 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     byte cornerLedCount[] = {1, 0, 3, 2, 4};
     for ( byte i = 0; i < 5; i++) {
       if ((settings.getTransitionMode() == Settings::TRANSITION_MODE_FADE) && ((_matrixOld[cornerLedCount[i]] & _matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
-        _setPixel(110 + i, _color);
+        _setPixel(110 + i, color);
       }
       else {
         if (((_matrixOld[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
-          _setPixel(110 + i, _colorOld);
+          _setPixel(110 + i, colorOld);
         }
         else if (((_matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
-          _setPixel(110 + i, _colorNew);
+          _setPixel(110 + i, colorNew);
         }
       }
     }

@@ -28,12 +28,12 @@
 #define LANGUAGE_DE_SA 3
 #define LANGUAGE_CH    4
 #define LANGUAGE_CH_X  5
-//#define LANGUAGE_EN    6
-//#define LANGUAGE_FR    7
-//#define LANGUAGE_IT    8
-//#define LANGUAGE_NL    9
-//#define LANGUAGE_ES    10
-#define LANGUAGE_COUNT 5
+#define LANGUAGE_EN    6
+#define LANGUAGE_FR    7
+#define LANGUAGE_IT    8
+#define LANGUAGE_NL    9
+#define LANGUAGE_ES    10
+#define LANGUAGE_COUNT 10
 
 class Renderer {
   public:
@@ -60,9 +60,9 @@ class Renderer {
     boolean isNumber(char symbol);
 
     // Spezialfaelle
-//    void FR_hours(byte hours, word matrix[16]);
-//    void IT_hours(byte hours, word matrix[16]);
-//    void ES_hours(byte hours, word matrix[16]);
+    void FR_hours(byte hours, word matrix[16]);
+    void IT_hours(byte hours, word matrix[16]);
+    void ES_hours(byte hours, word matrix[16]);
 };
 
 #endif

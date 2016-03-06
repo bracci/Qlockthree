@@ -78,7 +78,7 @@
 //#define REMOTE_LUNARTEC
 #define REMOTE_CLT
 
-//#define EVENTS
+#define EVENTS
 
 /*
  *
@@ -129,7 +129,7 @@
  * Fuer wieviele DCF77-Samples muessen die Zeitabstaende stimmen, damit das DCF77-Telegramm als gueltig zaehlt?
  * Default: 3 (min. 3 Minuten Synchronisationszeit).
  */
-#define DCF77HELPER_MAX_SAMPLES 2
+#define DCF77HELPER_MAX_SAMPLES 3
 /*
  * Bei einer Verwendung eines analogen Pins die naechsten zwei Zeilen einkommentieren.
  * Default: ausgeschaltet

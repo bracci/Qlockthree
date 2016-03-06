@@ -41,11 +41,9 @@ extern LedDriverDotStar ledDriver;
 extern LedDriverLPD8806 ledDriver;
 #endif
 
-extern word matrix[16];
-
 class Effects {
   public:
-    enum eEffects : byte 
+    enum eEffects : byte
     {
       NO_EFFECT = 255,
       EFFECT_FIREWORK = 0,
