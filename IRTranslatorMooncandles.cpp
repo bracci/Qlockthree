@@ -42,7 +42,7 @@
 #define MOONCANDLES_MAGENTA       0x1FE708F
 
 void IRTranslatorMooncandles::printSignature() {
-  Serial.println(F("Mooncandles"));
+  DEBUG_PRINTLN(F("Mooncandles"));
 }
 
 byte IRTranslatorMooncandles::buttonForCode(unsigned long code) {

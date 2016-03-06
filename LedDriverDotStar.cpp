@@ -53,7 +53,7 @@ void LedDriverDotStar::init() {
 }
 
 void LedDriverDotStar::printSignature() {
-  Serial.println(F("DotStar - APA102"));
+  DEBUG_PRINTLN(F("DotStar - APA102"));
 }
 
 /**

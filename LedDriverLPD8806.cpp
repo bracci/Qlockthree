@@ -64,7 +64,7 @@ void LedDriverLPD8806::init() {
 }
 
 void LedDriverLPD8806::printSignature() {
-  Serial.println(F("LPD8806"));
+  DEBUG_PRINTLN(F("LPD8806"));
 }
 
 /**

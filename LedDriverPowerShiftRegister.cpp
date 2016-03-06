@@ -44,7 +44,7 @@ void LedDriverPowerShiftRegister::init() {
 }
 
 void LedDriverPowerShiftRegister::printSignature() {
-  Serial.println(F("Power Shift Register (TPICB595N)"));
+  DEBUG_PRINTLN(F("Power Shift Register (TPICB595N)"));
 }
 
 /**

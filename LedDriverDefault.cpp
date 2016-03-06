@@ -57,7 +57,7 @@ void LedDriverDefault::init() {
 }
 
 void LedDriverDefault::printSignature() {
-  Serial.println(F("Default - 74HC595"));
+  DEBUG_PRINTLN(F("Default - 74HC595"));
 }
 
 /**

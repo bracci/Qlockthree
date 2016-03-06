@@ -51,7 +51,7 @@ void LedDriverUeberPixel::init() {
 }
 
 void LedDriverUeberPixel::printSignature() {
-  Serial.println(F("UeberPixel - MAX7219"));
+  DEBUG_PRINTLN(F("UeberPixel - MAX7219"));
 }
 
 /**

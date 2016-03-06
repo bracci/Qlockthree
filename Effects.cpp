@@ -28,9 +28,6 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   bool finish = false;
   int i = 0;
 
-  // Diesen Serial print einfach drin lassen! Keine Ahnung weshalb, aber ohne werden die Eventtexte auf mysteriöse Weise manipuliert...
-  Serial.print(F("testtest"));
-
   while (!finish) {
   renderer.clearScreenBuffer(matrix);
     unsigned int shift = 0; // Schiebekorrektur aufgrund variierender Buchstabenbreite

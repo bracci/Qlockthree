@@ -30,40 +30,40 @@ volatile irparams_t irparams;
 // Normally macros are used for efficiency
 #ifdef DEBUG
 int MATCH(int measured, int desired) {
-  Serial.print("Testing: ");
-  Serial.print(TICKS_LOW(desired), DEC);
-  Serial.print(" <= ");
-  Serial.print(measured, DEC);
-  Serial.print(" <= ");
-  Serial.println(TICKS_HIGH(desired), DEC);
+  DEBUG_PRINT("Testing: ");
+  DEBUG_PRINT(TICKS_LOW(desired), DEC);
+  DEBUG_PRINT(" <= ");
+  DEBUG_PRINT(measured, DEC);
+  DEBUG_PRINT(" <= ");
+  DEBUG_PRINTLN(TICKS_HIGH(desired), DEC);
   return measured >= TICKS_LOW(desired) && measured <= TICKS_HIGH(desired);
 }
 
 int MATCH_MARK(int measured_ticks, int desired_us) {
-  Serial.print("Testing mark ");
-  Serial.print(measured_ticks * USECPERTICK, DEC);
-  Serial.print(" vs ");
-  Serial.print(desired_us, DEC);
-  Serial.print(": ");
-  Serial.print(TICKS_LOW(desired_us + MARK_EXCESS), DEC);
-  Serial.print(" <= ");
-  Serial.print(measured_ticks, DEC);
-  Serial.print(" <= ");
-  Serial.println(TICKS_HIGH(desired_us + MARK_EXCESS), DEC);
+  DEBUG_PRINT("Testing mark ");
+  DEBUG_PRINT(measured_ticks * USECPERTICK, DEC);
+  DEBUG_PRINT(" vs ");
+  DEBUG_PRINT(desired_us, DEC);
+  DEBUG_PRINT(": ");
+  DEBUG_PRINT(TICKS_LOW(desired_us + MARK_EXCESS), DEC);
+  DEBUG_PRINT(" <= ");
+  DEBUG_PRINT(measured_ticks, DEC);
+  DEBUG_PRINT(" <= ");
+  DEBUG_PRINTLN(TICKS_HIGH(desired_us + MARK_EXCESS), DEC);
   return measured_ticks >= TICKS_LOW(desired_us + MARK_EXCESS) && measured_ticks <= TICKS_HIGH(desired_us + MARK_EXCESS);
 }
 
 int MATCH_SPACE(int measured_ticks, int desired_us) {
-  Serial.print("Testing space ");
-  Serial.print(measured_ticks * USECPERTICK, DEC);
-  Serial.print(" vs ");
-  Serial.print(desired_us, DEC);
-  Serial.print(": ");
-  Serial.print(TICKS_LOW(desired_us - MARK_EXCESS), DEC);
-  Serial.print(" <= ");
-  Serial.print(measured_ticks, DEC);
-  Serial.print(" <= ");
-  Serial.println(TICKS_HIGH(desired_us - MARK_EXCESS), DEC);
+  DEBUG_PRINT("Testing space ");
+  DEBUG_PRINT(measured_ticks * USECPERTICK, DEC);
+  DEBUG_PRINT(" vs ");
+  DEBUG_PRINT(desired_us, DEC);
+  DEBUG_PRINT(": ");
+  DEBUG_PRINT(TICKS_LOW(desired_us - MARK_EXCESS), DEC);
+  DEBUG_PRINT(" <= ");
+  DEBUG_PRINT(measured_ticks, DEC);
+  DEBUG_PRINT(" <= ");
+  DEBUG_PRINTLN(TICKS_HIGH(desired_us - MARK_EXCESS), DEC);
   return measured_ticks >= TICKS_LOW(desired_us - MARK_EXCESS) && measured_ticks <= TICKS_HIGH(desired_us - MARK_EXCESS);
 }
 #else
@@ -425,62 +425,62 @@ int IRrecv::decode(decode_results *results) {
     return ERR;
   }
 #ifdef DEBUG
-  Serial.println("Attempting NEC decode");
+  DEBUG_PRINTLN("Attempting NEC decode");
 #endif
   if (decodeNEC(results)) {
     return DECODED;
   }
   /*
   #ifdef DEBUG
-    Serial.println("Attempting Sony decode");
+    DEBUG_PRINTLN("Attempting Sony decode");
   #endif
     if (decodeSony(results)) {
       return DECODED;
     }
   #ifdef DEBUG
-    Serial.println("Attempting Sanyo decode");
+    DEBUG_PRINTLN("Attempting Sanyo decode");
   #endif
     if (decodeSanyo(results)) {
       return DECODED;
     }
   #ifdef DEBUG
-    Serial.println("Attempting Mitsubishi decode");
+    DEBUG_PRINTLN("Attempting Mitsubishi decode");
   #endif
     if (decodeMitsubishi(results)) {
       return DECODED;
     }
   #ifdef DEBUG
-    Serial.println("Attempting RC5 decode");
+    DEBUG_PRINTLN("Attempting RC5 decode");
   #endif
     if (decodeRC5(results)) {
       return DECODED;
     }
   #ifdef DEBUG
-    Serial.println("Attempting RC6 decode");
+    DEBUG_PRINTLN("Attempting RC6 decode");
   #endif
     if (decodeRC6(results)) {
       return DECODED;
     }
   #ifdef DEBUG
-      Serial.println("Attempting Panasonic decode");
+      DEBUG_PRINTLN("Attempting Panasonic decode");
   #endif
       if (decodePanasonic(results)) {
           return DECODED;
       }
   #ifdef DEBUG
-      Serial.println("Attempting LG decode");
+      DEBUG_PRINTLN("Attempting LG decode");
   #endif
       if (decodeLG(results)) {
           return DECODED;
       }
   #ifdef DEBUG
-      Serial.println("Attempting JVC decode");
+      DEBUG_PRINTLN("Attempting JVC decode");
   #endif
       if (decodeJVC(results)) {
           return DECODED;
       }
   #ifdef DEBUG
-    Serial.println("Attempting SAMSUNG decode");
+    DEBUG_PRINTLN("Attempting SAMSUNG decode");
   #endif
     if (decodeSAMSUNG(results)) {
       return DECODED;
@@ -556,7 +556,7 @@ long IRrecv::decodeSony(decode_results *results) {
   // Some Sony's deliver repeats fast after first
   // unfortunately can't spot difference from of repeat from two fast clicks
   if (results->rawbuf[offset] < SONY_DOUBLE_SPACE_USECS) {
-    // Serial.print("IR Gap found: ");
+    // DEBUG_PRINT("IR Gap found: ");
     results->bits = 0;
     results->value = REPEAT;
     results->decode_type = SANYO;
@@ -608,13 +608,13 @@ long IRrecv::decodeSanyo(decode_results *results) {
   int offset = 0; // Skip first space
   // Initial space
   /* Put this back in for debugging - note can't use #DEBUG as if Debug on we don't see the repeat cos of the delay
-  Serial.print("IR Gap: ");
-  Serial.println( results->rawbuf[offset]);
-  Serial.println( "test against:");
-  Serial.println(results->rawbuf[offset]);
+  DEBUG_PRINT("IR Gap: ");
+  DEBUG_PRINTLN( results->rawbuf[offset]);
+  DEBUG_PRINTLN( "test against:");
+  DEBUG_PRINTLN(results->rawbuf[offset]);
   */
   if (results->rawbuf[offset] < SANYO_DOUBLE_SPACE_USECS) {
-    // Serial.print("IR Gap found: ");
+    // DEBUG_PRINT("IR Gap found: ");
     results->bits = 0;
     results->value = REPEAT;
     results->decode_type = SANYO;
@@ -664,7 +664,7 @@ long IRrecv::decodeSanyo(decode_results *results) {
 
 // Looks like Sony except for timings, 48 chars of data and time/space different
 long IRrecv::decodeMitsubishi(decode_results *results) {
-  // Serial.print("?!? decoding Mitsubishi:");Serial.print(irparams.rawlen); Serial.print(" want "); Serial.println( 2 * MITSUBISHI_BITS + 2);
+  // DEBUG_PRINT("?!? decoding Mitsubishi:");DEBUG_PRINT(irparams.rawlen); DEBUG_PRINT(" want "); DEBUG_PRINTLN( 2 * MITSUBISHI_BITS + 2);
   long data = 0;
   if (irparams.rawlen < 2 * MITSUBISHI_BITS + 2) {
     return ERR;
@@ -672,14 +672,14 @@ long IRrecv::decodeMitsubishi(decode_results *results) {
   int offset = 0; // Skip first space
   // Initial space
   /* Put this back in for debugging - note can't use #DEBUG as if Debug on we don't see the repeat cos of the delay
-  Serial.print("IR Gap: ");
-  Serial.println( results->rawbuf[offset]);
-  Serial.println( "test against:");
-  Serial.println(results->rawbuf[offset]);
+  DEBUG_PRINT("IR Gap: ");
+  DEBUG_PRINTLN( results->rawbuf[offset]);
+  DEBUG_PRINTLN( "test against:");
+  DEBUG_PRINTLN(results->rawbuf[offset]);
   */
   /* Not seeing double keys from Mitsubishi
   if (results->rawbuf[offset] < MITSUBISHI_DOUBLE_SPACE_USECS) {
-    // Serial.print("IR Gap found: ");
+    // DEBUG_PRINT("IR Gap found: ");
     results->bits = 0;
     results->value = REPEAT;
     results->decode_type = MITSUBISHI;
@@ -704,12 +704,12 @@ long IRrecv::decodeMitsubishi(decode_results *results) {
       data <<= 1;
     }
     else {
-      // Serial.println("A"); Serial.println(offset); Serial.println(results->rawbuf[offset]);
+      // DEBUG_PRINTLN("A"); DEBUG_PRINTLN(offset); DEBUG_PRINTLN(results->rawbuf[offset]);
       return ERR;
     }
     offset++;
     if (!MATCH_SPACE(results->rawbuf[offset], MITSUBISHI_HDR_SPACE)) {
-      // Serial.println("B"); Serial.println(offset); Serial.println(results->rawbuf[offset]);
+      // DEBUG_PRINTLN("B"); DEBUG_PRINTLN(offset); DEBUG_PRINTLN(results->rawbuf[offset]);
       break;
     }
     offset++;
@@ -764,10 +764,10 @@ int IRrecv::getRClevel(decode_results *results, int *offset, int *used, int t1) 
   }
 #ifdef DEBUG
   if (val == MARK) {
-    Serial.println("MARK");
+    DEBUG_PRINTLN("MARK");
   }
   else {
-    Serial.println("SPACE");
+    DEBUG_PRINTLN("SPACE");
   }
 #endif
   return val;

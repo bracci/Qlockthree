@@ -29,7 +29,7 @@
 #define SPARKFUN_SELECT 0x10EF20DF
 
 void IRTranslatorSparkfun::printSignature() {
-  Serial.println(F("Sparkfun COM-11759"));
+  DEBUG_PRINTLN(F("Sparkfun COM-11759"));
 }
 
 byte IRTranslatorSparkfun::buttonForCode(unsigned long code) {

@@ -485,7 +485,7 @@ IRTranslatorCLT irTranslator;
 // Ueber die Wire-Library festgelegt:
 // Arduino analog input 4 = I2C SDA
 // Arduino analog input 5 = I2C SCL
-// Werden zur Kommunikation mit der 
+// Werden zur Kommunikation mit der
 // RTC verwendet.
 /**
    Die Real-Time-Clock mit der Status-LED fuer das SQW-Signal.
@@ -540,8 +540,10 @@ volatile boolean needsUpdateFromRtc = true;
 byte testColumn;
 
 // Fuer fps-Anzeige
+#ifdef DEBUG
 word frames = 0;
 unsigned long lastFpsCheck = 0;
+#endif
 
 // Zähler für Timer im Menu
 byte counter = 0;
@@ -587,14 +589,14 @@ int freeRam() {
 */
 void setup() {
   Serial.begin(SERIAL_SPEED);
-  Serial.println(F("Qlockthree is initializing..."));
+  DEBUG_PRINTLN(F("Qlockthree is initializing..."));
   DEBUG_PRINTLN(F("... and starting in debug-mode..."));
-  Serial.flush();
+  DEBUG_FLUSH();
 
   // DCF konfigurieren
   pinMode(PIN_DCF77_PON, OUTPUT);
   enableDcf(false);
-  
+
 #ifdef ALARM
   if (settings.getEnableAlarm()) {
     // als Wecker Display nicht abschalten...
@@ -638,10 +640,10 @@ void setup() {
     delay(100);
   }
 
-  Serial.print(F("Compiled: "));
-  Serial.print(F(__TIME__));
-  Serial.print(F(" / "));
-  Serial.println(F(__DATE__));
+  DEBUG_PRINT(F("Compiled: "));
+  DEBUG_PRINT(F(__TIME__));
+  DEBUG_PRINT(F(" / "));
+  DEBUG_PRINTLN(F(__DATE__));
 
   // RTC starten...
   rtc.readTime();
@@ -658,10 +660,10 @@ void setup() {
   }
 
 #ifdef DS1307
-  Serial.println(F("Uhrentyp ist DS1307."));
+  DEBUG_PRINTLN(F("Uhrentyp ist DS1307."));
   rtc.enableSQWOnDS1307();
 #elif defined DS3231
-  Serial.println(F("Uhrentyp ist DS3231."));
+  DEBUG_PRINTLN(F("Uhrentyp ist DS3231."));
   rtc.enableSQWOnDS3231();
 #else
   Definition_des_Uhrtyps_fehlt!
@@ -670,18 +672,18 @@ void setup() {
 
   rtc.writeTime();
   helperSeconds = rtc.getSeconds();
-  Serial.print(F("RTC-Time: "));
-  Serial.print(rtc.getHours());
-  Serial.print(F(":"));
-  Serial.print(rtc.getMinutes());
-  Serial.print(F(":"));
-  Serial.print(rtc.getSeconds());
-  Serial.print(F(" RTC-Date: "));
-  Serial.print(rtc.getDate());
-  Serial.print(F("."));
-  Serial.print(rtc.getMonth());
-  Serial.print(F("."));
-  Serial.println(rtc.getYear());
+  DEBUG_PRINT(F("RTC-Time: "));
+  DEBUG_PRINT(rtc.getHours());
+  DEBUG_PRINT(F(":"));
+  DEBUG_PRINT(rtc.getMinutes());
+  DEBUG_PRINT(F(":"));
+  DEBUG_PRINT(rtc.getSeconds());
+  DEBUG_PRINT(F(" RTC-Date: "));
+  DEBUG_PRINT(rtc.getDate());
+  DEBUG_PRINT(F("."));
+  DEBUG_PRINT(rtc.getMonth());
+  DEBUG_PRINT(F("."));
+  DEBUG_PRINTLN(rtc.getYear());
 
   // Den Interrupt konfigurieren,
   // nicht mehr CHANGE, das sind 2 pro Sekunde,
@@ -715,36 +717,36 @@ void setup() {
   }
 
   // ein paar Infos ausgeben
-  Serial.println(F("... done and ready to rock!"));
+  DEBUG_PRINTLN(F("... done and ready to rock!"));
 
-  Serial.print(F("Version: "));
-  Serial.println(F(FIRMWARE_VERSION));
+  DEBUG_PRINT(F("Version: "));
+  DEBUG_PRINTLN(F(FIRMWARE_VERSION));
 
-  Serial.print(F("Driver: "));
+  DEBUG_PRINT(F("Driver: "));
   ledDriver.printSignature();
 
 #ifndef REMOTE_NO_REMOTE
-  Serial.print(F("Remote: "));
+  DEBUG_PRINT(F("Remote: "));
   irTranslator.printSignature();
   irrecv.enableIRIn();
 #else
-  Serial.print(F("Remote: disabled."));
+  DEBUG_PRINTLN(F("Remote: disabled."));
 #endif
 #ifdef ALARM
   if (settings.getEnableAlarm()) {
-    Serial.println(F("Alarm is enabled"));
+    DEBUG_PRINTLN(F("Alarm is enabled"));
   }
 #endif
 
   if (settings.getDcfSignalIsInverted()) {
-    Serial.println(F("DCF77-Signal is inverted."));
+    DEBUG_PRINTLN(F("DCF77-Signal is inverted."));
   }
 
-  Serial.print(F("Free ram: "));
-  Serial.print(freeRam());
-  Serial.println(F(" bytes."));
+  DEBUG_PRINT(F("Free ram: "));
+  DEBUG_PRINT(freeRam());
+  DEBUG_PRINTLN(F(" bytes."));
 
-  Serial.flush();
+  DEBUG_FLUSH();
 
   // DCF77-Empfaenger einschalten...
   enableDcf(true);
@@ -758,10 +760,10 @@ void setup() {
 */
 void loop() {
 
-  //  Serial.print(F("Free ram: "));
-  //  Serial.print(freeRam());
-  //  Serial.println(F(" bytes."));
-  //  Serial.flush();
+//    Serial.print(F("Free ram: "));
+    Serial.print(freeRam());
+//    Serial.println(F(" bytes."));
+//    Serial.flush();
 
   //
   // FPS
@@ -769,6 +771,7 @@ void loop() {
 #ifdef DEBUG
   frames++;
   if (lastFpsCheck > millis()) {
+    // wir hatten einen Ueberlauf...
     lastFpsCheck = millis();
   }
   if (lastFpsCheck + 1000 < millis()) {
@@ -809,6 +812,7 @@ void loop() {
       manageNewDCF77Data();
     }
 
+    // Fall back counter für Menu
     if (counter == 1) {
       if ( (mode != EXT_MODE_NIGHT_OFF) || (mode != EXT_MODE_NIGHT_ON) ) {
         mode = lastMode;
@@ -848,7 +852,7 @@ void loop() {
       case STD_MODE_NORMAL:
         // Event Abfrage
 #ifdef EVENTS
-        for (int evtID = 0; evtID < nbrOfEvts; evtID++) {
+        for (byte evtID = 0; evtID < nbrOfEvts; evtID++) {
           if ((rtc.getDate() == events[evtID].getDate()) & (rtc.getMonth() == events[evtID].getMonth())) {
             switch (settings.getEvent()) {
               case 0:

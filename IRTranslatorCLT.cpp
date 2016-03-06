@@ -49,7 +49,7 @@
 #define CLT_SAVE           0xFFC837
 
 void IRTranslatorCLT::printSignature() {
-  Serial.println(F("CLT leuchtbildshop"));
+  DEBUG_PRINTLN(F("CLT leuchtbildshop"));
 }
 
 byte IRTranslatorCLT::buttonForCode(unsigned long code) {
