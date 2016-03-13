@@ -150,7 +150,7 @@ void Effects::showFireWork(byte posX, eColors color) {
 void Effects::showCandle(eColors color) {
   word matrix [16];
   for (byte k = 0; k < 5; k++) {
-    for (byte j = -4; j < 4; j++) {
+    for (int j = -4; j < 4; j++) {
       renderer.clearScreenBuffer(matrix);
       for (byte i = 5; i < 10; i++) {
         matrix[i] |= (pgm_read_word_near(&(effectMasks[7][i])) << 5);
