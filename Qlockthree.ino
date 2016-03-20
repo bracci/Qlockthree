@@ -477,7 +477,7 @@ IRTranslatorSparkfun irTranslator;
 IRTranslatorMooncandles irTranslator;
 #elif defined (REMOTE_LUNARTEC)
 IRTranslatorLunartec irTranslator;
-#elif defined (REMOTE_CLT)
+#elif defined (REMOTE_CLT) || defined (REMOTE_BLUETOOTH)
 IRTranslatorCLT irTranslator;
 #endif
 #endif
@@ -550,6 +550,10 @@ byte counter = 0;
 
 // Indiziert, ob Event aktiv ist.
 bool evtActive = false;
+
+#ifdef REMOTE_BLUETOOTH
+String receivedBluetoothString = "";
+#endif
 
 /**
    Aenderung der Anzeige als Funktion fuer den Interrupt, der ueber das SQW-Signal
@@ -758,10 +762,10 @@ void setup() {
 */
 void loop() {
 
-//  Serial.print(F("Free ram: "));
-//  Serial.println(freeRam());
-//  Serial.println(F(" bytes."));
-//  Serial.flush();
+  //  Serial.print(F("Free ram: "));
+  //  Serial.println(freeRam());
+  //  Serial.println(F(" bytes."));
+  //  Serial.flush();
 
   //
   // FPS
@@ -1200,12 +1204,35 @@ void loop() {
      Tasten der Fernbedienung abfragen...
 
   */
+
+  unsigned long lastIrCode = 0;
+
+#ifdef REMOTE_BLUETOOTH
+  while (Serial.available() > 0) {
+    char receivedBluetoothChar = Serial.read();
+    receivedBluetoothString += receivedBluetoothChar;
+
+    if (receivedBluetoothChar == '\n') {
+      lastIrCode = irTranslator.buttonForCode(receivedBluetoothString.toInt());
+      receivedBluetoothString = "";
+      break;
+    }
+  }
+#endif
+
 #ifndef REMOTE_NO_REMOTE
   if (irrecv.decode(&irDecodeResults)) {
+    lastIrCode = irTranslator.buttonForCode(irDecodeResults.value);
+    irrecv.resume();
+  }
+#endif
+
+#if !defined(REMOTE_NO_REMOTE) || defined(REMOTE_BLUETOOTH)
+  if (lastIrCode != 0) {
     DEBUG_PRINT(F("Decoded successfully as "));
     DEBUG_PRINTLN2(irDecodeResults.value, HEX);
     needsUpdateFromRtc = true;
-    switch (irTranslator.buttonForCode(irDecodeResults.value)) {
+    switch (lastIrCode) {
       case REMOTE_BUTTON_MODE:
         modePressed();
         break;
@@ -1275,7 +1302,7 @@ void loop() {
         if (EXT_MODE_LDR_MODE == mode) {
           settings.setUseLdr(!settings.getUseLdr());
           if (!settings.getUseLdr()) {
-            ledDriver.setBrightness(50);
+            settings.setBrightness(ledDriver.getBrightness());
           }
           enableCounter(2);
         }
@@ -1301,7 +1328,7 @@ void loop() {
         ledDriver.demoTransition();
         break;
     }
-    irrecv.resume();
+
     settings.saveToEEPROM();
   }
 #endif
@@ -1507,7 +1534,7 @@ void hourPlusPressed() {
     case EXT_MODE_LDR_MODE:
       settings.setUseLdr(!settings.getUseLdr());
       if (!settings.getUseLdr()) {
-        ledDriver.setBrightness(50);
+        settings.setBrightness(ledDriver.getBrightness());
       }
       DEBUG_PRINT(F("LDR is now "));
       DEBUG_PRINTLN(settings.getUseLdr());
@@ -1614,7 +1641,7 @@ void minutePlusPressed() {
     case EXT_MODE_LDR_MODE:
       settings.setUseLdr(!settings.getUseLdr());
       if (!settings.getUseLdr()) {
-        ledDriver.setBrightness(50);
+        settings.setBrightness(ledDriver.getBrightness());
       }
       DEBUG_PRINT(F("LDR is now "));
       DEBUG_PRINTLN(settings.getUseLdr());
@@ -1781,10 +1808,10 @@ void setDisplayToResume() {
    Das Display manuell heller machen.
 */
 void setDisplayBrighter() {
-  if ((!settings.getUseLdr()) && (settings.getBrightness() < 100)) {
-    byte b = settings.getBrightness() + 10;
-    if (b > 100) {
-      b = 100;
+  if ((!settings.getUseLdr()) && (settings.getBrightness() < LDR_MAX_PERCENT)) {
+    int8_t b = settings.getBrightness() + (LDR_MAX_PERCENT - LDR_MIN_PERCENT) / 9;
+    if (b > LDR_MAX_PERCENT) {
+      b = LDR_MAX_PERCENT;
     }
     settings.setBrightness(b);
     settings.saveToEEPROM();
@@ -1796,10 +1823,10 @@ void setDisplayBrighter() {
    Das Display dunkler machen.
 */
 void setDisplayDarker() {
-  if ((!settings.getUseLdr()) && (settings.getBrightness() > 1)) {
-    byte i = settings.getBrightness() - 10;
-    if (i < 2) {
-      i = 1;
+  if (!settings.getUseLdr() && (settings.getBrightness() > LDR_MIN_PERCENT)) {
+    int8_t i = settings.getBrightness() - (LDR_MAX_PERCENT - LDR_MIN_PERCENT) / 9;
+    if (i < LDR_MIN_PERCENT) {
+      i = LDR_MIN_PERCENT;
     }
     settings.setBrightness(i);
     settings.saveToEEPROM();

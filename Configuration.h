@@ -77,6 +77,7 @@
 //#define REMOTE_MOONCANDLES
 //#define REMOTE_LUNARTEC
 #define REMOTE_CLT
+//#define REMOTE_BLUETOOTH
 
 #define EVENTS
 
@@ -129,7 +130,7 @@
  * Fuer wieviele DCF77-Samples muessen die Zeitabstaende stimmen, damit das DCF77-Telegramm als gueltig zaehlt?
  * Default: 3 (min. 3 Minuten Synchronisationszeit).
  */
-#define DCF77HELPER_MAX_SAMPLES 3
+#define DCF77HELPER_MAX_SAMPLES 2
 /*
  * Bei einer Verwendung eines analogen Pins die naechsten zwei Zeilen einkommentieren.
  * Default: ausgeschaltet
@@ -210,7 +211,7 @@
  * falls man eine minimale oder maximale
  * Helligkeit vorgeben moechte.
  */
-#define LDR_MIN_PERCENT 10
+#define LDR_MIN_PERCENT 5
 #define LDR_MAX_PERCENT 100
 /*
  * LDR-Check-Raten. Dieser Wert beeinflusst, wie schnell
