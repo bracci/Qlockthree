@@ -77,7 +77,7 @@
 //#define REMOTE_MOONCANDLES
 //#define REMOTE_LUNARTEC
 #define REMOTE_CLT
-//#define REMOTE_BLUETOOTH
+#define REMOTE_BLUETOOTH
 
 #define EVENTS
 

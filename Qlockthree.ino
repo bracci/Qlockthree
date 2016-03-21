@@ -551,10 +551,6 @@ byte counter = 0;
 // Indiziert, ob Event aktiv ist.
 bool evtActive = false;
 
-#ifdef REMOTE_BLUETOOTH
-String receivedBluetoothString = "";
-#endif
-
 /**
    Aenderung der Anzeige als Funktion fuer den Interrupt, der ueber das SQW-Signal
    der Real-Time-Clock gesetzt wird. Da die Wire-Bibliothek benutzt wird, kann man
@@ -1209,12 +1205,9 @@ void loop() {
 
 #ifdef REMOTE_BLUETOOTH
   while (Serial.available() > 0) {
-    char receivedBluetoothChar = Serial.read();
-    receivedBluetoothString += receivedBluetoothChar;
+    lastIrCode = irTranslator.buttonForCode(Serial.parseInt());
 
-    if (receivedBluetoothChar == '\n') {
-      lastIrCode = irTranslator.buttonForCode(receivedBluetoothString.toInt());
-      receivedBluetoothString = "";
+    if (Serial.read() == '\n') {
       break;
     }
   }
