@@ -70,14 +70,16 @@
 // #define DS3231
 
 /*
- * Welche Fernbedienung soll benutzt werden?
+ * Welche IR-Fernbedienung soll benutzt werden?
  */
 //#define REMOTE_NO_REMOTE
 //#define REMOTE_SPARKFUN
 //#define REMOTE_MOONCANDLES
 //#define REMOTE_LUNARTEC
 #define REMOTE_CLT
-#define REMOTE_BLUETOOTH
+
+// kann separat oder zusätzlich zu einer IR-Fernbedienung genutzt werden
+//#define REMOTE_BLUETOOTH
 
 #define EVENTS
 

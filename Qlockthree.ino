@@ -477,9 +477,13 @@ IRTranslatorSparkfun irTranslator;
 IRTranslatorMooncandles irTranslator;
 #elif defined (REMOTE_LUNARTEC)
 IRTranslatorLunartec irTranslator;
-#elif defined (REMOTE_CLT) || defined (REMOTE_BLUETOOTH)
+#elif defined (REMOTE_CLT)
 IRTranslatorCLT irTranslator;
 #endif
+#endif
+
+#ifdef REMOTE_BLUETOOTH
+IRTranslatorCLT irTranslatorBT;
 #endif
 
 // Ueber die Wire-Library festgelegt:
@@ -1198,130 +1202,28 @@ void loop() {
   }
 
   /*
-
      Tasten der Fernbedienung abfragen...
-
   */
 
-  unsigned long lastIrCode = 0;
-
 #ifdef REMOTE_BLUETOOTH
+  unsigned int lastIrCodeBT = 0;
   while (Serial.available() > 0) {
-    lastIrCode = irTranslator.buttonForCode(Serial.parseInt());
+    lastIrCodeBT = irTranslatorBT.buttonForCode(Serial.parseInt());
     Serial.read();
+  }
+  if (lastIrCodeBT != 0) {
+    remoteAction(lastIrCodeBT, &irTranslatorBT);
   }
 #endif
 
 #ifndef REMOTE_NO_REMOTE
+  unsigned long lastIrCode = 0;
   if (irrecv.decode(&irDecodeResults)) {
     lastIrCode = irTranslator.buttonForCode(irDecodeResults.value);
     irrecv.resume();
   }
-#endif
-
-#if !defined(REMOTE_NO_REMOTE) || defined(REMOTE_BLUETOOTH)
   if (lastIrCode != 0) {
-    DEBUG_PRINT(F("Decoded successfully as "));
-    DEBUG_PRINTLN2(irDecodeResults.value, HEX);
-    needsUpdateFromRtc = true;
-    switch (lastIrCode) {
-      case REMOTE_BUTTON_MODE:
-        modePressed();
-        break;
-      case REMOTE_BUTTON_MINUTE_PLUS:
-        minutePlusPressed();
-        break;
-      case REMOTE_BUTTON_HOUR_PLUS:
-        hourPlusPressed();
-        break;
-      case REMOTE_BUTTON_BRIGHTER:
-        if (!settings.getUseLdr()) {
-          if (STD_MODE_BRIGHTNESS == mode) {
-            setDisplayBrighter();
-            enableCounter(2);
-          }
-          else {
-            mode = STD_MODE_BRIGHTNESS;
-            enableCounter(2);
-          }
-        }
-        break;
-      case REMOTE_BUTTON_DARKER:
-        if (!settings.getUseLdr()) {
-          if (STD_MODE_BRIGHTNESS == mode) {
-            setDisplayDarker();
-            enableCounter(2);
-          }
-          else {
-            mode = STD_MODE_BRIGHTNESS;
-            enableCounter(2);
-          }
-        }
-        break;
-      case REMOTE_BUTTON_EXTMODE:
-        doubleExtModePressed();
-        break;
-      case REMOTE_BUTTON_TOGGLEBLANK:
-        setDisplayToToggle();
-        break;
-      case REMOTE_BUTTON_BLANK:
-        setDisplayToBlank();
-        break;
-      case REMOTE_BUTTON_RESUME:
-        setDisplayToResume();
-        break;
-      case REMOTE_BUTTON_SETCOLOR:
-        settings.setColor(irTranslator.getColor());
-        break;
-      case REMOTE_BUTTON_SAVE:
-        settings.saveToEEPROM();
-        break;
-      case REMOTE_BUTTON_SETMODE:
-        mode = irTranslator.getMode();
-        lastMode = mode;
-        break;
-      case REMOTE_BUTTON_REGION:
-        if (EXT_MODE_LANGUAGE == mode) {
-          minutePlusPressed();
-          enableCounter(2);
-        }
-        else {
-          mode = EXT_MODE_LANGUAGE;
-          enableCounter(2);
-        }
-        break;
-      case REMOTE_BUTTON_LDR:
-        if (EXT_MODE_LDR_MODE == mode) {
-          settings.setUseLdr(!settings.getUseLdr());
-          if (!settings.getUseLdr()) {
-            settings.setBrightness(ledDriver.getBrightness());
-          }
-          enableCounter(2);
-        }
-        else {
-          mode = EXT_MODE_LDR_MODE;
-          enableCounter(2);
-        }
-        break;
-      case REMOTE_BUTTON_TIME_H_PLUS:
-        incDecHours(true);
-        break;
-      case REMOTE_BUTTON_TIME_H_MINUS:
-        incDecHours(false);
-        break;
-      case REMOTE_BUTTON_TIME_M_PLUS:
-        incDecMinutes(true);
-        break;
-      case REMOTE_BUTTON_TIME_M_MINUS:
-        incDecMinutes(false);
-        break;
-      case REMOTE_BUTTON_TRANSITION:
-        settings.setTransitionMode(irTranslator.getTransition());
-        ledDriver.demoTransition();
-        break;
-    }
-
-    settings.saveToEEPROM();
+    remoteAction(lastIrCode, &irTranslator);
   }
 #endif
 
@@ -1861,6 +1763,110 @@ void resetSeconds() {
   rtc.writeTime();
   rtc.readTime();
   helperSeconds = 0;
+}
+
+void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
+  DEBUG_PRINT(F("Decoded successfully as "));
+  DEBUG_PRINTLN2(irDecodeResults.value, HEX);
+  needsUpdateFromRtc = true;
+  switch (irCode) {
+    case REMOTE_BUTTON_MODE:
+      modePressed();
+      break;
+    case REMOTE_BUTTON_MINUTE_PLUS:
+      minutePlusPressed();
+      break;
+    case REMOTE_BUTTON_HOUR_PLUS:
+      hourPlusPressed();
+      break;
+    case REMOTE_BUTTON_BRIGHTER:
+      if (!settings.getUseLdr()) {
+        if (STD_MODE_BRIGHTNESS == mode) {
+          setDisplayBrighter();
+          enableCounter(2);
+        }
+        else {
+          mode = STD_MODE_BRIGHTNESS;
+          enableCounter(2);
+        }
+      }
+      break;
+    case REMOTE_BUTTON_DARKER:
+      if (!settings.getUseLdr()) {
+        if (STD_MODE_BRIGHTNESS == mode) {
+          setDisplayDarker();
+          enableCounter(2);
+        }
+        else {
+          mode = STD_MODE_BRIGHTNESS;
+          enableCounter(2);
+        }
+      }
+      break;
+    case REMOTE_BUTTON_EXTMODE:
+      doubleExtModePressed();
+      break;
+    case REMOTE_BUTTON_TOGGLEBLANK:
+      setDisplayToToggle();
+      break;
+    case REMOTE_BUTTON_BLANK:
+      setDisplayToBlank();
+      break;
+    case REMOTE_BUTTON_RESUME:
+      setDisplayToResume();
+      break;
+    case REMOTE_BUTTON_SETCOLOR:
+      settings.setColor(irTranslatorGeneric->getColor());
+      break;
+    case REMOTE_BUTTON_SAVE:
+      settings.saveToEEPROM();
+      break;
+    case REMOTE_BUTTON_SETMODE:
+      mode = irTranslatorGeneric->getMode();
+      lastMode = mode;
+      break;
+    case REMOTE_BUTTON_REGION:
+      if (EXT_MODE_LANGUAGE == mode) {
+        minutePlusPressed();
+        enableCounter(2);
+      }
+      else {
+        mode = EXT_MODE_LANGUAGE;
+        enableCounter(2);
+      }
+      break;
+    case REMOTE_BUTTON_LDR:
+      if (EXT_MODE_LDR_MODE == mode) {
+        settings.setUseLdr(!settings.getUseLdr());
+        if (!settings.getUseLdr()) {
+          settings.setBrightness(ledDriver.getBrightness());
+        }
+        enableCounter(2);
+      }
+      else {
+        mode = EXT_MODE_LDR_MODE;
+        enableCounter(2);
+      }
+      break;
+    case REMOTE_BUTTON_TIME_H_PLUS:
+      incDecHours(true);
+      break;
+    case REMOTE_BUTTON_TIME_H_MINUS:
+      incDecHours(false);
+      break;
+    case REMOTE_BUTTON_TIME_M_PLUS:
+      incDecMinutes(true);
+      break;
+    case REMOTE_BUTTON_TIME_M_MINUS:
+      incDecMinutes(false);
+      break;
+    case REMOTE_BUTTON_TRANSITION:
+      settings.setTransitionMode(irTranslatorGeneric->getTransition());
+      ledDriver.demoTransition();
+      break;
+  }
+
+  settings.saveToEEPROM();
 }
 
 
