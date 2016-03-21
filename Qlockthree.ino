@@ -588,6 +588,8 @@ int freeRam() {
 */
 void setup() {
   Serial.begin(SERIAL_SPEED);
+  // Set Timeout of 50ms for Serial.parseInt()
+  Serial.setTimeout(50);
   DEBUG_PRINTLN(F("Qlockthree is initializing..."));
   DEBUG_PRINTLN(F("... and starting in debug-mode..."));
   DEBUG_FLUSH();
@@ -1206,10 +1208,7 @@ void loop() {
 #ifdef REMOTE_BLUETOOTH
   while (Serial.available() > 0) {
     lastIrCode = irTranslator.buttonForCode(Serial.parseInt());
-
-    if (Serial.read() == '\n') {
-      break;
-    }
+    Serial.read();
   }
 #endif
 
