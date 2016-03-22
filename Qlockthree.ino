@@ -846,7 +846,9 @@ void loop() {
         rtc.readTime();
         helperSeconds = rtc.getSeconds();
         break;
+      default:
         // andere Modi egal...
+        break;
     }
 
     //
@@ -893,6 +895,8 @@ void loop() {
                   events[evtID].show();
                   rtc.readTime();
                 }
+                break;
+              default:
                 break;
             }
             evtActive = false;
@@ -1122,26 +1126,28 @@ void loop() {
             renderer.setMenuText("CH", Renderer::TEXT_POS_TOP, matrix);
             renderer.setMenuText("X", Renderer::TEXT_POS_BOTTOM, matrix);
             break;
-            //            case LANGUAGE_EN:
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
-            //              break;
-            //            case LANGUAGE_FR:
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 11;
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 5;
-            //              break;
-            //            case LANGUAGE_IT:
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['I' - 'A'][i])) << 11;
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 5;
-            //              break;
-            //            case LANGUAGE_NL:
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 11;
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
-            //              break;
-            //            case LANGUAGE_ES:
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-            //              matrix[2 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 5;
-            //              break;
+          //            case LANGUAGE_EN:
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
+          //              break;
+          //            case LANGUAGE_FR:
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 11;
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 5;
+          //              break;
+          //            case LANGUAGE_IT:
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['I' - 'A'][i])) << 11;
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 5;
+          //              break;
+          //            case LANGUAGE_NL:
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 11;
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
+          //              break;
+          //            case LANGUAGE_ES:
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
+          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 5;
+          //              break;
+          default:
+            ;
         }
 
         break;
@@ -1164,6 +1170,8 @@ void loop() {
       case EXT_MODE_DCF_DEBUG:
         renderer.clearScreenBuffer(matrix);
         renderer.setCorners(dcf77.getBitPointer() % 5, settings.getRenderCornersCw(), matrix);
+        break;
+      default:
         break;
     }
 
@@ -1499,6 +1507,8 @@ void hourPlusPressed() {
         settings.setLanguage(settings.getLanguage() - 1);
       }
       break;
+    default:
+      break;
   }
 }
 
@@ -1602,6 +1612,8 @@ void minutePlusPressed() {
       if (settings.getLanguage() > LANGUAGE_COUNT) {
         settings.setLanguage(0);
       }
+      break;
+    default:
       break;
   }
 }
@@ -1863,6 +1875,8 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
     case REMOTE_BUTTON_TRANSITION:
       settings.setTransitionMode(irTranslatorGeneric->getTransition());
       ledDriver.demoTransition();
+      break;
+    default:
       break;
   }
 

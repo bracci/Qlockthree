@@ -28,7 +28,7 @@ Event::Event(byte month,
 void Event::show() {
   DEBUG_PRINT(F("Ticker String: "));
   DEBUG_PRINTLN(_txt);
-  if (_txt != "")
+  if (strlen(_txt) != 0)
     Effects::showTickerString(_txt, TICKER_SPEED);
   if (_effect < Effects::BITMAP_MIN) {
     switch (_effect)
