@@ -21,7 +21,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   word matrix [16];
 
   byte strLength = strlen(str2disp);
-  int bufLen;
+  unsigned int bufLen;
   char actChar;
   char lastChar = 'W';
   byte offsetV = 2;
@@ -29,7 +29,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
   unsigned int i = 0;
 
   while (!finish) {
-  renderer.clearScreenBuffer(matrix);
+    renderer.clearScreenBuffer(matrix);
     unsigned int shift = 0; // Schiebekorrektur aufgrund variierender Buchstabenbreite
     for (byte k = 0; k < strLength; k++) {
       actChar = str2disp[k];
@@ -67,13 +67,13 @@ void Effects::showIntro() {
   renderer.clearScreenBuffer(matrix);
   for (int j = 0; j < 11; j++) {
     for (byte i = 0; i < 10; i++) {
-      matrix[i] |= 0b1 << 15 - j;
+      matrix[i] |= 0b1 << (15 - j);
     }
     writeToBuffer(matrix, 5);
   }
   for (int j = 0; j < 11; j++) {
     for (int i = 0; i < 10; i++) {
-      matrix[i] ^= 0b1 << 5 + j;
+      matrix[i] ^= 0b1 << (5 + j);
     }
     writeToBuffer(matrix, 5);
   }
@@ -131,14 +131,14 @@ void Effects::showFireWork(byte posX, eColors color) {
   for (byte i = 8; i <= 10; i++) {
     renderer.clearScreenBuffer(matrix);
     for (byte j = 0; j < 10; j++) {
-      matrix[j] |= (pgm_read_word_near(&(effectMasks[i][j])) << 10 - posX) & 0b1111111111100000;
+      matrix[j] |= (pgm_read_word_near(&(effectMasks[i][j])) << (10 - posX)) & 0b1111111111100000;
     }
     writeToBuffer(matrix, 3 + round(10 * (i - 8) / 3), color);
   }
   for (byte i = 0; i <= 10; i++) {
     renderer.clearScreenBuffer(matrix);
     for (byte j = 0; j < 10 - i; j++) {
-      matrix[j + i] |= (pgm_read_word_near(&(effectMasks[12 + i % 2][j])) << 10 - posX) & 0b1111111111100000;
+      matrix[j + i] |= (pgm_read_word_near(&(effectMasks[12 + i % 2][j])) << (10 - posX)) & 0b1111111111100000;
     }
     writeToBuffer(matrix, 20, color);
   }
@@ -183,7 +183,7 @@ void Effects::showBitmap(byte bitmapIdx, byte duration, eColors color) {
   renderer.clearScreenBuffer(matrix);
   for (byte i = 0; i < 10; i++) {
     for (byte j = 0; j < 11; j++) {
-      matrix[i] |= ((pgm_read_word_near(&(bitmaps[bitmapIdx - BITMAP_MIN][j])) >> i) & 0x0001) << 15 - j;
+      matrix[i] |= ((pgm_read_word_near(&(bitmaps[bitmapIdx - BITMAP_MIN][j])) >> i) & 0x0001) << (15 - j);
     }
   }
   writeToBuffer(matrix, 15 * duration, color);
@@ -209,6 +209,8 @@ void Effects::showAnimatedBitmap(byte animatedBitmap, byte duration, eColors col
       showBitmap(BITMAP_SMILEY_WINK, duration, color);
       showBitmap(BITMAP_SMILEY, duration, color);
       break;
+    default:
+      ;
   }
 }
 

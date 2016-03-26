@@ -65,7 +65,7 @@ class Settings {
     boolean getDcfSignalIsInverted();
     void setDcfSignalIsInverted(boolean dcfSignalIsInverted);
 
-    byte getTimeShift();
+    char getTimeShift();
     void setTimeShift(char timeShift);
 
     void loadFromEEPROM();

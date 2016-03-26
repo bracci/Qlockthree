@@ -1,27 +1,27 @@
 /**
- * MyRTC
- * Klasse fuer den Zugriff auf die DS1307/DS3231 Echtzeituhr.
- *
- * @mc       Arduino/RBBB
- * @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  2.1
- * @created  1.3.2011
- * @updated  16.2.2015
- *
- * Versionshistorie:
- * V 1.1:  - dayOfMonth nach date umbenannt.
- * V 1.2:  - Kompatibilitaet zu Arduino-IDE 1.0 hergestellt.
- * V 1.3:  - getMinutesOfDay eingefuehrt.
- * V 1.4:  - getMinutesOf12HoursDay eingefuehrt.
- * V 1.5:  - Optimierung hinsichtlich Speicherbedarf.
- * V 1.6:  - Verbessertes Debugging.
- * V 1.7:  - Multi-MCU-Faehigkeit hinzugefuegt.
- * V 1.8:  - Auslesen verbessert. Falls die angeforderten 7 Bytes nicht kommen, verwerfen und neu anfordern.
- * V 1.9:  - Macro zum Stellen der Uhr durch die Compile-Zeit von Kee-Labs geklaut und hier eingefuegt.
- * V 2.0:  - DS1307 nach MyRTC umbenannt, weil es jetzt nicht mehr nur um die DS1307 geht.
- *         - Getrennte Logik fuer das Rachtencksignal (SQW) eingefuehrt, danke an Erich M.
- * V 2.1:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
- */
+   MyRTC
+   Klasse fuer den Zugriff auf die DS1307/DS3231 Echtzeituhr.
+
+   @mc       Arduino/RBBB
+   @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
+   @version  2.1
+   @created  1.3.2011
+   @updated  16.2.2015
+
+   Versionshistorie:
+   V 1.1:  - dayOfMonth nach date umbenannt.
+   V 1.2:  - Kompatibilitaet zu Arduino-IDE 1.0 hergestellt.
+   V 1.3:  - getMinutesOfDay eingefuehrt.
+   V 1.4:  - getMinutesOf12HoursDay eingefuehrt.
+   V 1.5:  - Optimierung hinsichtlich Speicherbedarf.
+   V 1.6:  - Verbessertes Debugging.
+   V 1.7:  - Multi-MCU-Faehigkeit hinzugefuegt.
+   V 1.8:  - Auslesen verbessert. Falls die angeforderten 7 Bytes nicht kommen, verwerfen und neu anfordern.
+   V 1.9:  - Macro zum Stellen der Uhr durch die Compile-Zeit von Kee-Labs geklaut und hier eingefuegt.
+   V 2.0:  - DS1307 nach MyRTC umbenannt, weil es jetzt nicht mehr nur um die DS1307 geht.
+           - Getrennte Logik fuer das Rachtencksignal (SQW) eingefuehrt, danke an Erich M.
+   V 2.1:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
+*/
 #include <Wire.h> // Wire library fuer I2C
 #include "MyRTC.h"
 
@@ -29,8 +29,8 @@
 #include "Debug.h"
 
 /**
- * Initialisierung mit der Adresse der DS1307
- */
+   Initialisierung mit der Adresse der DS1307
+*/
 MyRTC::MyRTC(int address, byte statusLedPin) {
   _address = address;
   _statusLedPin = statusLedPin;
@@ -39,8 +39,8 @@ MyRTC::MyRTC(int address, byte statusLedPin) {
 }
 
 /**
- * Die LED ein- oder ausschalten.
- */
+   Die LED ein- oder ausschalten.
+*/
 void MyRTC::statusLed(boolean on) {
   if (on) {
     digitalWrite(_statusLedPin, HIGH);
@@ -50,8 +50,8 @@ void MyRTC::statusLed(boolean on) {
 }
 
 /**
- * Die Uhrzeit auslesen und in den Variablen ablegen
- */
+   Die Uhrzeit auslesen und in den Variablen ablegen
+*/
 void MyRTC::readTime() {
   byte returnStatus, count, result, retries = 0;
   do {
@@ -112,8 +112,8 @@ void MyRTC::readTime() {
 }
 
 /**
- * Die Uhrzeit aus den Variablen in die DS1307 schreiben
- */
+   Die Uhrzeit aus den Variablen in die DS1307 schreiben
+*/
 void MyRTC::writeTime() {
   Wire.beginTransmission(_address);
   Wire.write((uint8_t) 0x00); // 0 to bit 7 starts the clock
@@ -130,8 +130,8 @@ void MyRTC::writeTime() {
 }
 
 /**
- * SQW fuer DS1307.
- */
+   SQW fuer DS1307.
+*/
 void MyRTC::enableSQWOnDS1307() {
   Wire.beginTransmission(_address);
   Wire.write(0x07); // Datenregister
@@ -140,8 +140,8 @@ void MyRTC::enableSQWOnDS1307() {
 }
 
 /**
- * SQW fuer DS3231.
- */
+   SQW fuer DS3231.
+*/
 void MyRTC::enableSQWOnDS3231() {
   Wire.beginTransmission(_address);
   Wire.write(0x0E); // Datenregister
@@ -150,23 +150,23 @@ void MyRTC::enableSQWOnDS3231() {
 }
 
 /**
- * Konvertierung Dezimal zu "Binary Coded Decimal"
- */
+   Konvertierung Dezimal zu "Binary Coded Decimal"
+*/
 byte MyRTC::decToBcd(byte val) {
   return ((val / 10 * 16) + (val % 10));
 }
 
 /**
- * Konvertierung "Binary Coded Decimal" zu Dezimal
- */
+   Konvertierung "Binary Coded Decimal" zu Dezimal
+*/
 byte MyRTC::bcdToDec(byte val) {
   return ((val / 16 * 10) + (val % 16));
 }
 
 /**
- * Aus einem String zwei Stellen als Zahl bekommen.
- * (Geklaut von Jee-Labs.)
- */
+   Aus einem String zwei Stellen als Zahl bekommen.
+   (Geklaut von Jee-Labs.)
+*/
 uint8_t MyRTC::conv2d(const char* p) {
   uint8_t v = 0;
   if ('0' <= *p && *p <= '9')
@@ -175,11 +175,11 @@ uint8_t MyRTC::conv2d(const char* p) {
 }
 
 /**
- * Geklaut von Jee-Labs.
- * A convenient constructor for using "the compiler's time":
- * DateTime now (__DATE__, __TIME__);
- * NOTE: using PSTR would further reduce the RAM footprint
- */
+   Geklaut von Jee-Labs.
+   A convenient constructor for using "the compiler's time":
+   DateTime now (__DATE__, __TIME__);
+   NOTE: using PSTR would further reduce the RAM footprint
+*/
 void MyRTC::set(const char* date, const char* time) {
   // sample input: date = "Dec 26 2009", time = "12:34:56"
   _year = conv2d(date + 9);
@@ -215,6 +215,8 @@ void MyRTC::set(const char* date, const char* time) {
     case 'D':
       _month = 12;
       break;
+    default:
+      ;
   }
   _date = conv2d(date + 4);
   _hours = conv2d(time);
