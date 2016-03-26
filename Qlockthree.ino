@@ -1643,7 +1643,7 @@ void manageNewDCF77Data() {
   DEBUG_FLUSH();
 
   rtc.readTime();
-  dcf77Helper.addSample(dcf77, rtc);
+  dcf77Helper.addSample(&dcf77, &rtc);
   // Stimmen die Abstaende im Array?
   // Pruefung ohne Datum, nur Zeit!
   if (dcf77Helper.samplesOk()) {

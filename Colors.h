@@ -15,11 +15,11 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-struct color_t {
+typedef struct color_s {
   byte red;
   byte green;
   byte blue;
-};
+}color_t;
 
 const color_t defaultColors[] PROGMEM = { 
   {250, 255, 200}, 

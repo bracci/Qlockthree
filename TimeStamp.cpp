@@ -28,11 +28,11 @@ TimeStamp::TimeStamp(byte minutes, byte hours, byte date, byte dayOfWeek, byte m
   set(minutes, hours, date, dayOfWeek, month, year);
 }
 
-TimeStamp::TimeStamp(MyDCF77 dcf77) {
+TimeStamp::TimeStamp(MyDCF77* dcf77) {
   setFrom(dcf77);
 }
 
-TimeStamp::TimeStamp(MyRTC rtc) {
+TimeStamp::TimeStamp(MyRTC* rtc) {
   setFrom(rtc);
 }
 
@@ -78,22 +78,22 @@ byte TimeStamp::getYear() {
   return _year;
 }
 
-void TimeStamp::setFrom(MyDCF77 dcf77) {
-  _minutes = dcf77.getMinutes();
-  _hours = dcf77.getHours();
-  _date = dcf77.getDate();
-  _dayOfWeek = dcf77.getDayOfWeek();
-  _month = dcf77.getMonth();
-  _year = dcf77.getYear();
+void TimeStamp::setFrom(MyDCF77* dcf77) {
+  _minutes = dcf77->getMinutes();
+  _hours = dcf77->getHours();
+  _date = dcf77->getDate();
+  _dayOfWeek = dcf77->getDayOfWeek();
+  _month = dcf77->getMonth();
+  _year = dcf77->getYear();
 }
 
-void TimeStamp::setFrom(MyRTC rtc) {
-  _minutes = rtc.getMinutes();
-  _hours = rtc.getHours();
-  _date = rtc.getDate();
-  _dayOfWeek = rtc.getDayOfWeek();
-  _month = rtc.getMonth();
-  _year = rtc.getYear();
+void TimeStamp::setFrom(MyRTC* rtc) {
+  _minutes = rtc->getMinutes();
+  _hours = rtc->getHours();
+  _date = rtc->getDate();
+  _dayOfWeek = rtc->getDayOfWeek();
+  _month = rtc->getMonth();
+  _year = rtc->getYear();
 }
 
 void TimeStamp::set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year) {
@@ -137,7 +137,7 @@ void TimeStamp::incHours() {
 /**
  * Die Zeit als String bekommen
  */
-char* TimeStamp::asString() {
+const char* TimeStamp::asString() {
   _cDateTime[0] = 0;
   char temp[5];
 
