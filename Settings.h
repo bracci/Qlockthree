@@ -65,8 +65,8 @@ class Settings {
     boolean getDcfSignalIsInverted();
     void setDcfSignalIsInverted(boolean dcfSignalIsInverted);
 
-    char getTimeShift();
-    void setTimeShift(char timeShift);
+    signed char getTimeShift();
+    void setTimeShift(signed char timeShift);
 
     byte getJumpToNormalTimeout();
     void setJumpToNormalTimeout(byte jumpToNormalTimeout);
@@ -88,7 +88,7 @@ class Settings {
     byte _brightness;
     boolean _enableAlarm;
     boolean _dcfSignalIsInverted;
-    char _timeShift;
+    signed char _timeShift;
     eColors _color;
     byte _transitionMode;
     byte _event;
