@@ -528,6 +528,7 @@ IRTranslatorCLT irTranslatorBT;
  */
 #ifdef TEENSYRTC
 TeensyRTC rtc(PIN_SQW_LED);
+IntervalTimer rtcTimer;
 #else
 MyRTC rtc(0x68, PIN_SQW_LED);
 #endif
@@ -748,6 +749,16 @@ void setup() {
   for (int i = 0; i < 1000; i++) {
     analogRead(PIN_LDR);
   }
+#ifdef TEENSYRTC
+   // Bei der internen RTC vom Teensy wird kein Rechtecksignal
+   // an einem externen pin geniert. Deshalb normaler Software Timer
+   // IntervalTimer ist hochpräziser Timer, eigentlich unnötig
+   rtcTimer.priority(255);
+   if(!rtcTimer.begin(updateFromRtc, 1*1000*1000))
+       Serial.printf("Failed to set teensy timer\n");
+#else
+    attachInterrupt(0, updateFromRtc, FALLING);
+#endif
 
   // rtcSQWLed-LED drei Mal als 'Hello' blinken lassen
   // und Speaker piepsen kassen, falls ENABLE_ALARM eingeschaltet ist.

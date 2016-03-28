@@ -14,7 +14,7 @@
 #define TEENSYRTC_H
 
 #include "MyRTC.h"
-#include "Time.h"
+#include "TimeLib.h"
 
 inline time_t getTeensy3Time()
 {
@@ -34,10 +34,11 @@ public:
         _hours = hour(t);
         _date = day(t);
         _month = month(t);
-        _year = year(t);
+        // Year is only a byte
+        _year = year(t) % 100;
         _dayOfWeek = weekday(t);
     };
-    void writeTime() { setTime(_hours, _minutes, _seconds, _date, _month, _year);}
+    void writeTime() { setTime(_hours, _minutes, _seconds, _date, _month, 2000 + _year);}
 };
 
 #endif
