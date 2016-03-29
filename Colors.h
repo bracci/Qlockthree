@@ -22,7 +22,7 @@ typedef struct color_s {
 }color_t;
 
 const color_t defaultColors[] PROGMEM = { 
-  {250, 255, 200}, 
+  {255, 255, 255}, 
   {255, 0, 0}, 
   {0, 255, 0}, 
   {0, 0, 255}, 

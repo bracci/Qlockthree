@@ -41,7 +41,7 @@ typedef enum eMode : byte
   EXT_MODE_ENABLE_ALARM,
 #endif
   EXT_MODE_TRANSITION,
-#ifdef RGB_LEDS
+#if defined(RGB_LEDS) || defined(RGBW_LEDS)
   EXT_MODE_COLOR,
 #endif
 #ifdef EVENTS

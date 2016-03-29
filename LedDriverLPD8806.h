@@ -27,7 +27,11 @@
 #ifdef MATRIX_XXL
 #include <LPD8806DBL.h>
 #else
+#ifdef RGBW_LEDS
+#include <LPD8806RGBW.h>
+#else
 #include <LPD8806.h>
+#endif
 #endif
 
 class LedDriverLPD8806 : public LedDriver {
@@ -67,9 +71,13 @@ class LedDriverLPD8806 : public LedDriver {
 #ifdef MATRIX_XXL
     LPD8806DBL *_strip;
 #else
+#ifdef RGBW_LEDS
+    LPD8806RGBW *_strip;
+#else
     LPD8806 *_strip;
 #endif
-    
+#endif
+
 };
 
 #endif

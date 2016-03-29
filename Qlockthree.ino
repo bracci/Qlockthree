@@ -1069,7 +1069,7 @@ void loop() {
             break;
         }
         break;
-#ifdef RGB_LEDS
+#if defined(RGB_LEDS) || defined(RGBW_LEDS)
       case EXT_MODE_COLOR:
         renderer.clearScreenBuffer(matrix);
         renderer.setMenuText("CL", Renderer::TEXT_POS_TOP, matrix);
@@ -1586,14 +1586,14 @@ void hourPlusPressed() {
         settings.setTransitionMode(Settings::TRANSITION_MODE_MAX - 1);
       } else {
         settings.setTransitionMode(settings.getTransitionMode() - 1);
-#ifndef RGB_LEDS
+#if !defined(RGB_LEDS) && !defined(RGBW_LEDS)
         if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) {
           settings.setTransitionMode(settings.getTransitionMode() - 1);
         }
 #endif
       }
       break;
-#ifdef RGB_LEDS
+#if defined(RGB_LEDS) || defined(RGBW_LEDS)
     case EXT_MODE_COLOR:
       if (settings.getColor() == 0)
       {
@@ -1700,14 +1700,14 @@ void minutePlusPressed() {
         settings.setTransitionMode(0);
       } else {
         settings.setTransitionMode(settings.getTransitionMode() + 1);
-#ifndef RGB_LEDS
+#if !defined(RGB_LEDS) && !defined(RGBW_LEDS)
         if (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) {
           settings.setTransitionMode(settings.getTransitionMode() + 1);
         }
 #endif
       }
       break;
-#ifdef RGB_LEDS
+#if defined(RGB_LEDS) || defined(RGBW_LEDS)
     case EXT_MODE_COLOR:
       if (settings.getColor() == color_max)
       {
