@@ -24,7 +24,7 @@
 #include "Debug.h"
 
 // eigentlich haben wir ja 115 LEDs, aber LPD8806 sind ja immer zweier...
-#ifdef MATRIX_XXL
+#if defined(MATRIX_XXL) || defined(RGBW_LEDS)
 #define NUM_PIXEL 115
 #else
 #define NUM_PIXEL 130
@@ -343,7 +343,7 @@ void LedDriverLPD8806::_setPixel(byte x, byte y, uint32_t c) {
    Einen Pixel im Streifen setzten (die Eck-LEDs sind am Ende).
 */
 void LedDriverLPD8806::_setPixel(byte num, uint32_t c) {
-#ifdef MATRIX_XXL
+#if defined(MATRIX_XXL) || defined(RGBW_LEDS)
   if (num < 110) {
     if ((num / 11) % 2 == 0) {
       _strip->setPixelColor(num, c);
