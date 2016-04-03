@@ -98,7 +98,7 @@ void Effects::showHeart(byte duration, eColors color) {
     for (byte j = 0; j < 8; j++) {
       matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
     }
-    writeToBuffer(matrix, 16 * duration, color);
+    writeToBuffer(matrix, 11 * duration, color);
     for (byte i = 0; i < 2; i++) {
       renderer.clearScreenBuffer(matrix);
       for (byte z = 0; z < 2; z++) {
@@ -218,7 +218,7 @@ void Effects::writeToBuffer(word aMatrix[], unsigned int aDuration, eColors colo
 {
 #ifdef RGB_LEDS
   ledDriver.writeScreenBufferToMatrix(aMatrix, true, color);
-  delay(aDuration * 14);
+  delay(aDuration * 11);
 #else
   for (int i = 0; i < aDuration; i++) {
     ledDriver.writeScreenBufferToMatrix(aMatrix, true, color);
