@@ -5,9 +5,9 @@
  *
  * @mc       Arduino/RBBB
  * @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.8
+ * @version  1.8a
  * @created  19.3.2011
- * @updated  16.2.2015
+ * @updated  29.03.2016 (ergänzt durch A. Mueller)
  *
  * Versionshistorie:
  * V 1.1:  - Fehler in der Initialisierung behoben.
@@ -18,6 +18,7 @@
  * V 1.6:  - Optimierung hinsichtlich Speicherbedarf.
  * V 1.7:  - Verbessertes Debugging.
  * V 1.8:  - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt.
+ * V 1.8a: - Datum wird jetzt ebenfalls geprüft (via getMinutesOfCentury())
  */
 #ifndef DCF77HELPER_H
 #define DCF77HELPER_H
@@ -29,13 +30,13 @@
 #include "Configuration.h"
 
 class DCF77Helper {
-  public:
+public:
     DCF77Helper();
 
-    void addSample(MyDCF77* dcf77, MyRTC* rtc);
+    void addSample(MyDCF77 dcf77, MyRTC rtc);
     boolean samplesOk();
 
-  private:
+private:
     byte _cursor;
     TimeStamp *_zeitstempelDcf77[DCF77HELPER_MAX_SAMPLES];
     TimeStamp *_zeitstempelRtc[DCF77HELPER_MAX_SAMPLES];

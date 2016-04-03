@@ -1,22 +1,22 @@
 /**
- * Modes.h
- * Modi Enum
- *
- * @mc       Arduino/UNO
- * @autor    Manuel Bracher / manuel.bracher@gmail.com
- * @version  1.0
- * @created  20.08.15
- *
- * Versionshistorie:
- * V 1.0:  - Erstellt.
- */
+   Modes.h
+   Modi Enum
+
+   @mc       Arduino/UNO
+   @autor    Manuel Bracher / manuel.bracher@gmail.com
+   @version  1.0
+   @created  20.08.15
+
+   Versionshistorie:
+   V 1.0:  - Erstellt.
+*/
 
 #ifndef MODES_H
 #define MODES_H
 
 /**
- * Die Standard-Modi.
- */
+   Die Standard-Modi.
+*/
 typedef enum eMode : byte
 {
   STD_MODE_NORMAL,
@@ -32,8 +32,8 @@ typedef enum eMode : byte
 
 
   /**
-   * Die erweiterten Modi.
-   */
+     Die erweiterten Modi.
+  */
   EXT_MODE_START,
   EXT_MODE_LDR_MODE = EXT_MODE_START,
   EXT_MODE_CORNERS,
@@ -47,6 +47,9 @@ typedef enum eMode : byte
 #ifdef EVENTS
   EXT_MODE_EVENT,
 #endif
+#ifdef AUTO_JUMP_TO_TIME
+  EXT_MODE_JUMP_TIMEOUT,
+#endif
   EXT_MODE_NIGHT_OFF,
   EXT_MODE_NIGHT_ON,
   EXT_MODE_DCF_IS_INVERTED,
@@ -54,8 +57,11 @@ typedef enum eMode : byte
   EXT_MODE_TIMESET,
   EXT_MODE_TIME_SHIFT,
   EXT_MODE_TEST,
+#ifdef DCF77_SHOW_TIME_SINCE_LAST_SYNC
+  EXT_MODE_DCF_SYNC,
+#endif
   EXT_MODE_DCF_DEBUG,
-  EXT_MODE_COUNT = EXT_MODE_DCF_DEBUG
+  EXT_MODE_COUNT
 } Mode;
 
 // Overload the ControlType++ operator

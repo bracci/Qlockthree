@@ -44,6 +44,8 @@ Settings::Settings() {
   // um 4:30 Uhr Display wieder anschalten (Minuten, Stunden, -, -, -, -)
   _nightModeTime[1] = new TimeStamp(30, 4, 0, 0, 0, 0);
 
+  _jumpToNormalTimeout = 10;
+
   // Versuche alte Einstellungen zu laden...
   loadFromEEPROM();
 }
@@ -141,6 +143,17 @@ char Settings::getTimeShift() {
   return _timeShift;
 }
 
+/**
+ * Automatische Umschaltung zurück auf Uhrzeit
+ */
+byte Settings::getJumpToNormalTimeout() {
+    return _jumpToNormalTimeout;
+}
+
+void Settings::setJumpToNormalTimeout(byte jumpToNormalTimeout) {
+    _jumpToNormalTimeout = jumpToNormalTimeout;
+}
+
 void Settings::setTimeShift(char timeShift) {
   _timeShift = timeShift;
 }
@@ -182,6 +195,7 @@ void Settings::loadFromEEPROM() {
     _event = EEPROM.read(11);
     _nightModeTime[0]->set(EEPROM.read(12), EEPROM.read(13), 0, 0, 0, 0);
     _nightModeTime[1]->set(EEPROM.read(14), EEPROM.read(15), 0, 0, 0, 0);
+    _jumpToNormalTimeout = EEPROM.read(16);
   }
 }
 
@@ -236,5 +250,8 @@ void Settings::saveToEEPROM() {
   }
   if (EEPROM.read(15) != _nightModeTime[1]->getHours()) {
     EEPROM.write(15, _nightModeTime[1]->getHours());
+  }
+  if (EEPROM.read(16) != _jumpToNormalTimeout) {
+    EEPROM.write(16, _jumpToNormalTimeout);
   }
 }

@@ -202,6 +202,10 @@
 #include "Zahlen.h"
 #include "Modes.h"
 
+#ifndef DCF77_USE_TIMER2
+#include "TimerOne.h"
+#endif
+
 #ifdef EVENTS
 #include "Events.h"
 #endif
@@ -549,6 +553,44 @@ word frames = 0;
 unsigned long lastFpsCheck = 0;
 #endif
 
+// Eigene Variablendeklaration
+#ifdef AUTO_JUMP_TO_TIME
+// Fuer automatischen Rücksprung zur Standardanzeige
+byte jumpToNormalTimeout;
+#endif
+
+#ifdef DCF77_SHOW_TIME_SINCE_LAST_SYNC
+// Fuer die DCF_DEBUG Anzeige
+unsigned int dcf77ErrorMinutes;
+#endif
+
+/**
+   Automatisches Zurückschalten von einer definierten Anzeige auf die Zeitanzeige nach einer
+   festgelegten Zeitspanne jumpToNormalTimeout. Ist dieser Wert == 0, so findet kein
+   automatischer Rücksprung statt.
+   Achtung!: Als Ursprungsmodus (von dem Zurückgesprungen werden soll) nur Standardmodi verwenden.
+*/
+static void updateJumpToNormalTimeout() {
+  if (settings.getJumpToNormalTimeout()) {
+    switch (mode) {
+      case STD_MODE_SECONDS:
+      case STD_MODE_BRIGHTNESS:
+        jumpToNormalTimeout--;
+        if (!jumpToNormalTimeout) {
+          mode = STD_MODE_NORMAL;
+          lastMode = mode;
+        }
+        break;
+    }
+  }
+}
+
+#ifndef DCF77_USE_TIMER2
+void DCF77Polling() {
+  dcf77.TimerPoll();
+}
+#endif
+
 // Zähler für Timer im Menu
 byte counter = 0;
 
@@ -562,6 +604,11 @@ bool evtActive = false;
    dann in loop() ausgewertet wird.
 */
 void updateFromRtc() {
+#ifdef AUTO_JUMP_TO_TIME
+  // Automatischer Rücksprung nach jumpToNormalTimeout Sekunden auf Zeitanzeige
+  updateJumpToNormalTimeout();
+#endif
+
   needsUpdateFromRtc = true;
   // die Zeit verursacht ein kurzes Flackern. Wir muessen
   // sie aber nicht immer lesen, im Modus 'normal' alle 60 Sekunden,
@@ -757,6 +804,23 @@ void setup() {
   // Display einschalten...
   ledDriver.wakeUp();
   ledDriver.setBrightness(settings.getBrightness());
+
+
+#ifndef DCF77_USE_TIMER2
+  // Timer1 für DCF77-Synchronisation
+  Timer1.initialize(1000000 / MYDCF77_SIGNAL_BINS);
+  Timer1.attachInterrupt(DCF77Polling);
+#endif
+
+#ifdef DCF77_USE_TIMER2
+  // Timer2 für DCF77-Synchronisation
+  TCCR2B = 0x00;        //Disbale Timer2 while we set it up
+  TCNT2  = 131;         //Reset Timer Count to 130 out of 255
+  TIFR2  = 0x00;        //Timer2 INT Flag Reg: Clear Timer Overflow Flag
+  TIMSK2 = 0x01;        //Timer2 INT Reg: Timer2 Overflow Interrupt Enable
+  TCCR2A = 0x00;        //Timer2 Control Reg A: Wave Gen Mode normal
+  TCCR2B = 0x05;
+#endif
 }
 
 /**
@@ -812,9 +876,6 @@ void loop() {
   //
   if (needsUpdateFromRtc) {
     needsUpdateFromRtc = false;
-    if (dcf77.newSecond()) {
-      manageNewDCF77Data();
-    }
 
     // Fall back counter für Menu
     if (counter == 1) {
@@ -1051,6 +1112,14 @@ void loop() {
         }
         break;
 #endif
+      case EXT_MODE_JUMP_TIMEOUT:
+        renderer.clearScreenBuffer(matrix);
+        renderer.setMenuText("FB", Renderer::TEXT_POS_TOP, matrix);
+        for (byte i = 0; i < 7; i++) {
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getJumpToNormalTimeout() / 10][i])) << 11;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getJumpToNormalTimeout() % 10][i])) << 5;
+        }
+        break;
       ///**
       //   Hier definiert man die Ab- und Anschaltzeiten fuer das Display. Die Abschaltung des
       //   Displays verbessert den Empfang des DCF77-Empfaengers. Und hilft, falls die Uhr im
@@ -1167,9 +1236,25 @@ void loop() {
           testColumn = 0;
         }
         break;
-      case EXT_MODE_DCF_DEBUG:
+#ifdef DCF77_SHOW_TIME_SINCE_LAST_SYNC
+      case EXT_MODE_DCF_SYNC:
+        // Anzeige des letzten erfolgreichen DCF-Syncs (samplesOK) in Stunden:Minuten
         renderer.clearScreenBuffer(matrix);
-        renderer.setCorners(dcf77.getBitPointer() % 5, settings.getRenderCornersCw(), matrix);
+        dcf77ErrorMinutes = dcf77.getDcf77LastSuccessSyncMinutes();
+        for (byte i = 0; i < 5; i++) {
+          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes / 60 / 10][i])) << 11;
+          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes / 60 % 10][i])) << 6;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes % 60 / 10][i])) << 11;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes % 60 % 10][i])) << 6;
+        }
+        ledDriver.setPixelInScreenBuffer(10, 1, matrix);
+        ledDriver.setPixelInScreenBuffer(10, 3, matrix);
+        break;
+#endif
+      case EXT_MODE_DCF_DEBUG:
+        needsUpdateFromRtc = true;
+        renderer.clearScreenBuffer(matrix);
+        renderer.setCorners(dcf77.getDcf77ErrorCorner(settings.getDcfSignalIsInverted()), settings.getRenderCornersCw(), matrix);
         break;
       default:
         break;
@@ -1182,7 +1267,11 @@ void loop() {
 
   /*
      Tasten abfragen (Code mit 3.3.0 ausgelagert, wegen der Fernbedienung)
-  */
+  */// M+ und H+ im STD_MODE_NORMAL gedrueckt?
+  if ((mode == STD_MODE_NORMAL) && extModeDoubleButton.pressed()) {
+    doubleStdModeNormalPressed();
+  }
+  //
   // M+ und H+ im STD_MODE_BLANK gedrueckt?
   if ((mode == STD_MODE_BLANK) && extModeDoubleButton.pressed()) {
     doubleExtModePressed();
@@ -1240,7 +1329,7 @@ void loop() {
      Das Verbessert den DCF77-Empfang bzw. ermoeglicht ein dunkles Schlafzimmer.
   */
   if ((settings.getNightModeTime(false).getMinutesOfDay() != 0) && (settings.getNightModeTime(false).getMinutesOfDay() != 0)) {
-    if ((mode != STD_MODE_NIGHT) && (settings.getNightModeTime(false).getMinutesOfDay() == rtc.getMinutesOfDay())) {
+    if ((mode < EXT_MODE_START) && (mode != STD_MODE_NIGHT) && (settings.getNightModeTime(false).getMinutesOfDay() == rtc.getMinutesOfDay())) {
       mode = STD_MODE_NIGHT;
       ledDriver.shutDown();
     }
@@ -1295,12 +1384,46 @@ void loop() {
   /*
      DCF77-Empfaenger anticken...
   */
-  dcf77.poll(settings.getDcfSignalIsInverted());
+  if (dcf77.poll(settings.getDcfSignalIsInverted()))
+    manageNewDCF77Data();
 }
 
 /**
    Was soll ausgefuehrt werden, wenn die H+ und M+ -Taste zusammen gedrueckt wird?
 */
+// Im Mode STD_MODE_NORMAL
+void doubleStdModeNormalPressed() {
+  needsUpdateFromRtc = true;
+  DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_NORMAL..."));
+  DEBUG_FLUSH();
+  //    if ( (offTime.getMinutesOfDay() < onTime.getMinutesOfDay())
+  //          && ( (rtc.getMinutesOfDay() > offTime.getMinutesOfDay())
+  //          && (rtc.getMinutesOfDay() < onTime.getMinutesOfDay())
+  //             )
+  //       || ( (offTime.getMinutesOfDay() > onTime.getMinutesOfDay())
+  //          && ( (rtc.getMinutesOfDay() > offTime.getMinutesOfDay())
+  //          || (rtc.getMinutesOfDay() < onTime.getMinutesOfDay()))
+  //          )
+  //       )
+  // ALTERNATIV
+  int tempOffTime = settings.getNightModeTime(false).getMinutesOfDay();
+  if (tempOffTime > settings.getNightModeTime(true).getMinutesOfDay())
+    tempOffTime -= 24 * 60;
+  int tempRtc = rtc.getMinutesOfDay();
+  if (tempRtc > settings.getNightModeTime(true).getMinutesOfDay())
+    tempRtc -= 24 * 60;
+  if ( (tempRtc > tempOffTime)
+       && (tempRtc < (int) settings.getNightModeTime(true).getMinutesOfDay()) )
+  {
+    lastMode = mode;
+    mode = STD_MODE_NIGHT;
+    ledDriver.shutDown();
+    DEBUG_PRINTLN(F("Entering STD_MODE_NIGHT..."));
+    DEBUG_FLUSH();
+  }
+}
+
+// Im Mode STD_MODE_BLANK
 void doubleExtModePressed() {
   needsUpdateFromRtc = true;
   DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_BLANK..."));
@@ -1347,33 +1470,58 @@ void modePressed() {
     alarm.deactivate();
     mode = STD_MODE_NORMAL;
   } else {
-    mode++;
+    switch (mode) {
+      // Durch Drücken der MODE-Taste den Nachtmodus verlassen
+      case STD_MODE_NIGHT:
+        mode = lastMode;
+        ledDriver.wakeUp();
+        break;
+      default:
+        mode++;
+        break;
+    }
   }
 #else
-  mode++;
+  switch (mode) {
+      // Durch Drücken der MODE-Taste den Nachtmodus verlassen
+      case STD_MODE_NIGHT:
+        mode = lastMode;
+        ledDriver.wakeUp();
+        break;
+      default:
+        mode++;
+        break;
+    }
 #endif
 
   // Brightness ueberspringen, wenn LDR verwendet wird.
   if (settings.getUseLdr() && (mode == STD_MODE_BRIGHTNESS)) {
     mode++;
   }
-#ifdef ALARM
-  // Alarm ueberspringen, wenn kein Alarm enabled ist.
-  if (!settings.getEnableAlarm() && (mode == STD_MODE_ALARM)) {
-    mode++;
-  }
-#endif
+
   if (mode == STD_MODE_COUNT + 1) {
     mode = STD_MODE_NORMAL;
   }
-  if (mode == EXT_MODE_COUNT + 1) {
+  if (mode == EXT_MODE_COUNT) {
     mode = STD_MODE_NORMAL;
   }
+  
 #ifdef ALARM
   if (mode == STD_MODE_ALARM) {
     // wenn auf Alarm gewechselt wurde, fuer 10 Sekunden die
     // Weckzeit anzeigen.
     alarm.setShowAlarmTimeTimer(10);
+  }
+#endif
+
+#ifdef AUTO_JUMP_TO_TIME
+  switch (mode) {
+    case STD_MODE_SECONDS:
+    case STD_MODE_BRIGHTNESS:
+      // Timeout für den automatischen Rücksprung von STD_MODE_SECONDS,
+      // STD_MODE_DATE und STD_MODE_BRIGHTNESS zurücksetzen
+      jumpToNormalTimeout = settings.getJumpToNormalTimeout();
+      break;
   }
 #endif
 
@@ -1431,6 +1579,10 @@ void hourPlusPressed() {
       break;
 #endif
     case STD_MODE_BRIGHTNESS:
+#ifdef AUTO_JUMP_TO_TIME
+      // RESET counter
+      jumpToNormalTimeout = settings.getJumpToNormalTimeout();
+#endif
       setDisplayDarker();
       break;
     case EXT_MODE_LDR_MODE:
@@ -1485,6 +1637,11 @@ void hourPlusPressed() {
       }
       break;
 #endif
+    case EXT_MODE_JUMP_TIMEOUT:
+      if (settings.getJumpToNormalTimeout() > 0) {
+        settings.setJumpToNormalTimeout(settings.getJumpToNormalTimeout() - 1);
+      }
+      break;
     case EXT_MODE_NIGHT_OFF:
       if (counter > 0) {
         settings.incHoursNightMode(false);
@@ -1540,6 +1697,10 @@ void minutePlusPressed() {
       break;
 #endif
     case STD_MODE_BRIGHTNESS:
+#ifdef AUTO_JUMP_TO_TIME
+      // RESET counter
+      jumpToNormalTimeout = settings.getJumpToNormalTimeout();
+#endif
       setDisplayBrighter();
       break;
     case EXT_MODE_LDR_MODE:
@@ -1592,6 +1753,11 @@ void minutePlusPressed() {
       }
       break;
 #endif
+    case EXT_MODE_JUMP_TIMEOUT:
+      if (settings.getJumpToNormalTimeout() < 99) {
+        settings.setJumpToNormalTimeout(settings.getJumpToNormalTimeout() + 1);
+      }
+      break;
     case EXT_MODE_NIGHT_OFF:
       if (counter > 0) {
         settings.incFiveMinNightMode(false);
@@ -1643,18 +1809,13 @@ void manageNewDCF77Data() {
   DEBUG_FLUSH();
 
   rtc.readTime();
-  dcf77Helper.addSample(&dcf77, &rtc);
+  dcf77Helper.addSample(dcf77, rtc);
   // Stimmen die Abstaende im Array?
-  // Pruefung ohne Datum, nur Zeit!
+  // Pruefung mit Datum!
   if (dcf77Helper.samplesOk()) {
     rtc.setSeconds(0);
     rtc.setMinutes(dcf77.getMinutes());
     rtc.setHours(dcf77.getHours());
-    // Wir setzen auch das Datum, dann kann man, wenn man moechte,
-    // auf das Datum eingehen (spezielle Nachrichten an speziellen
-    // Tagen). Allerdings ist das Datum bisher nicht ueber
-    // den Abstand der TimeStamps geprueft, sondern nur ueber das
-    // Checkbit des DCF77-Telegramms, was unzureichend ist!
     rtc.setDate(dcf77.getDate());
     rtc.setDayOfWeek(dcf77.getDayOfWeek());
     rtc.setMonth(dcf77.getMonth());
@@ -1663,11 +1824,16 @@ void manageNewDCF77Data() {
     rtc.writeTime();
     DEBUG_PRINTLN(F("DCF77-Time written to RTC."));
     DEBUG_FLUSH();
+#ifdef DCF77_SHOW_TIME_SINCE_LAST_SYNC
+    dcf77.setDcf77SuccessSync();
+#endif
+#ifdef AUTO_JUMP_BLANK
     // falls im manuellen Dunkel-Modus, Display wieder einschalten... (Hilft bei der Erkennung, ob der DCF-Empfang geklappt hat).
     if (mode == STD_MODE_BLANK) {
       mode = STD_MODE_NORMAL;
       ledDriver.wakeUp();
     }
+#endif
   } else {
     DEBUG_PRINTLN(F("DCF77-Time trashed because wrong distances between timestamps."));
     DEBUG_FLUSH();

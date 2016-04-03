@@ -54,7 +54,6 @@ Button::Button(byte pin1, byte pin2, byte pressedAgainst) {
   _lastPressTime = 0;
   _doubleMode = true;
   _pressedAgainst = pressedAgainst;
-  _pressedAgainst = pressedAgainst;
   if (_pressedAgainst == HIGH) {
     pinMode(_pin1, INPUT);
     pinMode(_pin2, INPUT);

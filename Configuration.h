@@ -23,6 +23,16 @@
 #define CONFIGURATION_H
 
 /*
+ * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
+ */
+// Automatischer Rücksprung von STD_MODE_SECONDS, STD_MODE_DATE und STD_MODE_BRIGHTNESS (Standard: eingeschaltet).
+#define AUTO_JUMP_TO_TIME
+// Anzeige der vergangenen Stunden und Minuten seit der letzten erfolgreichen DCF-Synchronisation im Menü EXT_MODE_DCF_DEBUG (Standard: eingeschaltet).
+#define DCF77_SHOW_TIME_SINCE_LAST_SYNC
+// Automatischer Rücksprung von STD_MODE_BLANK, wenn DCF-Synchronisation erfolgreich war (Standard: eingeschaltet).
+#define AUTO_JUMP_BLANK
+
+/*
  * Alarmfunktion einschalten?
  * Dazu muss ein Lautsprecher an D13 und GND und eine weitere 'Eck-LED' an die 5te Reihe.
  * Dann gibt es einen neuen Modus, direkt nach der normalen Zeitanzeige. Die neue LED
@@ -152,6 +162,29 @@
  * Default: 59
  */
 #define MYDCF77_TELEGRAMMLAENGE 59
+/*
+ * Die Sekunde wird in die entsprechende Zahl
+ * von Signalbins unterteilt, um das Wegdriften
+ * der internen RTC quantifizieren zu können.
+ * Dieser Wert entspricht einer Auflösung.
+ * ACHTUNG! Wird diese Zahl zu groß gewählt (> 30), 
+ * überschreitet sie die Frequenz (fps) der loop().
+ * Eine Steigerung der Auflösung ist dann nicht mehr
+ * möglich, aber der Overhead steigt weiter an.
+ * Werte < 4 sind ebenso sinnlos.
+ * Default: 10  (sinnvoll: 5 - 25)
+ */
+#define MYDCF77_SIGNAL_BINS 10
+/*
+ * Dieser Wert gibt an wie viele Sekunden
+ * die Drift bestimmt, bevor sie korrigiert wird.
+ * ACHTUNG! Ein zu großer Wert verhindert eine
+ * wirksame Driftkorrektur. Bei einem zu kleinen
+ * Wert hingegen wird eine erfolgreiche
+ * Zeitsynchronisation praktisch unmöglich.
+ * Default: 30  (sinnvoll: 10 - 300)
+ */
+#define MYDCF77_DRIFT_CORRECTION_TIME 30
 /*
  * Ist das Signal invertiert (z.B. ELV-Empfaenger)?
  * Default: ausgeschaltet.

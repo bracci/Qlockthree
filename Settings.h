@@ -68,6 +68,9 @@ class Settings {
     char getTimeShift();
     void setTimeShift(char timeShift);
 
+    byte getJumpToNormalTimeout();
+    void setJumpToNormalTimeout(byte jumpToNormalTimeout);
+
     void loadFromEEPROM();
     void saveToEEPROM();
 
@@ -89,6 +92,8 @@ class Settings {
     byte _transitionMode;
     byte _event;
     TimeStamp* _nightModeTime[2];
+
+    byte _jumpToNormalTimeout;
 };
 
 #endif
