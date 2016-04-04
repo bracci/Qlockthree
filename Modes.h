@@ -26,7 +26,7 @@ typedef enum eMode : byte
   STD_MODE_SECONDS,
   STD_MODE_BRIGHTNESS,
   STD_MODE_BLANK,
-  STD_MODE_COUNT = STD_MODE_BLANK,
+  STD_MODE_COUNT,
   // nicht manuell zu erreichender Modus...
   STD_MODE_NIGHT,
 
@@ -47,9 +47,7 @@ typedef enum eMode : byte
 #ifdef EVENTS
   EXT_MODE_EVENT,
 #endif
-#ifdef AUTO_JUMP_TO_TIME
   EXT_MODE_JUMP_TIMEOUT,
-#endif
   EXT_MODE_NIGHT_OFF,
   EXT_MODE_NIGHT_ON,
   EXT_MODE_DCF_IS_INVERTED,

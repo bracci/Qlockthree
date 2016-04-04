@@ -25,8 +25,6 @@
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
  */
-// Automatischer Rücksprung von STD_MODE_SECONDS, STD_MODE_DATE und STD_MODE_BRIGHTNESS (Standard: eingeschaltet).
-#define AUTO_JUMP_TO_TIME
 // Anzeige der vergangenen Stunden und Minuten seit der letzten erfolgreichen DCF-Synchronisation im Menü EXT_MODE_DCF_DEBUG (Standard: eingeschaltet).
 #define DCF77_SHOW_TIME_SINCE_LAST_SYNC
 // Automatischer Rücksprung von STD_MODE_BLANK, wenn DCF-Synchronisation erfolgreich war (Standard: eingeschaltet).
@@ -142,7 +140,7 @@
  * Fuer wieviele DCF77-Samples muessen die Zeitabstaende stimmen, damit das DCF77-Telegramm als gueltig zaehlt?
  * Default: 3 (min. 3 Minuten Synchronisationszeit).
  */
-#define DCF77HELPER_MAX_SAMPLES 2
+#define DCF77HELPER_MAX_SAMPLES 3
 /*
  * Bei einer Verwendung eines analogen Pins die naechsten zwei Zeilen einkommentieren.
  * Default: ausgeschaltet

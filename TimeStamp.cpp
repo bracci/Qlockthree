@@ -29,11 +29,11 @@ TimeStamp::TimeStamp(byte minutes, byte hours, byte date, byte dayOfWeek, byte m
     set(minutes, hours, date, dayOfWeek, month, year);
 }
 
-TimeStamp::TimeStamp(MyDCF77 dcf77) {
+TimeStamp::TimeStamp(MyDCF77& dcf77) {
     setFrom(dcf77);
 }
 
-TimeStamp::TimeStamp(MyRTC rtc) {
+TimeStamp::TimeStamp(MyRTC& rtc) {
     setFrom(rtc);
 }
 
@@ -83,7 +83,7 @@ unsigned long TimeStamp::getMinutesOfCentury() {
     return ( ((( _year * 12 + _month ) * 31 + _date) * 24 + _hours) * 60 + _minutes );
 }
 
-void TimeStamp::setFrom(MyDCF77 dcf77) {
+void TimeStamp::setFrom(MyDCF77& dcf77) {
     _minutes = dcf77.getMinutes();
     _hours = dcf77.getHours();
     _date = dcf77.getDate();
@@ -92,7 +92,7 @@ void TimeStamp::setFrom(MyDCF77 dcf77) {
     _year = dcf77.getYear();
 }
 
-void TimeStamp::setFrom(MyRTC rtc) {
+void TimeStamp::setFrom(MyRTC& rtc) {
     _minutes = rtc.getMinutes();
     _hours = rtc.getHours();
     _date = rtc.getDate();

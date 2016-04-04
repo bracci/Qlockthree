@@ -553,37 +553,10 @@ word frames = 0;
 unsigned long lastFpsCheck = 0;
 #endif
 
-// Eigene Variablendeklaration
-#ifdef AUTO_JUMP_TO_TIME
-// Fuer automatischen Rücksprung zur Standardanzeige
-byte jumpToNormalTimeout;
-#endif
-
 #ifdef DCF77_SHOW_TIME_SINCE_LAST_SYNC
 // Fuer die DCF_DEBUG Anzeige
 unsigned int dcf77ErrorMinutes;
 #endif
-
-/**
-   Automatisches Zurückschalten von einer definierten Anzeige auf die Zeitanzeige nach einer
-   festgelegten Zeitspanne jumpToNormalTimeout. Ist dieser Wert == 0, so findet kein
-   automatischer Rücksprung statt.
-   Achtung!: Als Ursprungsmodus (von dem Zurückgesprungen werden soll) nur Standardmodi verwenden.
-*/
-static void updateJumpToNormalTimeout() {
-  if (settings.getJumpToNormalTimeout()) {
-    switch (mode) {
-      case STD_MODE_SECONDS:
-      case STD_MODE_BRIGHTNESS:
-        jumpToNormalTimeout--;
-        if (!jumpToNormalTimeout) {
-          mode = STD_MODE_NORMAL;
-          lastMode = mode;
-        }
-        break;
-    }
-  }
-}
 
 #ifndef DCF77_USE_TIMER2
 void DCF77Polling() {
@@ -591,8 +564,8 @@ void DCF77Polling() {
 }
 #endif
 
-// Zähler für Timer im Menu
-byte counter = 0;
+// Zähler für fall back timer im Menu
+byte fallBackCounter = 0;
 
 // Indiziert, ob Event aktiv ist.
 bool evtActive = false;
@@ -604,11 +577,6 @@ bool evtActive = false;
    dann in loop() ausgewertet wird.
 */
 void updateFromRtc() {
-#ifdef AUTO_JUMP_TO_TIME
-  // Automatischer Rücksprung nach jumpToNormalTimeout Sekunden auf Zeitanzeige
-  updateJumpToNormalTimeout();
-#endif
-
   needsUpdateFromRtc = true;
   // die Zeit verursacht ein kurzes Flackern. Wir muessen
   // sie aber nicht immer lesen, im Modus 'normal' alle 60 Sekunden,
@@ -618,8 +586,8 @@ void updateFromRtc() {
     helperSeconds = 0;
   }
 
-  if (counter > 0) {
-    counter--;
+  if (fallBackCounter > 0) {
+    updateFallBackCounter();
   }
 }
 
@@ -877,13 +845,6 @@ void loop() {
   if (needsUpdateFromRtc) {
     needsUpdateFromRtc = false;
 
-    // Fall back counter für Menu
-    if (counter == 1) {
-      if ( (mode != EXT_MODE_NIGHT_OFF) || (mode != EXT_MODE_NIGHT_ON) ) {
-        mode = lastMode;
-      }
-    }
-
     //
     // Zeit einlesen...
     //
@@ -1130,7 +1091,7 @@ void loop() {
       //*/
       case EXT_MODE_NIGHT_OFF:
         renderer.clearScreenBuffer(matrix);
-        if (!counter) {
+        if (!fallBackCounter) {
           renderer.setMenuText("NO", Renderer::TEXT_POS_TOP, matrix);
           renderer.setMenuText("FF", Renderer::TEXT_POS_BOTTOM, matrix);
         }
@@ -1146,7 +1107,7 @@ void loop() {
         break;
       case EXT_MODE_NIGHT_ON:
         renderer.clearScreenBuffer(matrix);
-        if (!counter) {
+        if (!fallBackCounter) {
           renderer.setMenuText("N", Renderer::TEXT_POS_TOP, matrix);
           renderer.setMenuText("ON", Renderer::TEXT_POS_BOTTOM, matrix);
         }
@@ -1483,15 +1444,15 @@ void modePressed() {
   }
 #else
   switch (mode) {
-      // Durch Drücken der MODE-Taste den Nachtmodus verlassen
-      case STD_MODE_NIGHT:
-        mode = lastMode;
-        ledDriver.wakeUp();
-        break;
-      default:
-        mode++;
-        break;
-    }
+    // Durch Drücken der MODE-Taste den Nachtmodus verlassen
+    case STD_MODE_NIGHT:
+      mode = lastMode;
+      ledDriver.wakeUp();
+      break;
+    default:
+      mode++;
+      break;
+  }
 #endif
 
   // Brightness ueberspringen, wenn LDR verwendet wird.
@@ -1499,13 +1460,13 @@ void modePressed() {
     mode++;
   }
 
-  if (mode == STD_MODE_COUNT + 1) {
+  if (mode == STD_MODE_COUNT) {
     mode = STD_MODE_NORMAL;
   }
   if (mode == EXT_MODE_COUNT) {
     mode = STD_MODE_NORMAL;
   }
-  
+
 #ifdef ALARM
   if (mode == STD_MODE_ALARM) {
     // wenn auf Alarm gewechselt wurde, fuer 10 Sekunden die
@@ -1514,16 +1475,19 @@ void modePressed() {
   }
 #endif
 
-#ifdef AUTO_JUMP_TO_TIME
+  disableFallBackCounter();
+
   switch (mode) {
     case STD_MODE_SECONDS:
     case STD_MODE_BRIGHTNESS:
       // Timeout für den automatischen Rücksprung von STD_MODE_SECONDS,
       // STD_MODE_DATE und STD_MODE_BRIGHTNESS zurücksetzen
-      jumpToNormalTimeout = settings.getJumpToNormalTimeout();
+      enableFallBackCounter(settings.getJumpToNormalTimeout());
       break;
+    default:
+      disableFallBackCounter();
   }
-#endif
+
 
   DEBUG_PRINT(F("Change mode pressed, mode is now "));
   DEBUG_PRINT(mode);
@@ -1579,10 +1543,8 @@ void hourPlusPressed() {
       break;
 #endif
     case STD_MODE_BRIGHTNESS:
-#ifdef AUTO_JUMP_TO_TIME
       // RESET counter
-      jumpToNormalTimeout = settings.getJumpToNormalTimeout();
-#endif
+      enableFallBackCounter(settings.getJumpToNormalTimeout());
       setDisplayDarker();
       break;
     case EXT_MODE_LDR_MODE:
@@ -1643,16 +1605,16 @@ void hourPlusPressed() {
       }
       break;
     case EXT_MODE_NIGHT_OFF:
-      if (counter > 0) {
+      if (fallBackCounter > 0) {
         settings.incHoursNightMode(false);
       }
-      enableCounter(2);
+      enableFallBackCounter(2);
       break;
     case EXT_MODE_NIGHT_ON:
-      if (counter > 0) {
+      if (fallBackCounter > 0) {
         settings.incHoursNightMode(true);
       }
-      enableCounter(2);
+      enableFallBackCounter(2);
       break;
     case EXT_MODE_DCF_IS_INVERTED:
       settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
@@ -1697,10 +1659,8 @@ void minutePlusPressed() {
       break;
 #endif
     case STD_MODE_BRIGHTNESS:
-#ifdef AUTO_JUMP_TO_TIME
       // RESET counter
-      jumpToNormalTimeout = settings.getJumpToNormalTimeout();
-#endif
+      enableFallBackCounter(settings.getJumpToNormalTimeout());
       setDisplayBrighter();
       break;
     case EXT_MODE_LDR_MODE:
@@ -1759,16 +1719,16 @@ void minutePlusPressed() {
       }
       break;
     case EXT_MODE_NIGHT_OFF:
-      if (counter > 0) {
+      if (fallBackCounter > 0) {
         settings.incFiveMinNightMode(false);
       }
-      enableCounter(2);
+      enableFallBackCounter(2);
       break;
     case EXT_MODE_NIGHT_ON:
-      if (counter > 0) {
+      if (fallBackCounter > 0) {
         settings.incFiveMinNightMode(true);
       }
-      enableCounter(2);
+      enableFallBackCounter(2);
       break;
     case EXT_MODE_DCF_IS_INVERTED:
       settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
@@ -1906,8 +1866,29 @@ void setDisplayDarker() {
   }
 }
 
-void enableCounter(byte value) {
-  counter = value + 1;
+void enableFallBackCounter(byte timeoutSec) {
+  fallBackCounter = timeoutSec;
+}
+
+void disableFallBackCounter(void) {
+  fallBackCounter = 0;
+}
+
+/**
+   Automatisches Zurückschalten von einer definierten Anzeige auf die Zeitanzeige nach einer
+   festgelegten Zeitspanne jumpToNormalTimeout. Ist dieser Wert == 0, so findet kein
+   automatischer Rücksprung statt.
+   Achtung!: Als Ursprungsmodus (von dem Zurückgesprungen werden soll) nur Standardmodi verwenden.
+*/
+void updateFallBackCounter(void)
+{
+  fallBackCounter--;
+  if (!fallBackCounter) {
+    if ( (mode != EXT_MODE_NIGHT_OFF) && (mode != EXT_MODE_NIGHT_ON) ) {
+      mode = STD_MODE_NORMAL;
+      lastMode = mode;
+    }
+  }
 }
 
 void incDecMinutes(boolean inc) {
@@ -1961,11 +1942,9 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
       if (!settings.getUseLdr()) {
         if (STD_MODE_BRIGHTNESS == mode) {
           setDisplayBrighter();
-          enableCounter(2);
         }
         else {
           mode = STD_MODE_BRIGHTNESS;
-          enableCounter(2);
         }
       }
       break;
@@ -1973,11 +1952,9 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
       if (!settings.getUseLdr()) {
         if (STD_MODE_BRIGHTNESS == mode) {
           setDisplayDarker();
-          enableCounter(2);
         }
         else {
           mode = STD_MODE_BRIGHTNESS;
-          enableCounter(2);
         }
       }
       break;
@@ -2006,11 +1983,9 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
     case REMOTE_BUTTON_REGION:
       if (EXT_MODE_LANGUAGE == mode) {
         minutePlusPressed();
-        enableCounter(2);
       }
       else {
         mode = EXT_MODE_LANGUAGE;
-        enableCounter(2);
       }
       break;
     case REMOTE_BUTTON_LDR:
@@ -2019,11 +1994,9 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
         if (!settings.getUseLdr()) {
           settings.setBrightness(ledDriver.getBrightness());
         }
-        enableCounter(2);
       }
       else {
         mode = EXT_MODE_LDR_MODE;
-        enableCounter(2);
       }
       break;
     case REMOTE_BUTTON_TIME_H_PLUS:
@@ -2045,6 +2018,22 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
     default:
       break;
   }
+
+  switch (mode) {
+    case STD_MODE_SECONDS:
+      // Timeout für den automatischen Rücksprung von STD_MODE_SECONDS,
+      // STD_MODE_DATE und STD_MODE_BRIGHTNESS zurücksetzen
+      enableFallBackCounter(settings.getJumpToNormalTimeout());
+      break;
+    case STD_MODE_BRIGHTNESS:
+    case EXT_MODE_LANGUAGE:
+    case EXT_MODE_LDR_MODE:
+      enableFallBackCounter(2);
+      break;
+    default:
+      break;
+  }
+
 
   settings.saveToEEPROM();
 }

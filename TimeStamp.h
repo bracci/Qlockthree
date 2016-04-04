@@ -30,8 +30,8 @@
 class TimeStamp {
 public:
     TimeStamp(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year);
-    TimeStamp(MyDCF77 dcf77);
-    TimeStamp(MyRTC rtc);
+    TimeStamp(MyDCF77& dcf77);
+    TimeStamp(MyRTC& rtc);
 
     void incMinutes();
     void incFiveMinutes();
@@ -48,8 +48,8 @@ public:
     byte getYear();
     unsigned long getMinutesOfCentury();
 
-    void setFrom(MyDCF77 dcf77);
-    void setFrom(MyRTC rtc);
+    void setFrom(MyDCF77& dcf77);
+    void setFrom(MyRTC& rtc);
     void set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year);
 
     char* asString();
