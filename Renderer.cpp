@@ -69,10 +69,10 @@ void Renderer::setAllScreenBuffer(word matrix[16]) {
 */
 void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[16]) {
   while (hours < 0) {
-    hours += 12;
+    hours += 24;
   }
-  while (hours > 24) {
-    hours -= 12;
+  while (hours > 23) {
+    hours -= 24;
   }
 
   switch (language) {
@@ -722,6 +722,13 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
    (Zumindest im Deutschen)
 */
 void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16]) {
+  while (hours < 0) {
+    hours += 24;
+  }
+  while (hours > 23) {
+    hours -= 24;
+  }
+  
   switch (language) {
     //
     // Deutsch (Hochdeutsch, Schwaebisch, Bayrisch)
@@ -737,7 +744,6 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
       switch (hours) {
         case 0:
         case 12:
-        case 24:
           DE_H_ZWOELF;
           break;
         case 1:
