@@ -211,7 +211,7 @@
 #endif
 
 
-#define FIRMWARE_VERSION "V 3.4.8 vom 15.3.2015"
+#define FIRMWARE_VERSION "CLT OS V 1.0, based on Qlockthree by Christian Ashoff"
 
 /*
    Den DEBUG-Schalter gibt es in allen Bibiliotheken. Wird er eingeschaltet, werden ueber den
@@ -772,6 +772,12 @@ void setup() {
   // Display einschalten...
   ledDriver.wakeUp();
   ledDriver.setBrightness(settings.getBrightness());
+
+  renderer.setAllScreenBuffer(matrix);
+  unsigned long initMillis = millis();
+  while(millis() < (initMillis + 5000)){
+    ledDriver.writeScreenBufferToMatrix(matrix, true, eColors::color_white);
+  }
 
 
 #ifndef DCF77_USE_TIMER2
