@@ -32,10 +32,11 @@
 
 #include "Arduino.h"
 #include "Configuration.h"
+#include "TimeStamp.h"
 
 //#define DCF77_USE_TIMER2
 
-class MyDCF77 {
+class MyDCF77 : public TimeStamp {
 public:
     MyDCF77(byte signalPin, byte statusLedPin);
 
@@ -50,16 +51,6 @@ public:
     byte getBitAtPos(byte pos);
     byte getDcf77ErrorCorner(boolean signalIsInverted);
 
-    byte getMinutes();
-    byte getHours();
-
-    byte getDate();
-    byte getDayOfWeek();
-    byte getMonth();
-    byte getYear();
-
-    char* asString();
-
     boolean signal(boolean signalIsInverted);
 
 private:
@@ -68,16 +59,6 @@ private:
     unsigned int _nPolls = 0;
 
     static byte DCF77Factors[];
-
-    byte _minutes;
-    byte _hours;
-
-    byte _date;
-    byte _dayOfWeek;
-    byte _month;
-    byte _year;
-
-    char _cDateTime[17];
 
     byte _bitsPointer;
     byte _bits[MYDCF77_TELEGRAMMLAENGE+1];

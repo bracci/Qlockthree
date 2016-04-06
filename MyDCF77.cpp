@@ -46,7 +46,7 @@ byte MyDCF77::DCF77Factors[] = {1, 2, 4, 8, 10, 20, 40, 80};
 /**
  * Initialisierung mit dem Pin, an dem das Signal des Empfaengers anliegt
  */
-MyDCF77::MyDCF77(byte signalPin, byte statusLedPin) {
+MyDCF77::MyDCF77(byte signalPin, byte statusLedPin) : TimeStamp(0, 0, 0, 0, 0, 0){
     _signalPin = signalPin;
 #ifndef MYDCF77_SIGNAL_IS_ANALOG
     pinMode(_signalPin, INPUT);
@@ -466,52 +466,6 @@ boolean MyDCF77::decode() {
     return ok;
 }
 
-/**
- * Das Zeittelegramm als String bekommen
- */
-char* MyDCF77::asString() {
-    _cDateTime[0] = 0;
-    char temp[5];
-
-    // build the string...
-    if (_hours < 10) {
-        sprintf(temp, "0%d:", _hours);
-        strncat(_cDateTime, temp, strlen(temp));
-    } else {
-        sprintf(temp, "%d:", _hours);
-        strncat(_cDateTime, temp, strlen(temp));
-    }
-
-    if (_minutes < 10) {
-        sprintf(temp, "0%d ", _minutes);
-        strncat(_cDateTime, temp, strlen(temp));
-    } else {
-        sprintf(temp, "%d ", _minutes);
-        strncat(_cDateTime, temp, strlen(temp));
-    }
-
-    if (_date < 10) {
-        sprintf(temp, "0%d.", _date);
-        strncat(_cDateTime, temp, strlen(temp));
-    } else {
-        sprintf(temp, "%d.", _date);
-        strncat(_cDateTime, temp, strlen(temp));
-    }
-
-    if (_month < 10) {
-        sprintf(temp, "0%d.", _month);
-        strncat(_cDateTime, temp, strlen(temp));
-    } else {
-        sprintf(temp, "%d.", _month);
-        strncat(_cDateTime, temp, strlen(temp));
-    }
-
-    sprintf(temp, "%d", _year);
-    strncat(_cDateTime, temp, strlen(temp));
-
-    return _cDateTime;
-}
-
 /*
  * Das Bits-Array loeschen.
  */
@@ -529,32 +483,4 @@ void MyDCF77::clearBins() {
     for (byte i = 0; i < MYDCF77_SIGNAL_BINS; i++) {
         _bins[i] = 0;
     }   
-}
-
-//
-// Getter
-//
-
-byte MyDCF77::getMinutes() {
-    return _minutes;
-}
-
-byte MyDCF77::getHours() {
-    return _hours;
-}
-
-byte MyDCF77::getDate() {
-    return _date;
-}
-
-byte MyDCF77::getDayOfWeek() {
-    return _dayOfWeek;
-}
-
-byte MyDCF77::getMonth() {
-    return _month;
-}
-
-byte MyDCF77::getYear() {
-    return _year;
 }

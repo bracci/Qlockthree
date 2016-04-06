@@ -24,37 +24,40 @@
 #define TIMESTAMP_H
 
 #include "Arduino.h"
-#include "MyDCF77.h"
-#include "MyRTC.h"
 
 class TimeStamp {
 public:
     TimeStamp(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year);
-    TimeStamp(MyDCF77& dcf77);
-    TimeStamp(MyRTC& rtc);
 
     void incMinutes();
+    void decMinutes();
     void incFiveMinutes();
     void incHours();
+    void decHours();
 
     byte getMinutes();
     unsigned int getMinutesOfDay();
     unsigned int getMinutesOf12HoursDay(int minutesDiff);
     byte getHours();
-
     byte getDate();
     byte getDayOfWeek();
     byte getMonth();
     byte getYear();
-    unsigned long getMinutesOfCentury();
 
-    void setFrom(MyDCF77& dcf77);
-    void setFrom(MyRTC& rtc);
+    void setMinutes(byte minutes);
+    void setHours(byte hours);
+    void setDayOfWeek(byte dayOfWeek);
+    void setDate(byte date);
+    void setMonth(byte month);
+    void setYear(byte year);
+    unsigned long getMinutesOfCentury();
+    
+    void setFrom(TimeStamp* timeStamp);
     void set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year);
 
     char* asString();
 
-private:
+protected:
     byte _minutes;
     byte _hours;
 

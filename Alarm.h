@@ -18,11 +18,9 @@
 #include "Arduino.h"
 #include "TimeStamp.h"
 
-class Alarm {
+class Alarm : public TimeStamp {
   public:
     Alarm(byte speakerPin);
-
-    TimeStamp* getAlarmTime();
 
     void activate();
     void deactivate();
@@ -35,7 +33,6 @@ class Alarm {
     boolean isActive();
 
   private:
-    TimeStamp *_alarmTime;
     boolean _isActive;
     byte _showAlarmTimeTimer;
     byte _speakerPin;

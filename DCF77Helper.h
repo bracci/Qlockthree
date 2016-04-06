@@ -33,7 +33,7 @@ class DCF77Helper {
 public:
     DCF77Helper();
 
-    void addSample(MyDCF77& dcf77, MyRTC& rtc);
+    void addSample(TimeStamp* dcf77, TimeStamp* rtc);
     boolean samplesOk();
 
 private:

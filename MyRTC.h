@@ -26,8 +26,9 @@
 #define MYRTC_H
 
 #include "Arduino.h"
+#include "TimeStamp.h"
 
-class MyRTC {
+class MyRTC : public TimeStamp {
   public:
     MyRTC(int address, byte statusLedPin);
 
@@ -41,39 +42,14 @@ class MyRTC {
 
     void set(const char* date, const char* time);
     void setSeconds(byte seconds);
-    void setMinutes(byte minutes);
-    void incMinutes();
-    void decMinutes();
-    void setHours(byte hours);
-    void incHours();
-    void decHours();
-    void setDayOfWeek(byte dayOfWeek);
-    void setDate(byte date);
-    void setMonth(byte month);
-    void setYear(byte year);
-
     byte getSeconds();
-    byte getMinutes();
-    unsigned int getMinutesOfDay();
-    unsigned int getMinutesOf12HoursDay();
-    byte getHours();
-    byte getDayOfWeek();
-    byte getDate();
-    byte getMonth();
-    byte getYear();
 
   private:
     int _address;
     byte _statusLedPin;
 
     byte _seconds;
-    byte _minutes;
-    byte _hours;
-    byte _dayOfWeek;
-    byte _date;
-    byte _month;
-    byte _year;
-
+    
     byte decToBcd(byte val);
     byte bcdToDec(byte val);
     uint8_t conv2d(const char* p);

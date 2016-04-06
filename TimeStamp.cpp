@@ -29,14 +29,6 @@ TimeStamp::TimeStamp(byte minutes, byte hours, byte date, byte dayOfWeek, byte m
     set(minutes, hours, date, dayOfWeek, month, year);
 }
 
-TimeStamp::TimeStamp(MyDCF77& dcf77) {
-    setFrom(dcf77);
-}
-
-TimeStamp::TimeStamp(MyRTC& rtc) {
-    setFrom(rtc);
-}
-
 byte TimeStamp::getMinutes() {
     return _minutes;
 }
@@ -83,22 +75,37 @@ unsigned long TimeStamp::getMinutesOfCentury() {
     return ( ((( _year * 12 + _month ) * 31 + _date) * 24 + _hours) * 60 + _minutes );
 }
 
-void TimeStamp::setFrom(MyDCF77& dcf77) {
-    _minutes = dcf77.getMinutes();
-    _hours = dcf77.getHours();
-    _date = dcf77.getDate();
-    _dayOfWeek = dcf77.getDayOfWeek();
-    _month = dcf77.getMonth();
-    _year = dcf77.getYear();
+void TimeStamp::setMinutes(byte minutes) {
+    _minutes = minutes;
 }
 
-void TimeStamp::setFrom(MyRTC& rtc) {
-    _minutes = rtc.getMinutes();
-    _hours = rtc.getHours();
-    _date = rtc.getDate();
-    _dayOfWeek = rtc.getDayOfWeek();
-    _month = rtc.getMonth();
-    _year = rtc.getYear();
+void TimeStamp::setHours(byte hours) {
+    _hours = hours;
+}
+
+void TimeStamp::setDayOfWeek(byte dayOfWeek) {
+    _dayOfWeek = dayOfWeek;
+}
+
+void TimeStamp::setDate(byte date) {
+    _date = date;
+}
+
+void TimeStamp::setMonth(byte month) {
+    _month = month;
+}
+
+void TimeStamp::setYear(byte year) {
+    _year = year;
+}
+
+void TimeStamp::setFrom(TimeStamp* timeStamp) {
+    _minutes = timeStamp->_minutes;
+    _hours = timeStamp->_hours;
+    _date = timeStamp->_date;
+    _dayOfWeek = timeStamp->_dayOfWeek;
+    _month = timeStamp->_month;
+    _year = timeStamp->_year;
 }
 
 void TimeStamp::set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year) {
@@ -130,6 +137,19 @@ void TimeStamp::incFiveMinutes() {
 }
 
 /**
+ * Die Minuten dekrementieren.
+ */
+void TimeStamp::decMinutes() {
+  if (_minutes == 0) {
+    _minutes = 59;
+  }
+  else
+  {
+    _minutes--;
+  }
+}
+
+/**
  * Die Stunden erhoehen.
  */
 void TimeStamp::incHours() {
@@ -137,6 +157,18 @@ void TimeStamp::incHours() {
     if (_hours > 23) {
         _hours = 0;
     }
+}
+
+/**
+ * Die Stunden dekrementieren.
+ */
+void TimeStamp::decHours() {
+  if (_hours == 0) {
+    _hours = 23;
+  }
+  else {
+    _hours--;
+  }
 }
 
 /**

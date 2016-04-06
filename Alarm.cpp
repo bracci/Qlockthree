@@ -24,10 +24,9 @@
  *
  * @param speakerPin Der Pin, an dem der Lautsprecher oder Buzzer haengt.
  */
-Alarm::Alarm(byte speakerPin) {
+Alarm::Alarm(byte speakerPin) : TimeStamp(0, 7, 0, 0, 0, 0){
   _speakerPin = speakerPin;
   pinMode(_speakerPin, OUTPUT);
-  _alarmTime = new TimeStamp(0, 7, 0, 0, 0, 0);
   _isActive = false;
   _showAlarmTimeTimer = 0;
 }
@@ -52,15 +51,6 @@ void Alarm::buzz(boolean on) {
     noTone(_speakerPin);
   }
 #endif
-}
-
-/**
- * Die eingestellte Weckzeit bekommen.
- *
- * @return Eine TimeStamp mit der eingstellten Weckzeit.
- */
-TimeStamp* Alarm::getAlarmTime() {
-  return _alarmTime;
 }
 
 /**

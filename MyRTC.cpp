@@ -31,7 +31,7 @@
 /**
    Initialisierung mit der Adresse der DS1307
 */
-MyRTC::MyRTC(int address, byte statusLedPin) {
+MyRTC::MyRTC(int address, byte statusLedPin) : TimeStamp(0, 0, 0, 0, 0, 0){
   _address = address;
   _statusLedPin = statusLedPin;
   pinMode(_statusLedPin, OUTPUT);
@@ -232,102 +232,6 @@ void MyRTC::setSeconds(byte seconds) {
   _seconds = seconds;
 }
 
-void MyRTC::setMinutes(byte minutes) {
-  _minutes = minutes;
-}
-
-void MyRTC::incMinutes() {
-  _minutes++;
-  if (_minutes > 59) {
-    _minutes = 0;
-  }
-}
-
-void MyRTC::decMinutes() {
-  if (_minutes == 0) {
-    _minutes = 59;
-  }
-  else
-  {
-    _minutes--;
-  }
-}
-
-void MyRTC::setHours(byte hours) {
-  _hours = hours;
-}
-
-void MyRTC::incHours() {
-  _hours++;
-  if (_hours > 23) {
-    _hours = 0;
-  }
-}
-
-void MyRTC::decHours() {
-  if (_hours == 0) {
-    _hours = 23;
-  }
-  else {
-    _hours--;
-  }
-}
-
-void MyRTC::setDayOfWeek(byte dayOfWeek) {
-  _dayOfWeek = dayOfWeek;
-}
-
-void MyRTC::setDate(byte date) {
-  _date = date;
-}
-
-void MyRTC::setMonth(byte month) {
-  _month = month;
-}
-
-void MyRTC::setYear(byte year) {
-  _year = year;
-}
-
 byte MyRTC::getSeconds() {
   return _seconds;
-}
-
-byte MyRTC::getMinutes() {
-  return _minutes;
-}
-
-unsigned int MyRTC::getMinutesOfDay() {
-  return _minutes + 60 * _hours;
-}
-
-// Minuten des Tages ohne die Beruecksichtigung von 12/24 Stunden
-// (fuer den Wecker)...
-
-unsigned int MyRTC::getMinutesOf12HoursDay() {
-  int h = _hours;
-  while (h > 12) {
-    h -= 12;
-  }
-  return _minutes + 60 * h;
-}
-
-byte MyRTC::getHours() {
-  return _hours;
-}
-
-byte MyRTC::getDayOfWeek() {
-  return _dayOfWeek;
-}
-
-byte MyRTC::getDate() {
-  return _date;
-}
-
-byte MyRTC::getMonth() {
-  return _month;
-}
-
-byte MyRTC::getYear() {
-  return _year;
 }

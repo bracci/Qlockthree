@@ -959,8 +959,8 @@ void loop() {
           renderer.setCorners(rtc.getMinutes(), settings.getRenderCornersCw(), matrix);
           matrix[4] |= 0b0000000000011111; // Alarm-LED
         } else {
-          renderer.setMinutes(alarm.getAlarmTime()->getHours() + settings.getTimeShift(), alarm.getAlarmTime()->getMinutes(), settings.getLanguage(), matrix);
-          renderer.setCorners(alarm.getAlarmTime()->getMinutes(), settings.getRenderCornersCw(), matrix);
+          renderer.setMinutes(alarm.getHours() + settings.getTimeShift(), alarm.getMinutes(), settings.getLanguage(), matrix);
+          renderer.setCorners(alarm.getMinutes(), settings.getRenderCornersCw(), matrix);
           renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if (alarm.getShowAlarmTimeTimer() % 2 == 0) {
             matrix[4] |= 0b0000000000011111; // Alarm-LED
@@ -1305,13 +1305,13 @@ void loop() {
   */
 #ifdef ALARM
   if ((mode == STD_MODE_ALARM) && (alarm.getShowAlarmTimeTimer() == 0) && !alarm.isActive()) {
-    if (alarm.getAlarmTime()->getMinutesOf12HoursDay(0) == rtc.getMinutesOf12HoursDay()) {
+    if (alarm.getMinutesOf12HoursDay(0) == rtc.getTime()->getMinutesOf12HoursDay(0)) {
       alarm.activate();
     }
   }
   if (alarm.isActive()) {
     // Nach 10 Minuten automatisch abschalten, falls der Wecker alleine rumsteht und die Nachbarn nervt...
-    if (alarm.getAlarmTime()->getMinutesOf12HoursDay(MAX_BUZZ_TIME_IN_MINUTES) == rtc.getMinutesOf12HoursDay()) {
+    if (alarm.getMinutesOf12HoursDay(MAX_BUZZ_TIME_IN_MINUTES) == rtc.getTime()->getMinutesOf12HoursDay(0)) {
       alarm.deactivate();
       alarm.buzz(false);
       mode = STD_MODE_NORMAL;
@@ -1535,10 +1535,10 @@ void hourPlusPressed() {
       break;
 #ifdef ALARM
     case STD_MODE_ALARM:
-      alarm.getAlarmTime()->incHours();
+      alarm.incHours();
       alarm.setShowAlarmTimeTimer(10);
       DEBUG_PRINT(F("A is now "));
-      DEBUG_PRINTLN(alarm.getAlarmTime()->asString());
+      DEBUG_PRINTLN(alarm.asString());
       DEBUG_FLUSH();
       break;
 #endif
@@ -1651,10 +1651,10 @@ void minutePlusPressed() {
       break;
 #ifdef ALARM
     case STD_MODE_ALARM:
-      alarm.getAlarmTime()->incMinutes();
+      alarm.incMinutes();
       alarm.setShowAlarmTimeTimer(10);
       DEBUG_PRINT(F("A is now "));
-      DEBUG_PRINTLN(alarm.getAlarmTime()->asString());
+      DEBUG_PRINTLN(alarm.asString());
       DEBUG_FLUSH();
       break;
 #endif
@@ -1769,17 +1769,11 @@ void manageNewDCF77Data() {
   DEBUG_FLUSH();
 
   rtc.readTime();
-  dcf77Helper.addSample(dcf77, rtc);
+  dcf77Helper.addSample(&dcf77, &rtc);
   // Stimmen die Abstaende im Array?
   // Pruefung mit Datum!
   if (dcf77Helper.samplesOk()) {
-    rtc.setSeconds(0);
-    rtc.setMinutes(dcf77.getMinutes());
-    rtc.setHours(dcf77.getHours());
-    rtc.setDate(dcf77.getDate());
-    rtc.setDayOfWeek(dcf77.getDayOfWeek());
-    rtc.setMonth(dcf77.getMonth());
-    rtc.setYear(dcf77.getYear());
+    rtc.setFrom(&dcf77);
 
     rtc.writeTime();
     DEBUG_PRINTLN(F("DCF77-Time written to RTC."));
