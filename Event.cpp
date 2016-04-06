@@ -46,9 +46,6 @@ void Event::show() {
       case Effects::EFFECT_CANDLE:
         Effects::showCandle(_color);
         break;
-      case Effects::EFFECT_LOVEU:
-        Effects::showLoveU(_color);
-        break;
       default:
         ;
     }

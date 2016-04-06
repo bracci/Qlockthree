@@ -96,14 +96,14 @@ void Effects::showHeart(byte duration, eColors color) {
   for (byte y = 0; y < 3; y++) {
     renderer.clearScreenBuffer(matrix);
     for (byte j = 0; j < 8; j++) {
-      matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
+      matrix[1 + j] |= (pgm_read_word_near(&(effectMasksHeart[0][j])) << 5);
     }
     writeToBuffer(matrix, 11 * duration, color);
     for (byte i = 0; i < 2; i++) {
       renderer.clearScreenBuffer(matrix);
       for (byte z = 0; z < 2; z++) {
         for (byte j = 0; j < 8; j++) {
-          matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[z][j])) << 5);
+          matrix[1 + j] |= (pgm_read_word_near(&(effectMasksHeart[z][j])) << 5);
         }
         writeToBuffer(matrix, 4 * duration, color);
       }
@@ -111,7 +111,7 @@ void Effects::showHeart(byte duration, eColors color) {
   }
   renderer.clearScreenBuffer(matrix);
   for (byte j = 0; j < 8; j++) {
-    matrix[1 + j] |= (pgm_read_word_near(&(effectMasks[0][j])) << 5);
+    matrix[1 + j] |= (pgm_read_word_near(&(effectMasksHeart[0][j])) << 5);
   }
   writeToBuffer(matrix, 14 * duration, color);
 }
@@ -128,17 +128,17 @@ void Effects::showFireWork(byte posX, eColors color) {
     writeToBuffer(matrix, 7, color);
   }
 
-  for (byte i = 8; i <= 10; i++) {
+  for (byte i = 0; i <= 2; i++) {
     renderer.clearScreenBuffer(matrix);
     for (byte j = 0; j < 10; j++) {
-      matrix[j] |= (pgm_read_word_near(&(effectMasks[i][j])) << (10 - posX)) & 0b1111111111100000;
+      matrix[j] |= (pgm_read_word_near(&(effectMasksFireWork[i][j])) << (10 - posX)) & 0b1111111111100000;
     }
-    writeToBuffer(matrix, 3 + round(10 * (i - 8) / 3), color);
+    writeToBuffer(matrix, 3 + round(10 * i / 3), color);
   }
   for (byte i = 0; i <= 10; i++) {
     renderer.clearScreenBuffer(matrix);
     for (byte j = 0; j < 10 - i; j++) {
-      matrix[j + i] |= (pgm_read_word_near(&(effectMasks[12 + i % 2][j])) << (10 - posX)) & 0b1111111111100000;
+      matrix[j + i] |= (pgm_read_word_near(&(effectMasksFireWork[3 + i % 3][j])) << (10 - posX)) & 0b1111111111100000;
     }
     writeToBuffer(matrix, 20, color);
   }
@@ -153,26 +153,14 @@ void Effects::showCandle(eColors color) {
     for (int j = -4; j < 4; j++) {
       renderer.clearScreenBuffer(matrix);
       for (byte i = 5; i < 10; i++) {
-        matrix[i] |= (pgm_read_word_near(&(effectMasks[7][i])) << 5);
+        matrix[i] |= (pgm_read_word_near(&(effectMasksCandle[5][i])) << 5);
       }
       for (byte i = 0; i < 5; i++) {
-        matrix[i] |= (pgm_read_word_near(&(effectMasks[2 + 4 - abs(j % 4)][i])) << 5);
+        matrix[i] |= (pgm_read_word_near(&(effectMasksCandle[4 - abs(j % 4)][i])) << 5);
       }
       writeToBuffer(matrix, 10, color);
     }
   }
-}
-
-/**
-   Love U
-*/
-void Effects::showLoveU(eColors color) {
-  word matrix [16];
-  renderer.clearScreenBuffer(matrix);
-  for (byte i = 0; i < 10; i++) {
-    matrix[i] |= (pgm_read_word_near(&(effectMasks[14][i])) << 5);
-  }
-  writeToBuffer(matrix, 400, color);
 }
 
 /**

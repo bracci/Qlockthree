@@ -63,6 +63,7 @@ class Effects {
       BITMAP_CHRISTTREE2,
       BITMAP_SMILEY,
       BITMAP_SMILEY_WINK,
+      BITMAP_LOVE_U,
 
       ANI_BITMAP_MIN,
       ANI_BITMAP_CHAMPGLASS = ANI_BITMAP_MIN,
@@ -77,13 +78,12 @@ class Effects {
     static void showFireWork(byte posX, eColors color);
     static void showHeart(byte duration, eColors color);
     static void showCandle(eColors color);
-    static void showLoveU(eColors color);
     static void showBitmap(byte bitmapIdx, byte duration, eColors color);
     static void showAnimatedBitmap(byte animatedBitmap, byte duration, eColors color);
     static void writeToBuffer(word aMatrix[], unsigned int aDuration, eColors color = color_none);
 };
 
-const word effectMasks[][10] PROGMEM = {
+const word effectMasksHeart[][10] PROGMEM = {
   { // 0:heart small
     0b00000000000,
     0b00011011000,
@@ -107,7 +107,10 @@ const word effectMasks[][10] PROGMEM = {
     0b00000000000,
     0b00000000000,
     0b00000000000
-  },
+  }
+};
+
+const word effectMasksCandle[][10] PROGMEM = {
   { // 2:candle 0
     0b00000000000,
     0b00000000000,
@@ -179,7 +182,10 @@ const word effectMasks[][10] PROGMEM = {
     0b00001110000,
     0b00001110000,
     0b00001110000
-  },
+  }
+};
+
+const word effectMasksFireWork[][10] PROGMEM = {
   { // 8:fireWork1
     0b00000000000,
     0b00000000000,
@@ -251,18 +257,6 @@ const word effectMasks[][10] PROGMEM = {
     0b00000000000,
     0b00000000000,
     0b00000000000
-  },
-  { // 14:arrowHeart
-    0b10000000000,
-    0b10000000000,
-    0b10110001100,
-    0b01111011110,
-    0b00111111100,
-    0b00011111000,
-    0b00001110000,
-    0b00000100101,
-    0b00000000101,
-    0b00000000111
   }
 };
 
@@ -276,7 +270,18 @@ const word bitmaps[][11] PROGMEM = {
   {128, 288, 328, 338, 340, 1023, 340, 338, 328, 288, 128}, // ASCII-Code 0x14 => (20) Weihnachtsbaum 1
   {0, 256, 320, 336, 340, 1022, 340, 336, 320, 256, 0}, // ASCII-Code 0x14 => (22) Weihnachtsbaum 2
   {0, 4, 138, 266, 260, 304, 260, 266, 138, 4, 0}, // ASCII-Code 0x1C => (28) Smily :-)
-  {0, 68, 138, 266, 260, 304, 260, 264, 136, 68, 0} // ASCII-Code 0x1C => (30) Smily ;-)
+  {0, 68, 138, 266, 260, 304, 260, 264, 136, 68, 0}, // ASCII-Code 0x1C => (30) Smily ;-)
+  { 0b0000000111,
+    0b0000000000,
+    0b0000001000,
+    0b0000011100,
+    0b0000111100,
+    0b0001111000,
+    0b0000111100,
+    0b0000011100,
+    0b1110001000,
+    0b1000000000,
+    0b1110000000 } // I Love U
 };
 
 #endif //EFFECTS_H
