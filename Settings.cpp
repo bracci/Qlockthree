@@ -165,16 +165,8 @@ void Settings::setTransitionMode(byte transitionMode) {
   _transitionMode = transitionMode;
 }
 
-void Settings::incFiveMinNightMode(bool onTime) {
-  _nightModeTime[onTime]->incFiveMinutes();
-}
-
-void Settings::incHoursNightMode(bool onTime) {
-  _nightModeTime[onTime]->incHours();
-}
-
-TimeStamp Settings::getNightModeTime(bool onTime) {
-  return *_nightModeTime[onTime];
+TimeStamp* Settings::getNightModeTime(bool onTime) {
+  return _nightModeTime[onTime];
 }
 
 /**

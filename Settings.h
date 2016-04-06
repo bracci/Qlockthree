@@ -74,11 +74,7 @@ class Settings {
     void loadFromEEPROM();
     void saveToEEPROM();
 
-    void incFiveMinNightMode(bool onTime);
-    TimeStamp getOffTime();
-
-    void incHoursNightMode(bool onTime);
-    TimeStamp getNightModeTime(bool onTime);
+    TimeStamp* getNightModeTime(bool onTime);
 
   private:
     byte _language;

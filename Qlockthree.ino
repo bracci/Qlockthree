@@ -1098,9 +1098,9 @@ void loop() {
         else
         {
           renderer.clearScreenBuffer(matrix);
-          renderer.setMinutes(settings.getNightModeTime(false).getHours(), settings.getNightModeTime(false).getMinutes(), settings.getLanguage(), matrix);
+          renderer.setMinutes(settings.getNightModeTime(false)->getHours(), settings.getNightModeTime(false)->getMinutes(), settings.getLanguage(), matrix);
           renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
-          if ( (settings.getNightModeTime(false).getHours() >= 12) ) {
+          if ( (settings.getNightModeTime(false)->getHours() >= 12) ) {
             renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
           }
         }
@@ -1114,9 +1114,9 @@ void loop() {
         else
         {
           renderer.clearScreenBuffer(matrix);
-          renderer.setMinutes(settings.getNightModeTime(true).getHours(), settings.getNightModeTime(true).getMinutes(), settings.getLanguage(), matrix);
+          renderer.setMinutes(settings.getNightModeTime(true)->getHours(), settings.getNightModeTime(true)->getMinutes(), settings.getLanguage(), matrix);
           renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
-          if ( (settings.getNightModeTime(true).getHours() >= 12) ) {
+          if ( (settings.getNightModeTime(true)->getHours() >= 12) ) {
             renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
           }
         }
@@ -1289,12 +1289,12 @@ void loop() {
      Display zeitgesteuert abschalten?
      Das Verbessert den DCF77-Empfang bzw. ermoeglicht ein dunkles Schlafzimmer.
   */
-  if ((settings.getNightModeTime(false).getMinutesOfDay() != 0) && (settings.getNightModeTime(false).getMinutesOfDay() != 0)) {
-    if ((mode < EXT_MODE_START) && (mode != STD_MODE_NIGHT) && (settings.getNightModeTime(false).getMinutesOfDay() == rtc.getMinutesOfDay())) {
+  if ((settings.getNightModeTime(false)->getMinutesOfDay() != 0) && (settings.getNightModeTime(false)->getMinutesOfDay() != 0)) {
+    if ((mode < EXT_MODE_START) && (mode != STD_MODE_NIGHT) && (settings.getNightModeTime(false)->getMinutesOfDay() == rtc.getMinutesOfDay())) {
       mode = STD_MODE_NIGHT;
       ledDriver.shutDown();
     }
-    if ((mode == STD_MODE_NIGHT) && (settings.getNightModeTime(true).getMinutesOfDay() == rtc.getMinutesOfDay())) {
+    if ((mode == STD_MODE_NIGHT) && (settings.getNightModeTime(true)->getMinutesOfDay() == rtc.getMinutesOfDay())) {
       mode = lastMode;
       ledDriver.wakeUp();
     }
@@ -1367,14 +1367,14 @@ void doubleStdModeNormalPressed() {
   //          )
   //       )
   // ALTERNATIV
-  int tempOffTime = settings.getNightModeTime(false).getMinutesOfDay();
-  if (tempOffTime > settings.getNightModeTime(true).getMinutesOfDay())
+  int tempOffTime = settings.getNightModeTime(false)->getMinutesOfDay();
+  if (tempOffTime > settings.getNightModeTime(true)->getMinutesOfDay())
     tempOffTime -= 24 * 60;
   int tempRtc = rtc.getMinutesOfDay();
-  if (tempRtc > settings.getNightModeTime(true).getMinutesOfDay())
+  if (tempRtc > settings.getNightModeTime(true)->getMinutesOfDay())
     tempRtc -= 24 * 60;
   if ( (tempRtc > tempOffTime)
-       && (tempRtc < (int) settings.getNightModeTime(true).getMinutesOfDay()) )
+       && (tempRtc < (int) settings.getNightModeTime(true)->getMinutesOfDay()) )
   {
     lastMode = mode;
     mode = STD_MODE_NIGHT;
@@ -1606,13 +1606,13 @@ void hourPlusPressed() {
       break;
     case EXT_MODE_NIGHT_OFF:
       if (fallBackCounter > 0) {
-        settings.incHoursNightMode(false);
+        settings.getNightModeTime(false)->incHours();
       }
       enableFallBackCounter(2);
       break;
     case EXT_MODE_NIGHT_ON:
       if (fallBackCounter > 0) {
-        settings.incHoursNightMode(true);
+        settings.getNightModeTime(true)->incHours();
       }
       enableFallBackCounter(2);
       break;
@@ -1720,13 +1720,13 @@ void minutePlusPressed() {
       break;
     case EXT_MODE_NIGHT_OFF:
       if (fallBackCounter > 0) {
-        settings.incFiveMinNightMode(false);
+        settings.getNightModeTime(false)->incFiveMinutes();
       }
       enableFallBackCounter(2);
       break;
     case EXT_MODE_NIGHT_ON:
       if (fallBackCounter > 0) {
-        settings.incFiveMinNightMode(true);
+        settings.getNightModeTime(true)->incFiveMinutes();
       }
       enableFallBackCounter(2);
       break;
