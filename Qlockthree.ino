@@ -1825,7 +1825,6 @@ void setDisplayToBlank() {
     mode = STD_MODE_BLANK;
     DEBUG_PRINTLN(F("LED-Driver: ShutDown"));
     DEBUG_FLUSH();
-    ledDriver.shutDown();
   }
 }
 
@@ -1837,7 +1836,6 @@ void setDisplayToResume() {
     mode = lastMode;
     DEBUG_PRINTLN(F("LED-Driver: WakeUp"));
     DEBUG_FLUSH();
-    ledDriver.wakeUp();
   }
 }
 
