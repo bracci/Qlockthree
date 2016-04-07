@@ -63,9 +63,11 @@ enum eColors : byte{
   color_purple2,
   color_purple3,
   color_purple4,
-
-  color_max,
-  color_rgb = color_max,
+  color_single_max = color_purple4,
+  
+  color_rgb_continuous,
+  color_rgb_step,
+  color_max = color_rgb_step,
   color_none
 };
 

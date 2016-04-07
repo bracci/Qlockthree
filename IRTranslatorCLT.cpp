@@ -87,7 +87,7 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
       setColor(color_yellow);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_RGB:
-      setColor(color_rgb);
+      setColor(color_rgb_continuous);
       return REMOTE_BUTTON_SETCOLOR;
     case CLT_NORMAL:
       setTransition(Settings::TRANSITION_MODE_NORMAL);

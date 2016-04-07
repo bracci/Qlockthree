@@ -42,7 +42,7 @@ class LedDriverLPD8806 : public LedDriver {
 
     void printSignature();
 
-    void writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color = color_none);
+    void writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color);
 
     void setBrightness(byte brightnessInPercent);
     byte getBrightness();

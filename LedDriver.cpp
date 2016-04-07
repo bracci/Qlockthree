@@ -30,3 +30,9 @@ boolean LedDriver::getPixelFromScreenBuffer(byte x, byte y, word matrix[16]) {
 void LedDriver::demoTransition() {
   _demoTransition = true;
 }
+
+void LedDriver::resetWheelPos() {
+  _wheelPos = 0;
+  _lastColorUpdate = 0;
+}
+

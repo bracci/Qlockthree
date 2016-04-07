@@ -1229,7 +1229,7 @@ void loop() {
 
     // Update mit onChange = true, weil sich hier (aufgrund needsUpdateFromRtc) immer was geaendert hat.
     // Entweder weil wir eine Sekunde weiter sind, oder weil eine Taste gedrueckt wurde.
-    ledDriver.writeScreenBufferToMatrix(matrix, true);
+    ledDriver.writeScreenBufferToMatrix(matrix, true, settings.getColor());
   }
 
   /*
@@ -1335,7 +1335,7 @@ void loop() {
      Die Matrix auf die LEDs multiplexen, hier 'Refresh-Zyklen'.
   */
   if ((mode != STD_MODE_BLANK) && (mode != STD_MODE_NIGHT)) {
-    ledDriver.writeScreenBufferToMatrix(matrix, false);
+    ledDriver.writeScreenBufferToMatrix(matrix, false, settings.getColor());
   }
 
   /*
@@ -1717,6 +1717,9 @@ void minutePlusPressed() {
       {
         settings.setColor((eColors)(settings.getColor() + 1));
       }
+      if (settings.getColor() > color_single_max){
+        ledDriver.resetWheelPos();
+      }
       break;
 #endif
     case EXT_MODE_JUMP_TIMEOUT:
@@ -1971,7 +1974,13 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
       setDisplayToResume();
       break;
     case REMOTE_BUTTON_SETCOLOR:
-      settings.setColor(irTranslatorGeneric->getColor());
+      if ((irTranslatorGeneric->getColor() == color_rgb_continuous) && (settings.getColor() == color_rgb_continuous)){
+        settings.setColor(eColors::color_rgb_step);
+      }
+      else{
+        settings.setColor(irTranslatorGeneric->getColor());
+      }
+      ledDriver.resetWheelPos();
       break;
     case REMOTE_BUTTON_SAVE:
       settings.saveToEEPROM();

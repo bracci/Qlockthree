@@ -65,7 +65,7 @@ void LedDriverDotStar::printSignature() {
 void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
   boolean updateWheelColor = false;
 
-  if (((settings.getColor() == color_rgb) || (a_color == color_rgb)) && _transitionCompleted) {
+  if (((settings.getColor() == color_rgb_continuous) || (a_color == color_rgb_continuous)) && _transitionCompleted) {
     if ((millis() - _lastColorUpdate) > 300) {
       updateWheelColor = true;
       _lastColorUpdate = millis();
@@ -188,11 +188,11 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     /*************
        COLOR
     **************/
-    if ((a_color != color_none) && (a_color < color_max))
+    if ((a_color != color_none) && (a_color <= color_single_max))
     {
       colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)));
     }
-    else if ((settings.getColor() == color_rgb) || (a_color == color_rgb) ) {
+    else if ((settings.getColor() == color_rgb_continuous) || (a_color == color_rgb_continuous) ) {
       if (updateWheelColor) {
         if (_wheelPos >= 254) {
           _wheelPos = 0;
