@@ -94,6 +94,10 @@
 
 #define EVENTS
 
+#if defined(LED_DRIVER_DEFAULT) || !defined(EVENTS)
+#define ENABLE_ALL_LANGUAGES
+#endif
+
 /*
  *
  * Seltener zu aendernde Einstellungen...

@@ -21,19 +21,24 @@
 #define RENDERER_H
 
 #include "Arduino.h"
+#include "Configuration.h"
 
-#define LANGUAGE_DE_DE 0
-#define LANGUAGE_DE_SW 1
-#define LANGUAGE_DE_BA 2
-#define LANGUAGE_DE_SA 3
-#define LANGUAGE_CH    4
-#define LANGUAGE_CH_X  5
-//#define LANGUAGE_EN    6
-//#define LANGUAGE_FR    7
-//#define LANGUAGE_IT    8
-//#define LANGUAGE_NL    9
-//#define LANGUAGE_ES    10
-#define LANGUAGE_COUNT 5
+enum eLanguage : byte{
+  LANGUAGE_DE_DE,
+  LANGUAGE_DE_SW,
+  LANGUAGE_DE_BA,
+  LANGUAGE_DE_SA,
+  LANGUAGE_CH,
+  LANGUAGE_CH_X,
+#ifdef ENABLE_ALL_LANGUAGES
+  LANGUAGE_EN,
+  LANGUAGE_FR,
+  LANGUAGE_IT,
+  LANGUAGE_NL,
+  LANGUAGE_ES,
+#endif
+  LANGUAGE_COUNT,
+};
 
 class Renderer {
   public:
@@ -58,11 +63,13 @@ class Renderer {
   private:
     void setHours(byte hours, boolean glatt, byte language, word matrix[16]);
     boolean isNumber(char symbol);
-
-    // Spezialfaelle
-    //    void FR_hours(byte hours, word matrix[16]);
-    //    void IT_hours(byte hours, word matrix[16]);
-    //    void ES_hours(byte hours, word matrix[16]);
+    
+#ifdef ENABLE_ALL_LANGUAGES
+// Spezialfaelle
+    void FR_hours(byte hours, word matrix[16]);
+    void IT_hours(byte hours, word matrix[16]);
+    void ES_hours(byte hours, word matrix[16]);
+#endif
 };
 
 #endif

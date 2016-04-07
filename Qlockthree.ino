@@ -1164,26 +1164,23 @@ void loop() {
             renderer.setMenuText("CH", Renderer::TEXT_POS_TOP, matrix);
             renderer.setMenuText("X", Renderer::TEXT_POS_BOTTOM, matrix);
             break;
-          //            case LANGUAGE_EN:
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 5;
-          //              break;
-          //            case LANGUAGE_FR:
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['F' - 'A'][i])) << 11;
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['R' - 'A'][i])) << 5;
-          //              break;
-          //            case LANGUAGE_IT:
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['I' - 'A'][i])) << 11;
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['T' - 'A'][i])) << 5;
-          //              break;
-          //            case LANGUAGE_NL:
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['N' - 'A'][i])) << 11;
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['L' - 'A'][i])) << 5;
-          //              break;
-          //            case LANGUAGE_ES:
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['E' - 'A'][i])) << 11;
-          //              matrix[2 + i] |= pgm_read_byte_near(&(staben['S' - 'A'][i])) << 5;
-          //              break;
+#ifdef ENABLE_ALL_LANGUAGES
+          case LANGUAGE_EN:
+            renderer.setMenuText("EN", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_FR:
+            renderer.setMenuText("FR", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_IT:
+            renderer.setMenuText("IT", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_NL:
+            renderer.setMenuText("NL", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+          case LANGUAGE_ES:
+            renderer.setMenuText("ES", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+#endif
           default:
             ;
         }
@@ -1629,7 +1626,7 @@ void hourPlusPressed() {
       break;
     case EXT_MODE_LANGUAGE:
       if (settings.getLanguage() == 0) {
-        settings.setLanguage(LANGUAGE_COUNT);
+        settings.setLanguage(LANGUAGE_COUNT-1);
       } else {
         settings.setLanguage(settings.getLanguage() - 1);
       }
@@ -1746,7 +1743,7 @@ void minutePlusPressed() {
       break;
     case EXT_MODE_LANGUAGE:
       settings.setLanguage(settings.getLanguage() + 1);
-      if (settings.getLanguage() > LANGUAGE_COUNT) {
+      if (settings.getLanguage() >= LANGUAGE_COUNT) {
         settings.setLanguage(0);
       }
       break;
