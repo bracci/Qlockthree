@@ -33,6 +33,6 @@ void LedDriver::demoTransition() {
 
 void LedDriver::resetWheelPos() {
   _wheelPos = 0;
-  _lastColorUpdate = 0;
+  _lastColorUpdate = millis();
 }
 
