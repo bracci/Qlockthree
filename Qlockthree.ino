@@ -587,7 +587,9 @@ void updateFromRtc() {
   }
 
   if (fallBackCounter > 0) {
-    updateFallBackCounter();
+    if( mode != STD_MODE_BLANK ){
+      updateFallBackCounter();
+    }
   }
 }
 
@@ -1614,13 +1616,13 @@ void hourPlusPressed() {
       if (fallBackCounter > 0) {
         settings.getNightModeTime(false)->incHours();
       }
-      enableFallBackCounter(2);
+      enableFallBackCounter(FALL_BACK_TIME_NIGHT_MODE);
       break;
     case EXT_MODE_NIGHT_ON:
       if (fallBackCounter > 0) {
         settings.getNightModeTime(true)->incHours();
       }
-      enableFallBackCounter(2);
+      enableFallBackCounter(FALL_BACK_TIME_NIGHT_MODE);
       break;
     case EXT_MODE_DCF_IS_INVERTED:
       settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
@@ -1731,13 +1733,13 @@ void minutePlusPressed() {
       if (fallBackCounter > 0) {
         settings.getNightModeTime(false)->incFiveMinutes();
       }
-      enableFallBackCounter(2);
+      enableFallBackCounter(FALL_BACK_TIME_NIGHT_MODE);
       break;
     case EXT_MODE_NIGHT_ON:
       if (fallBackCounter > 0) {
         settings.getNightModeTime(true)->incFiveMinutes();
       }
-      enableFallBackCounter(2);
+      enableFallBackCounter(FALL_BACK_TIME_NIGHT_MODE);
       break;
     case EXT_MODE_DCF_IS_INVERTED:
       settings.setDcfSignalIsInverted(!settings.getDcfSignalIsInverted());
@@ -2032,12 +2034,10 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
     case STD_MODE_SECONDS:
       // Timeout für den automatischen Rücksprung von STD_MODE_SECONDS,
       // STD_MODE_DATE und STD_MODE_BRIGHTNESS zurücksetzen
-      enableFallBackCounter(settings.getJumpToNormalTimeout());
-      break;
     case STD_MODE_BRIGHTNESS:
     case EXT_MODE_LANGUAGE:
     case EXT_MODE_LDR_MODE:
-      enableFallBackCounter(2);
+      enableFallBackCounter(settings.getJumpToNormalTimeout());
       break;
     default:
       break;

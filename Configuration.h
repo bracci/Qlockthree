@@ -29,6 +29,8 @@
 #define DCF77_SHOW_TIME_SINCE_LAST_SYNC
 // Automatischer Rücksprung von STD_MODE_BLANK, wenn DCF-Synchronisation erfolgreich war (Standard: eingeschaltet).
 #define AUTO_JUMP_BLANK
+// Automatischer Rücksprung von Abschalt-/Einschaltzeit zu EXT_MODE_NIGHT_OFF/EXT_MODE_NIGHT_ON 
+#define FALL_BACK_TIME_NIGHT_MODE 5
 
 /*
  * Alarmfunktion einschalten?
