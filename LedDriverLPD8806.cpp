@@ -54,6 +54,7 @@ LedDriverLPD8806::LedDriverLPD8806(byte dataPin, byte clockPin) {
   _displayOn = false;
   _dirty = false;
   _demoTransition = false;
+  _lastLEDsOn = 0;
 }
 
 /**
@@ -177,11 +178,11 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
       }
     }
     _demoTransition = false;
-
+    
     if ((_transitionCounter == 0) && !_transitionCompleted) {
       switch (settings.getTransitionMode()) {
         case Settings::TRANSITION_MODE_MATRIX:
-          _transitionCounter = MATRIXCOUNTERLOAD;
+          _transitionCounter = map(_lastLEDsOn, 0, 110, MATRIXCOUNTERLOAD, MATRIXCOUNTERLOAD * 0.4);
           _transitionCompleted = Transitions::nextMatrixStep(_matrixOld, _matrixNew, _matrixOverlay, matrix);
           break;
         case Settings::TRANSITION_MODE_SLIDE:
@@ -239,7 +240,8 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
        WRITE OUT
     **************/
     _clear();
-
+    _lastLEDsOn = 0;
+    
     for (byte y = 0; y < 10; y++) {
       for (byte x = 5; x < 16; x++) {
         word t = 1 << x;
@@ -249,15 +251,19 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
         else {
           if ((_matrixOverlay[y] & t) == t) {
             _setPixel(15 - x, y, colorOverlay1);
+            _lastLEDsOn++;
           }
           else if ((_matrixOverlay[y + 1] & t) == t) {
             _setPixel(15 - x, y, colorOverlay2);
+            _lastLEDsOn++;
           }
           else if ((_matrixOld[y] & t) == t) {
             _setPixel(15 - x, y, colorOld);
+            _lastLEDsOn++;
           }
           else if ((_matrixNew[y] & t) == t) {
             _setPixel(15 - x, y, colorNew);
+            _lastLEDsOn++;
           }
         }
       }
