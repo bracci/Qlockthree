@@ -2042,4 +2042,9 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
   settings.saveToEEPROM();
 }
 
+void setMode(Mode a_mode) {
+  mode = a_mode;
+  lastMode = mode;
+}
+
 
