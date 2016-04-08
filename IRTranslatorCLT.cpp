@@ -116,7 +116,7 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
     case CLT_LDR:
       return REMOTE_BUTTON_LDR;
     case CLT_SAVE:
-      return REMOTE_BUTTON_SAVE;
+      return REMOTE_BUTTON_EXTMODE;
     default:
       return REMOTE_BUTTON_UNDEFINED;
   }
