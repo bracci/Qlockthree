@@ -74,6 +74,8 @@ class Settings {
     void loadFromEEPROM();
     void saveToEEPROM();
 
+    void resetToDefault();
+
     TimeStamp* getNightModeTime(bool onTime);
 
   private:

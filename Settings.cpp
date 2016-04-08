@@ -29,6 +29,20 @@
  *  Konstruktor.
  */
 Settings::Settings() {
+  // um 3 Uhr Display abschalten (Minuten, Stunden, -, -, -, -)
+  _nightModeTime[0] = new TimeStamp(0, 3, 0, 0, 0, 0);
+  // um 4:30 Uhr Display wieder anschalten (Minuten, Stunden, -, -, -, -)
+  _nightModeTime[1] = new TimeStamp(30, 4, 0, 0, 0, 0);
+  resetToDefault();
+
+  // Versuche alte Einstellungen zu laden...
+  loadFromEEPROM();
+}
+
+/**
+ * Setzt alle Werte auf Defauleinstellungen zurück
+ */
+void Settings::resetToDefault() {
   _language = LANGUAGE_CH;
   _event = 0;
   _renderCornersCw = true;
@@ -40,14 +54,11 @@ Settings::Settings() {
   _timeShift = 0;
   _color = color_white;
   // um 3 Uhr Display abschalten (Minuten, Stunden, -, -, -, -)
-  _nightModeTime[0] = new TimeStamp(0, 3, 0, 0, 0, 0);
+  _nightModeTime[0]->set(0, 3, 0, 0, 0, 0);
   // um 4:30 Uhr Display wieder anschalten (Minuten, Stunden, -, -, -, -)
-  _nightModeTime[1] = new TimeStamp(30, 4, 0, 0, 0, 0);
+  _nightModeTime[1]->set(30, 4, 0, 0, 0, 0);
 
-  _jumpToNormalTimeout = 10;
-
-  // Versuche alte Einstellungen zu laden...
-  loadFromEEPROM();
+  _jumpToNormalTimeout = 5;
 }
 
 /**
