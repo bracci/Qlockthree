@@ -27,11 +27,19 @@
  */
 // Anzeige der vergangenen Stunden und Minuten seit der letzten erfolgreichen DCF-Synchronisation im Menü EXT_MODE_DCF_DEBUG (Standard: eingeschaltet).
 //#define USE_EXT_MODE_DCF_SYNC
-//
-//#define USE_EXT_MODE_CORNERS,
-//#define USE_EXT_MODE_TIME_SHIFT,
-//#define USE_EXT_MODE_TEST,
-//#define USE_EXT_MODE_DCF_DEBUG,
+
+// Einstellmöglichkeit Minuten LEDs im/gegen Uhrzeigersinn
+//#define USE_EXT_MODE_CORNERS
+
+// Einstellmöglichkeit Zeitverschiebung zum DCF Signal
+//#define USE_EXT_MODE_TIME_SHIFT
+
+// LED Test spaltenweise
+//#define USE_EXT_MODE_TEST
+
+// DCF Debuganzeige
+//#define USE_EXT_MODE_DCF_DEBUG
+
 // Automatischer Rücksprung von STD_MODE_BLANK, wenn DCF-Synchronisation erfolgreich war (Standard: eingeschaltet).
 #define AUTO_JUMP_BLANK
 // Automatischer Rücksprung von Abschalt-/Einschaltzeit zu EXT_MODE_NIGHT_OFF/EXT_MODE_NIGHT_ON 
@@ -97,11 +105,11 @@
 // kann separat oder zusätzlich zu einer IR-Fernbedienung genutzt werden
 //#define REMOTE_BLUETOOTH
 
+// Möglichkeit um Events (Geburts-, Jahres-, Feiertage) mit Laufschrift und Effekt zu konfigurieren
 #define EVENTS
 
-#if defined(LED_DRIVER_DEFAULT) || !defined(EVENTS)
+// Alle Sprachen einstellbar machen. Ansonsten nur deutsche Sprachen verfügbar (alle CH, alle DE)
 #define ENABLE_ALL_LANGUAGES
-#endif
 
 /*
  *
