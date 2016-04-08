@@ -23,7 +23,7 @@
 #define CONFIGURATION_H
 
 /*
- * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
+ * Selten gebrauchte externe Modi einschalten
  */
 // Anzeige der vergangenen Stunden und Minuten seit der letzten erfolgreichen DCF-Synchronisation im Menü EXT_MODE_DCF_DEBUG (Standard: eingeschaltet).
 //#define USE_EXT_MODE_DCF_SYNC
@@ -40,6 +40,9 @@
 // DCF Debuganzeige
 //#define USE_EXT_MODE_DCF_DEBUG
 
+/*
+ * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
+ */
 // Automatischer Rücksprung von STD_MODE_BLANK, wenn DCF-Synchronisation erfolgreich war (Standard: eingeschaltet).
 #define AUTO_JUMP_BLANK
 // Automatischer Rücksprung von Abschalt-/Einschaltzeit zu EXT_MODE_NIGHT_OFF/EXT_MODE_NIGHT_ON 
