@@ -553,7 +553,7 @@ word frames = 0;
 unsigned long lastFpsCheck = 0;
 #endif
 
-#ifdef DCF77_SHOW_TIME_SINCE_LAST_SYNC
+#ifdef USE_EXT_MODE_DCF_SYNC
 // Fuer die DCF_DEBUG Anzeige
 unsigned int dcf77ErrorMinutes;
 #endif
@@ -938,6 +938,7 @@ void loop() {
         renderer.setMinutes(rtc.getHours() + settings.getTimeShift(), rtc.getMinutes(), settings.getLanguage(), matrix);
         renderer.setCorners(rtc.getMinutes(), settings.getRenderCornersCw(), matrix);
         break;
+#ifdef USE_EXT_MODE_TIME_SHIFT
       case EXT_MODE_TIME_SHIFT:
         renderer.clearScreenBuffer(matrix);
         if (settings.getTimeShift() < 0) {
@@ -959,6 +960,7 @@ void loop() {
           }
         }
         break;
+#endif
 #ifdef ALARM
       case STD_MODE_ALARM:
         renderer.clearScreenBuffer(matrix);
@@ -1009,6 +1011,7 @@ void loop() {
           }
         }
         break;
+#ifdef USE_EXT_MODE_CORNERS
       case EXT_MODE_CORNERS:
         renderer.clearScreenBuffer(matrix);
         if (settings.getRenderCornersCw()) {
@@ -1018,6 +1021,7 @@ void loop() {
           renderer.setMenuText("CW", Renderer::TEXT_POS_BOTTOM, matrix);
         }
         break;
+#endif
 #ifdef ALARM
       case EXT_MODE_ENABLE_ALARM:
         renderer.clearScreenBuffer(matrix);
@@ -1184,8 +1188,9 @@ void loop() {
           default:
             ;
         }
-
         break;
+
+#ifdef USE_EXT_MODE_TEST
       case EXT_MODE_TEST:
         renderer.clearScreenBuffer(matrix);
         renderer.setCorners(helperSeconds % 5, settings.getRenderCornersCw(), matrix);
@@ -1202,7 +1207,8 @@ void loop() {
           testColumn = 0;
         }
         break;
-#ifdef DCF77_SHOW_TIME_SINCE_LAST_SYNC
+#endif
+#ifdef USE_EXT_MODE_DCF_SYNC
       case EXT_MODE_DCF_SYNC:
         // Anzeige des letzten erfolgreichen DCF-Syncs (samplesOK) in Stunden:Minuten
         renderer.clearScreenBuffer(matrix);
@@ -1217,11 +1223,14 @@ void loop() {
         ledDriver.setPixelInScreenBuffer(10, 3, matrix);
         break;
 #endif
+
+#ifdef USE_EXT_MODE_DCF_DEBUG
       case EXT_MODE_DCF_DEBUG:
         needsUpdateFromRtc = true;
         renderer.clearScreenBuffer(matrix);
         renderer.setCorners(dcf77.getDcf77ErrorCorner(settings.getDcfSignalIsInverted()), settings.getRenderCornersCw(), matrix);
         break;
+#endif
       default:
         break;
     }
@@ -1528,11 +1537,13 @@ void hourPlusPressed() {
     case EXT_MODE_TIMESET:
       incDecHours(true);
       break;
+#ifdef USE_EXT_MODE_TIME_SHIFT
     case EXT_MODE_TIME_SHIFT:
       if (settings.getTimeShift() > -13) {
         settings.setTimeShift(settings.getTimeShift() - 1);
       }
       break;
+#endif
 #ifdef ALARM
     case STD_MODE_ALARM:
       alarm.incHours();
@@ -1556,9 +1567,11 @@ void hourPlusPressed() {
       DEBUG_PRINTLN(settings.getUseLdr());
       DEBUG_FLUSH();
       break;
+#ifdef USE_EXT_MODE_CORNERS
     case EXT_MODE_CORNERS:
       settings.setRenderCornersCw(!settings.getRenderCornersCw());
       break;
+#endif
 #ifdef ALARM
     case EXT_MODE_ENABLE_ALARM:
       settings.setEnableAlarm(!settings.getEnableAlarm());
@@ -1644,11 +1657,13 @@ void minutePlusPressed() {
     case EXT_MODE_TIMESET:
       incDecMinutes(true);
       break;
+#ifdef USE_EXT_MODE_TIME_SHIFT
     case EXT_MODE_TIME_SHIFT:
       if (settings.getTimeShift() < 13) {
         settings.setTimeShift(settings.getTimeShift() + 1);
       }
       break;
+#endif
 #ifdef ALARM
     case STD_MODE_ALARM:
       alarm.incMinutes();
@@ -1672,9 +1687,11 @@ void minutePlusPressed() {
       DEBUG_PRINTLN(settings.getUseLdr());
       DEBUG_FLUSH();
       break;
+#ifdef USE_EXT_MODE_CORNERS
     case EXT_MODE_CORNERS:
       settings.setRenderCornersCw(!settings.getRenderCornersCw());
       break;
+#endif
 #ifdef ALARM
     case EXT_MODE_ENABLE_ALARM:
       settings.setEnableAlarm(!settings.getEnableAlarm());
@@ -1781,7 +1798,7 @@ void manageNewDCF77Data() {
     rtc.writeTime();
     DEBUG_PRINTLN(F("DCF77-Time written to RTC."));
     DEBUG_FLUSH();
-#ifdef DCF77_SHOW_TIME_SINCE_LAST_SYNC
+#ifdef USE_EXT_MODE_DCF_SYNC
     dcf77.setDcf77SuccessSync();
 #endif
 #ifdef AUTO_JUMP_BLANK

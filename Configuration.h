@@ -26,7 +26,12 @@
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
  */
 // Anzeige der vergangenen Stunden und Minuten seit der letzten erfolgreichen DCF-Synchronisation im Menü EXT_MODE_DCF_DEBUG (Standard: eingeschaltet).
-#define DCF77_SHOW_TIME_SINCE_LAST_SYNC
+//#define USE_EXT_MODE_DCF_SYNC
+//
+//#define USE_EXT_MODE_CORNERS,
+//#define USE_EXT_MODE_TIME_SHIFT,
+//#define USE_EXT_MODE_TEST,
+//#define USE_EXT_MODE_DCF_DEBUG,
 // Automatischer Rücksprung von STD_MODE_BLANK, wenn DCF-Synchronisation erfolgreich war (Standard: eingeschaltet).
 #define AUTO_JUMP_BLANK
 // Automatischer Rücksprung von Abschalt-/Einschaltzeit zu EXT_MODE_NIGHT_OFF/EXT_MODE_NIGHT_ON 

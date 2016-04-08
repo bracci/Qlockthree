@@ -30,13 +30,14 @@ typedef enum eMode : byte
   // nicht manuell zu erreichender Modus...
   STD_MODE_NIGHT,
 
-
   /**
      Die erweiterten Modi.
   */
   EXT_MODE_START,
   EXT_MODE_LDR_MODE = EXT_MODE_START,
+#ifdef USE_EXT_MODE_CORNERS
   EXT_MODE_CORNERS,
+#endif
 #ifdef ALARM
   EXT_MODE_ENABLE_ALARM,
 #endif
@@ -47,18 +48,24 @@ typedef enum eMode : byte
 #ifdef EVENTS
   EXT_MODE_EVENT,
 #endif
-  EXT_MODE_JUMP_TIMEOUT,
-  EXT_MODE_NIGHT_OFF,
-  EXT_MODE_NIGHT_ON,
   EXT_MODE_DCF_IS_INVERTED,
   EXT_MODE_LANGUAGE,
   EXT_MODE_TIMESET,
+#ifdef USE_EXT_MODE_TIME_SHIFT
   EXT_MODE_TIME_SHIFT,
+#endif
+  EXT_MODE_NIGHT_OFF,
+  EXT_MODE_NIGHT_ON,
+  EXT_MODE_JUMP_TIMEOUT,
+#ifdef USE_EXT_MODE_TEST
   EXT_MODE_TEST,
-#ifdef DCF77_SHOW_TIME_SINCE_LAST_SYNC
+#endif
+#ifdef USE_EXT_MODE_DCF_SYNC
   EXT_MODE_DCF_SYNC,
 #endif
+#ifdef USE_EXT_MODE_DCF_DEBUG
   EXT_MODE_DCF_DEBUG,
+#endif
   EXT_MODE_COUNT
 } Mode;
 
