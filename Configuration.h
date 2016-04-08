@@ -106,10 +106,10 @@
 #define REMOTE_CLT
 
 // kann separat oder zusätzlich zu einer IR-Fernbedienung genutzt werden
-//#define REMOTE_BLUETOOTH
+#define REMOTE_BLUETOOTH
 
 // Möglichkeit um Events (Geburts-, Jahres-, Feiertage) mit Laufschrift und Effekt zu konfigurieren
-#define EVENTS
+//#define EVENTS
 
 // Alle Sprachen einstellbar machen. Ansonsten nur deutsche Sprachen verfügbar (alle CH, alle DE)
 #define ENABLE_ALL_LANGUAGES
