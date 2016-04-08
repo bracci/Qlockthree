@@ -88,3 +88,22 @@ boolean Button::pressed() {
 
   return _retVal;
 }
+
+/**
+ * Wurde der Taster gedrueckt?
+ */
+boolean Button::pressedRaw() {
+  boolean _retVal = false;
+
+  if (!_doubleMode) {
+    if (digitalRead(_pin1) == _pressedAgainst) {
+      _retVal = true;
+    }
+  } else {
+    if ((digitalRead(_pin1) == _pressedAgainst) && (digitalRead(_pin2) == _pressedAgainst)) {
+      _retVal = true;
+    }
+  }
+
+  return _retVal;
+}

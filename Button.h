@@ -28,6 +28,7 @@ class Button {
     Button(byte pin1, byte pin2, byte pressedAgainst);
 
     boolean pressed();
+    boolean pressedRaw();
 
   private:
     byte _pin1;
