@@ -1310,16 +1310,16 @@ void loop() {
   */
 #ifdef ALARM
   if ((mode == STD_MODE_ALARM) && (alarm.getShowAlarmTimeTimer() == 0) && !alarm.isActive()) {
-    if (alarm.getMinutesOf12HoursDay(0) == rtc.getTime()->getMinutesOf12HoursDay(0)) {
+    if (alarm.getMinutesOf12HoursDay(0) == rtc.getMinutesOf12HoursDay(0)) {
       alarm.activate();
     }
   }
   if (alarm.isActive()) {
     // Nach 10 Minuten automatisch abschalten, falls der Wecker alleine rumsteht und die Nachbarn nervt...
-    if (alarm.getMinutesOf12HoursDay(MAX_BUZZ_TIME_IN_MINUTES) == rtc.getTime()->getMinutesOf12HoursDay(0)) {
+    if (alarm.getMinutesOf12HoursDay(MAX_BUZZ_TIME_IN_MINUTES) == rtc.getMinutesOf12HoursDay(0)) {
       alarm.deactivate();
       alarm.buzz(false);
-      mode = STD_MODE_NORMAL;
+      setMode(STD_MODE_NORMAL);
     }
     // Krach machen...
     if (rtc.getSeconds() % 2 == 0) {
@@ -1362,26 +1362,14 @@ void doubleStdModeNormalPressed() {
   needsUpdateFromRtc = true;
   DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_NORMAL..."));
   DEBUG_FLUSH();
-  //    if ( (offTime.getMinutesOfDay() < onTime.getMinutesOfDay())
-  //          && ( (rtc.getMinutesOfDay() > offTime.getMinutesOfDay())
-  //          && (rtc.getMinutesOfDay() < onTime.getMinutesOfDay())
-  //             )
-  //       || ( (offTime.getMinutesOfDay() > onTime.getMinutesOfDay())
-  //          && ( (rtc.getMinutesOfDay() > offTime.getMinutesOfDay())
-  //          || (rtc.getMinutesOfDay() < onTime.getMinutesOfDay()))
-  //          )
-  //       )
-  // ALTERNATIV
-  int tempOffTime = settings.getNightModeTime(false)->getMinutesOfDay();
-  if (tempOffTime > settings.getNightModeTime(true)->getMinutesOfDay())
-    tempOffTime -= 24 * 60;
-  int tempRtc = rtc.getMinutesOfDay();
-  if (tempRtc > settings.getNightModeTime(true)->getMinutesOfDay())
-    tempRtc -= 24 * 60;
-  if ( (tempRtc > tempOffTime)
-       && (tempRtc < (int) settings.getNightModeTime(true)->getMinutesOfDay()) )
+  if ( ( (settings.getNightModeTime(false)->getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) && 
+         ( (rtc.getMinutesOfDay() > settings.getNightModeTime(false)->getMinutesOfDay()) && 
+           (rtc.getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) ) ) ||
+       ( (settings.getNightModeTime(false)->getMinutesOfDay() > settings.getNightModeTime(true)->getMinutesOfDay()) &&
+         ( (rtc.getMinutesOfDay() > settings.getNightModeTime(false)->getMinutesOfDay()) ||
+           (rtc.getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) ) )
+     )
   {
-    lastMode = mode;
     mode = STD_MODE_NIGHT;
     ledDriver.shutDown();
     DEBUG_PRINTLN(F("Entering STD_MODE_NIGHT..."));
@@ -1394,9 +1382,17 @@ void doubleExtModePressed() {
   needsUpdateFromRtc = true;
   DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_BLANK..."));
   DEBUG_FLUSH();
-  while (minutesPlusButton.pressed());
-  while (hoursPlusButton.pressed());
-  mode = EXT_MODE_START;
+  unsigned long initialMillis = millis();
+  while (minutesPlusButton.pressedRaw() && hoursPlusButton.pressedRaw()) {
+    if ((millis() - initialMillis) > 5000) {
+      setMode(STD_MODE_NORMAL);
+      settings.resetToDefault();
+      settings.saveToEEPROM();
+      ledDriver.wakeUp();
+      return;
+    }
+  }
+  setMode(EXT_MODE_START);
   ledDriver.wakeUp();
   DEBUG_PRINT(F("Entering EXT_MODEs, mode is now "));
   DEBUG_PRINT(mode);
@@ -1407,11 +1403,11 @@ void doubleExtModePressed() {
 #ifdef EVENTS
 void doubleEvtModePressed() {
   static byte i = 0;
+  disableFallBackCounter();
   needsUpdateFromRtc = true;
   DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_BLANK..."));
   DEBUG_FLUSH();
-  while (minutesPlusButton.pressed());
-  while (hoursPlusButton.pressed());
+
   if (nbrOfEvts > 0) {
     events[i].show();
     i++;
@@ -1419,6 +1415,8 @@ void doubleEvtModePressed() {
   if (i >= nbrOfEvts) {
     i = 0;
   }
+  enableFallBackCounter(settings.getJumpToNormalTimeout());
+  
   DEBUG_PRINT(F("Entering EXT_MODEs, mode is now "));
   DEBUG_PRINT(mode);
   DEBUG_PRINTLN(F("..."));
@@ -1431,6 +1429,14 @@ void doubleEvtModePressed() {
 */
 void modePressed() {
   needsUpdateFromRtc = true;
+
+  // Displaytreiber einschalten, wenn BLANK verlassen wird
+  if (mode == STD_MODE_BLANK) {
+    DEBUG_PRINTLN(F("LED-Driver: WakeUp"));
+    DEBUG_FLUSH();
+    ledDriver.wakeUp();
+  }
+  
 #ifdef ALARM
   if (alarm.isActive()) {
     alarm.deactivate();
@@ -1439,8 +1445,7 @@ void modePressed() {
     switch (mode) {
       // Durch Drücken der MODE-Taste den Nachtmodus verlassen
       case STD_MODE_NIGHT:
-        mode = lastMode;
-        ledDriver.wakeUp();
+        setDisplayToToggle();
         break;
       default:
         mode++;
@@ -1451,8 +1456,7 @@ void modePressed() {
   switch (mode) {
     // Durch Drücken der MODE-Taste den Nachtmodus verlassen
     case STD_MODE_NIGHT:
-      mode = lastMode;
-      ledDriver.wakeUp();
+      setDisplayToToggle();
       break;
     default:
       mode++;
@@ -1465,10 +1469,7 @@ void modePressed() {
     mode++;
   }
 
-  if (mode == STD_MODE_COUNT) {
-    mode = STD_MODE_NORMAL;
-  }
-  if (mode == EXT_MODE_COUNT) {
+  if ((mode == STD_MODE_COUNT) || (mode == EXT_MODE_COUNT)) {
     mode = STD_MODE_NORMAL;
   }
 
@@ -1505,16 +1506,10 @@ void modePressed() {
     DEBUG_FLUSH();
     ledDriver.shutDown();
   }
-  // und einschalten, wenn BLANK verlassen wurde
-  if (lastMode == STD_MODE_BLANK) {
-    DEBUG_PRINTLN(F("LED-Driver: WakeUp"));
-    DEBUG_FLUSH();
-    ledDriver.wakeUp();
-  }
 
-  // Merker, damit wir nach einer automatischen Abschaltung
-  // zum richtigen Mode zurueckkommen.
-  lastMode = mode;
+  if( (mode != STD_MODE_BLANK) && (mode != STD_MODE_NIGHT) ) {
+    lastMode = mode;  
+  }
 
   // Werte speichern (die Funktion speichert nur bei geaenderten Werten)...
   settings.saveToEEPROM();
@@ -1792,7 +1787,7 @@ void manageNewDCF77Data() {
 #ifdef AUTO_JUMP_BLANK
     // falls im manuellen Dunkel-Modus, Display wieder einschalten... (Hilft bei der Erkennung, ob der DCF-Empfang geklappt hat).
     if (mode == STD_MODE_BLANK) {
-      mode = STD_MODE_NORMAL;
+      setMode(STD_MODE_NORMAL);
       ledDriver.wakeUp();
     }
 #endif
@@ -1806,7 +1801,7 @@ void manageNewDCF77Data() {
    Das Display toggeln (aus-/einschalten).
 */
 void setDisplayToToggle() {
-  if (mode != STD_MODE_BLANK) {
+  if ((mode != STD_MODE_BLANK) && (mode != STD_MODE_NIGHT)) {
     setDisplayToBlank();
   } else {
     setDisplayToResume();
@@ -1817,23 +1812,21 @@ void setDisplayToToggle() {
    Das Display ausschalten.
 */
 void setDisplayToBlank() {
-  if (mode != STD_MODE_BLANK) {
-    lastMode = mode;
-    mode = STD_MODE_BLANK;
-    DEBUG_PRINTLN(F("LED-Driver: ShutDown"));
-    DEBUG_FLUSH();
-  }
+  mode = STD_MODE_BLANK;
+  doubleStdModeNormalPressed();
+  ledDriver.shutDown();
+  DEBUG_PRINTLN(F("LED-Driver: ShutDown"));
+  DEBUG_FLUSH();
 }
 
 /**
    Das Display einschalten.
 */
 void setDisplayToResume() {
-  if (mode == STD_MODE_BLANK) {
-    mode = lastMode;
-    DEBUG_PRINTLN(F("LED-Driver: WakeUp"));
-    DEBUG_FLUSH();
-  }
+  mode = lastMode;
+  ledDriver.wakeUp();
+  DEBUG_PRINTLN(F("LED-Driver: WakeUp"));
+  DEBUG_FLUSH();
 }
 
 /**
@@ -1885,8 +1878,7 @@ void updateFallBackCounter(void)
   fallBackCounter--;
   if (!fallBackCounter) {
     if ( (mode != EXT_MODE_NIGHT_OFF) && (mode != EXT_MODE_NIGHT_ON) ) {
-      mode = STD_MODE_NORMAL;
-      lastMode = mode;
+      setMode(STD_MODE_NORMAL);
     }
   }
 }
@@ -1929,38 +1921,6 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
   DEBUG_PRINTLN2(irDecodeResults.value, HEX);
   needsUpdateFromRtc = true;
   switch (irCode) {
-    case REMOTE_BUTTON_MODE:
-      modePressed();
-      break;
-    case REMOTE_BUTTON_MINUTE_PLUS:
-      minutePlusPressed();
-      break;
-    case REMOTE_BUTTON_HOUR_PLUS:
-      hourPlusPressed();
-      break;
-    case REMOTE_BUTTON_BRIGHTER:
-      if (!settings.getUseLdr()) {
-        if (STD_MODE_BRIGHTNESS == mode) {
-          setDisplayBrighter();
-        }
-        else {
-          mode = STD_MODE_BRIGHTNESS;
-        }
-      }
-      break;
-    case REMOTE_BUTTON_DARKER:
-      if (!settings.getUseLdr()) {
-        if (STD_MODE_BRIGHTNESS == mode) {
-          setDisplayDarker();
-        }
-        else {
-          mode = STD_MODE_BRIGHTNESS;
-        }
-      }
-      break;
-    case REMOTE_BUTTON_EXTMODE:
-      doubleExtModePressed();
-      break;
     case REMOTE_BUTTON_TOGGLEBLANK:
       setDisplayToToggle();
       break;
@@ -1970,74 +1930,131 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
     case REMOTE_BUTTON_RESUME:
       setDisplayToResume();
       break;
-    case REMOTE_BUTTON_SETCOLOR:
-      if ((irTranslatorGeneric->getColor() == color_rgb_continuous) && (settings.getColor() == color_rgb_continuous)){
-        settings.setColor(eColors::color_rgb_step);
-      }
-      else{
-        settings.setColor(irTranslatorGeneric->getColor());
-      }
-      ledDriver.resetWheelPos();
-      break;
-    case REMOTE_BUTTON_SAVE:
-      settings.saveToEEPROM();
-      break;
-    case REMOTE_BUTTON_SETMODE:
-      mode = irTranslatorGeneric->getMode();
-      lastMode = mode;
-      break;
-    case REMOTE_BUTTON_REGION:
-      if (EXT_MODE_LANGUAGE == mode) {
+  }
+
+  if ( (mode != STD_MODE_BLANK) && 
+       (mode != STD_MODE_NIGHT) ) { 
+    switch (irCode) {
+      case REMOTE_BUTTON_MODE:
+        modePressed();
+        break;
+      case REMOTE_BUTTON_MINUTE_PLUS:
         minutePlusPressed();
-      }
-      else {
-        mode = EXT_MODE_LANGUAGE;
-      }
-      break;
-    case REMOTE_BUTTON_LDR:
-      if (EXT_MODE_LDR_MODE == mode) {
-        settings.setUseLdr(!settings.getUseLdr());
+        break;
+      case REMOTE_BUTTON_HOUR_PLUS:
+        hourPlusPressed();
+        break;
+      case REMOTE_BUTTON_BRIGHTER:
         if (!settings.getUseLdr()) {
-          settings.setBrightness(ledDriver.getBrightness());
+          if (STD_MODE_BRIGHTNESS == mode) {
+            setDisplayBrighter();
+          }
+          else {
+            setMode(STD_MODE_BRIGHTNESS);
+          }
         }
-      }
-      else {
-        mode = EXT_MODE_LDR_MODE;
-      }
-      break;
-    case REMOTE_BUTTON_TIME_H_PLUS:
-      incDecHours(true);
-      break;
-    case REMOTE_BUTTON_TIME_H_MINUS:
-      incDecHours(false);
-      break;
-    case REMOTE_BUTTON_TIME_M_PLUS:
-      incDecMinutes(true);
-      break;
-    case REMOTE_BUTTON_TIME_M_MINUS:
-      incDecMinutes(false);
-      break;
-    case REMOTE_BUTTON_TRANSITION:
-      settings.setTransitionMode(irTranslatorGeneric->getTransition());
-      ledDriver.demoTransition();
-      break;
-    default:
-      break;
+        break;
+      case REMOTE_BUTTON_DARKER:
+        if (!settings.getUseLdr()) {
+          if (STD_MODE_BRIGHTNESS == mode) {
+            setDisplayDarker();
+          }
+          else {
+            setMode(STD_MODE_BRIGHTNESS);
+          }
+        }
+        break;
+      case REMOTE_BUTTON_EXTMODE:
+        if(mode < EXT_MODE_START) {
+          setMode(EXT_MODE_START);
+        }
+        else {
+          modePressed();
+        }
+        break;
+      case REMOTE_BUTTON_SETCOLOR:
+        if ((irTranslatorGeneric->getColor() == color_rgb_continuous) && (settings.getColor() == color_rgb_continuous)){
+          settings.setColor(eColors::color_rgb_step);
+        }
+        else{
+          settings.setColor(irTranslatorGeneric->getColor());
+        }
+        ledDriver.resetWheelPos();
+        break;
+      case REMOTE_BUTTON_SAVE:
+        settings.saveToEEPROM();
+        break;
+      case REMOTE_BUTTON_SETMODE:
+        setMode(irTranslatorGeneric->getMode());
+        break;
+      case REMOTE_BUTTON_REGION:
+        if (EXT_MODE_LANGUAGE == mode) {
+          minutePlusPressed();
+        }
+        else {
+          setMode(EXT_MODE_LANGUAGE);
+        }
+        break;
+      case REMOTE_BUTTON_LDR:
+        if (EXT_MODE_LDR_MODE == mode) {
+          settings.setUseLdr(!settings.getUseLdr());
+          if (!settings.getUseLdr()) {
+            settings.setBrightness(ledDriver.getBrightness());
+          }
+        }
+        else {
+          setMode(EXT_MODE_LDR_MODE);
+        }
+        break;
+      case REMOTE_BUTTON_TIME_H_PLUS:
+        if(mode < EXT_MODE_START) {
+        incDecHours(true);
+        } else if (mode == STD_MODE_NORMAL) {
+          hourPlusPressed();
+        }
+        break;
+      case REMOTE_BUTTON_TIME_H_MINUS:
+        if (mode == STD_MODE_NORMAL) {
+          incDecHours(false);
+        }
+        break;
+      case REMOTE_BUTTON_TIME_M_PLUS:
+        if(mode < EXT_MODE_START) {
+          incDecMinutes(true);
+        } else if (mode == STD_MODE_NORMAL) {
+          minutePlusPressed();
+        }
+        break;
+      case REMOTE_BUTTON_TIME_M_MINUS:
+        if (mode == STD_MODE_NORMAL) {
+          incDecMinutes(false);
+        }
+        break;
+      case REMOTE_BUTTON_TRANSITION:
+        settings.setTransitionMode(irTranslatorGeneric->getTransition());
+        ledDriver.demoTransition();
+        break;
+      default:
+        break;
+    }
   }
 
-  switch (mode) {
-    case STD_MODE_SECONDS:
-      // Timeout für den automatischen Rücksprung von STD_MODE_SECONDS,
-      // STD_MODE_DATE und STD_MODE_BRIGHTNESS zurücksetzen
-    case STD_MODE_BRIGHTNESS:
-    case EXT_MODE_LANGUAGE:
-    case EXT_MODE_LDR_MODE:
-      enableFallBackCounter(settings.getJumpToNormalTimeout());
-      break;
-    default:
-      break;
+  if ( (irCode != REMOTE_BUTTON_TIME_H_PLUS) &&
+       (irCode != REMOTE_BUTTON_TIME_M_PLUS) &&
+       (irCode != REMOTE_BUTTON_EXTMODE) ) {
+      switch (mode) {
+        case STD_MODE_SECONDS:
+          // Timeout für den automatischen Rücksprung von STD_MODE_SECONDS,
+          // STD_MODE_DATE und STD_MODE_BRIGHTNESS zurücksetzen
+        case STD_MODE_BRIGHTNESS:
+        case EXT_MODE_LANGUAGE:
+        case EXT_MODE_LDR_MODE:
+          enableFallBackCounter(settings.getJumpToNormalTimeout());
+          break;
+        default:
+          break;
+      }
   }
-
 
   settings.saveToEEPROM();
 }
