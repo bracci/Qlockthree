@@ -1078,10 +1078,19 @@ void loop() {
 #if defined(RGB_LEDS) || defined(RGBW_LEDS)
       case EXT_MODE_COLOR:
         renderer.clearScreenBuffer(matrix);
-        renderer.setMenuText("CL", Renderer::TEXT_POS_TOP, matrix);
-        for (byte i = 0; i < 5; i++) {
-          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor() / 10][i])) << 10;
-          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor() % 10][i])) << 5;
+        if (settings.getColor() <= color_single_max) {
+          renderer.setMenuText("C", Renderer::TEXT_POS_TOP, matrix);
+          for (byte i = 0; i < 5; i++) {
+            matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor() / 10][i])) << 10;
+            matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColor() % 10][i])) << 5;
+          }
+        }
+        else {
+          renderer.setMenuText("CC", Renderer::TEXT_POS_TOP, matrix);
+          for (byte i = 0; i < 5; i++) {
+            matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[(settings.getColor() - color_single_max) / 10][i])) << 10;
+            matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[(settings.getColor() - color_single_max) % 10][i])) << 5;
+          }
         }
         break;
 #endif
@@ -1996,6 +2005,11 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
         else{
           settings.setColor(irTranslatorGeneric->getColor());
         }
+#if defined(RGB_LEDS) || defined(RGBW_LEDS)
+        if ( settings.getColor() > color_single_max){
+          setMode(EXT_MODE_COLOR);
+        }
+#endif
         ledDriver.resetWheelPos();
         break;
       case REMOTE_BUTTON_SAVE:
@@ -2068,6 +2082,8 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
         case EXT_MODE_LDR_MODE:
           enableFallBackCounter(settings.getJumpToNormalTimeout());
           break;
+        case EXT_MODE_COLOR:
+          enableFallBackCounter(2);
         default:
           break;
       }
