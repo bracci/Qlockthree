@@ -211,7 +211,7 @@
 #endif
 
 
-#define FIRMWARE_VERSION "CLT OS V 1.0, based on Qlockthree by Christian Ashoff"
+#define FIRMWARE_VERSION "CLT OS V2.0, based on Qlockthree by Christian Ashoff"
 
 /*
    Den DEBUG-Schalter gibt es in allen Bibiliotheken. Wird er eingeschaltet, werden ueber den
