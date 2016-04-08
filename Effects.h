@@ -72,15 +72,15 @@ class Effects {
     };
 
   public:
-    static void showTickerString(const char* str2disp, byte tickerSpeed);
-    static void showIntro();
+    static void showTickerString(const char* str2disp, byte tickerSpeed, eColors color);
+    static void showIntro(eColors color);
 
     static void showFireWork(byte posX, eColors color);
     static void showHeart(byte duration, eColors color);
     static void showCandle(eColors color);
     static void showBitmap(byte bitmapIdx, byte duration, eColors color);
     static void showAnimatedBitmap(byte animatedBitmap, byte duration, eColors color);
-    static void writeToBuffer(word aMatrix[], unsigned int aDuration, eColors color = color_none);
+    static void writeToBuffer(word aMatrix[], unsigned int aDuration, eColors color);
 };
 
 const word effectMasksHeart[][10] PROGMEM = {

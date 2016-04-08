@@ -17,7 +17,7 @@
 // #define DEBUG
 #include "Debug.h"
 
-void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
+void Effects::showTickerString(const char* str2disp, byte tickerSpeed, eColors color) {
   word matrix [16];
 
   byte strLength = strlen(str2disp);
@@ -47,7 +47,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
         lastChar = actChar;
       }
     }
-    writeToBuffer(matrix, 3 * (10 - tickerSpeed));
+    writeToBuffer(matrix, 3 * (10 - tickerSpeed), color);
     bufLen = shift + 15;
     if (i == bufLen) {
       finish = true;
@@ -61,7 +61,7 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed) {
 /**
    Intro
 */
-void Effects::showIntro() {
+void Effects::showIntro(eColors color) {
   word matrix [16];
 
   renderer.clearScreenBuffer(matrix);
@@ -69,22 +69,22 @@ void Effects::showIntro() {
     for (byte i = 0; i < 10; i++) {
       matrix[i] |= 0b1 << (15 - j);
     }
-    writeToBuffer(matrix, 5);
+    writeToBuffer(matrix, 5, color);
   }
   for (int j = 0; j < 11; j++) {
     for (int i = 0; i < 10; i++) {
       matrix[i] ^= 0b1 << (5 + j);
     }
-    writeToBuffer(matrix, 5);
+    writeToBuffer(matrix, 5, color);
   }
   renderer.clearScreenBuffer(matrix);
   for (int i = 9; i >= 0; i--) {
     matrix[i] |= 0b1111111111100000;
-    writeToBuffer(matrix, 5);
+    writeToBuffer(matrix, 5, color);
   }
   for (int i = 0; i < 10; i++) {
     matrix[i] ^= 0b1111111111100000;
-    writeToBuffer(matrix, 5);
+    writeToBuffer(matrix, 5, color);
   }
 }
 

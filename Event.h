@@ -17,6 +17,9 @@
 #include "Effects.h"
 #include "Configuration.h"
 #include "Colors.h"
+#include "Settings.h"
+
+extern Settings settings;
 
 #define DURATION_BM   15
 #define TICKER_SPEED  6
