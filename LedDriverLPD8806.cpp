@@ -81,21 +81,20 @@ void LedDriverLPD8806::printSignature() {
 void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
   boolean updateWheelColor = false;
   byte wheelPosIncrement = 0;
-  unsigned long wheelUpdatePeriod = 0;
   
-  if (a_color == color_rgb_continuous){
-    wheelPosIncrement = 2;
-    wheelUpdatePeriod = 300;
-  }
-  else if (a_color == color_rgb_step){
-    wheelPosIncrement = 200;
-    wheelUpdatePeriod = 0x493E0; // 5 min in ms
-  }
-  
-  if ((a_color == color_rgb_continuous || a_color == color_rgb_step) && _transitionCompleted) {
-    if ((millis() - _lastColorUpdate) > wheelUpdatePeriod) {
+  if ((a_color == color_rgb_continuous) && _transitionCompleted) {
+    if ((millis() - _lastColorUpdate) > 300) {
       updateWheelColor = true;
       _lastColorUpdate = millis();
+      wheelPosIncrement = 2;
+    }
+  }
+
+  if (a_color == color_rgb_step) {
+    if (!(rtc.getMinutes() % 5) && (helperSeconds == 0) &&  onChange) {
+      updateWheelColor = true;
+      _lastColorUpdate = millis();
+      wheelPosIncrement = 200;
     }
   }
 
