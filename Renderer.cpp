@@ -724,12 +724,6 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
    (Zumindest im Deutschen)
 */
 void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16]) {
-  while (hours < 0) {
-    hours += 24;
-  }
-  while (hours > 23) {
-    hours -= 24;
-  }
   
   switch (language) {
     //
@@ -1256,10 +1250,10 @@ void Renderer::setMenuText(const char* menuText, eTextPos textPos, word matrix[1
     for (byte i = 0; i < 5; i++) {
       for (byte j = 0; j < strlen(menuText); j++) {
         if (!isNumber(menuText[j])) {
-          matrix[textPos + i] |= pgm_read_byte_near(&(staben[menuText[j] - 'A'][i])) << 5 + ((j + 1) % 2) * 6;
+          matrix[textPos + i] |= pgm_read_byte_near(&(staben[menuText[j] - 'A'][i])) << (5 + ((j + 1) % 2) * 6);
         }
         else {
-          matrix[textPos + i] |= pgm_read_byte_near(&(ziffernB[menuText[j] - '0'][i])) << 5 + ((j + 1) % 2) * 5;
+          matrix[textPos + i] |= pgm_read_byte_near(&(ziffernB[menuText[j] - '0'][i])) << (5 + ((j + 1) % 2) * 5);
         }
       }
     }

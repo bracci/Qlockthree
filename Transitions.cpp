@@ -57,7 +57,7 @@ void Transitions::shiftColumnUp (word matrixNew[16], word matrix[16], byte colum
   for (byte i = 0; i < 10; i++) {
     matrixNew[i] &= ~tempMatrix;
     tempIdx = i - (9 + column - (_counter - 22));
-    if (tempIdx >= 0 && tempIdx < 12) {
+    if (tempIdx < 12) {
       matrixNew[i] |= (matrix[tempIdx] & tempMatrix);
     }
   }
