@@ -26,19 +26,19 @@
  * Selten gebrauchte externe Modi einschalten
  */
 // Anzeige der vergangenen Stunden und Minuten seit der letzten erfolgreichen DCF-Synchronisation im Menü EXT_MODE_DCF_DEBUG (Standard: eingeschaltet).
-//#define USE_EXT_MODE_DCF_SYNC
+#define USE_EXT_MODE_DCF_SYNC
 
 // Einstellmöglichkeit Minuten LEDs im/gegen Uhrzeigersinn
 //#define USE_EXT_MODE_CORNERS
 
 // Einstellmöglichkeit Zeitverschiebung zum DCF Signal
-//#define USE_EXT_MODE_TIME_SHIFT
+#define USE_EXT_MODE_TIME_SHIFT
 
 // LED Test spaltenweise
 //#define USE_EXT_MODE_TEST
 
 // DCF Debuganzeige
-//#define USE_EXT_MODE_DCF_DEBUG
+#define USE_EXT_MODE_DCF_DEBUG
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
@@ -79,12 +79,12 @@
 /*
  * Welcher LED-Treiber soll benutzt werden?
  */
-// #define LED_DRIVER_DEFAULT
+#define LED_DRIVER_DEFAULT
 // #define LED_DRIVER_UEBERPIXEL
 // #define LED_DRIVER_POWER_SHIFT_REGISTER
 // #define LED_DRIVER_NEOPIXEL
 // #define LED_DRIVER_DOTSTAR
-#define LED_DRIVER_LPD8806
+// #define LED_DRIVER_LPD8806
 
 #if defined(LED_DRIVER_LPD8806) || defined(LED_DRIVER_NEOPIXEL)
 #define RGB_LEDS
@@ -101,14 +101,14 @@
 /*
  * Welche IR-Fernbedienung soll benutzt werden?
  */
-//#define REMOTE_NO_REMOTE
+#define REMOTE_NO_REMOTE
 //#define REMOTE_SPARKFUN
 //#define REMOTE_MOONCANDLES
 //#define REMOTE_LUNARTEC
-#define REMOTE_CLT
+//#define REMOTE_CLT
 
 // kann separat oder zusätzlich zu einer IR-Fernbedienung genutzt werden
-#define REMOTE_BLUETOOTH
+//#define REMOTE_BLUETOOTH
 
 // Möglichkeit um Events (Geburts-, Jahres-, Feiertage) mit Laufschrift und Effekt zu konfigurieren
 //#define EVENTS
