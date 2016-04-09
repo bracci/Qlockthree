@@ -36,7 +36,6 @@ LedDriverDotStar::LedDriverDotStar(byte dataPin, byte clockPin) {
   _transitionCounter = 0;
   _transitionCompleted = true;
   _lastColorUpdate = millis();
-  _displayOn = false;
   _dirty = false;
   _demoTransition = false;
 }
@@ -80,7 +79,7 @@ void LedDriverDotStar::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     _transitionCounter = 0;
   }
 
-  if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
+  if (onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) {
     uint32_t color = 0;
     uint32_t colorNew = 0;
     uint32_t colorOld = 0;
@@ -298,14 +297,12 @@ void LedDriverDotStar::setLinesToWrite(byte linesToWrite) {
 void LedDriverDotStar::shutDown() {
   _clear();
   _strip->show();
-  _displayOn = false;
 }
 
 /**
    Das Display einschalten.
 */
 void LedDriverDotStar::wakeUp() {
-  _displayOn = true;
 }
 
 /**

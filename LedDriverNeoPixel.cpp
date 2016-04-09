@@ -43,7 +43,6 @@ LedDriverNeoPixel::LedDriverNeoPixel(byte dataPin) {
   _transitionCounter = 0;
   _transitionCompleted = true;
   _lastColorUpdate = millis();
-  _displayOn = false;
   _dirty = false;
   _demoTransition = false;
 }
@@ -87,7 +86,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     _transitionCounter = 0;
   }
 
-  if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
+  if (onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) {
     uint32_t color = 0;
     uint32_t colorNew = 0;
     uint32_t colorOld = 0;
@@ -304,7 +303,6 @@ void LedDriverNeoPixel::setLinesToWrite(byte linesToWrite) {
    Das Display einschalten.
 */
 void LedDriverNeoPixel::wakeUp() {
-  _displayOn = true;
 }
 
 /**
@@ -313,7 +311,6 @@ void LedDriverNeoPixel::wakeUp() {
 void LedDriverNeoPixel::shutDown() {
   _strip->clear();
   _strip->show();
-  _displayOn = false;
   _transitionCompleted = true;
 }
 

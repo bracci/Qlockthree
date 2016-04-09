@@ -44,7 +44,6 @@ LedDriverDefault::LedDriverDefault(byte data, byte clock, byte latch, byte outpu
   pinMode(_outputEnablePin, OUTPUT);
   digitalWrite(_outputEnablePin, HIGH);
   _linesToWrite = linesToWrite;
-  _displayOn = false;
   _transitionCompleted = true;
 }
 
@@ -154,35 +153,33 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     if (matrix[k] != 0) {
 #endif
 
-      if (_displayOn == true) {
-        if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) { // Über OE einschalten und nach PWM-Anteil wieder ausschalten, wenn das Display aktiv ist
-          // Alter Zeileninhalt
-          // Zeile schreiben...
-          _shiftRegister->prepareShiftregisterWrite();
-          _shiftRegister->shiftOut(~_matrixOld[k]);
-          _shiftRegister->shiftOut(row);
-          _shiftRegister->finishShiftregisterWrite();
-
-          digitalWrite(_outputEnablePin, LOW);
-          delayMicroseconds(_delayOldMatrix);
-          digitalWrite(_outputEnablePin, HIGH);
-        }
-        // Neuer Zeileninhalt
-        // Zeile �berschreiben...
+      if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) { // Über OE einschalten und nach PWM-Anteil wieder ausschalten, wenn das Display aktiv ist
+        // Alter Zeileninhalt
+        // Zeile schreiben...
         _shiftRegister->prepareShiftregisterWrite();
-        _shiftRegister->shiftOut(~_matrixNew[k]);
+        _shiftRegister->shiftOut(~_matrixOld[k]);
         _shiftRegister->shiftOut(row);
         _shiftRegister->finishShiftregisterWrite();
 
-        digitalWrite(_outputEnablePin, LOW); // �ber OE einschalten und nach PWM-Anteil wieder ausschalten, wenn das Display aktiv ist
-        delayMicroseconds(_delayNewMatrix);
-        digitalWrite(_outputEnablePin, HIGH); // bleibt danach ausgeschaltet
+        digitalWrite(_outputEnablePin, LOW);
+        delayMicroseconds(_delayOldMatrix);
+        digitalWrite(_outputEnablePin, HIGH);
+      }
+      // Neuer Zeileninhalt
+      // Zeile �berschreiben...
+      _shiftRegister->prepareShiftregisterWrite();
+      _shiftRegister->shiftOut(~_matrixNew[k]);
+      _shiftRegister->shiftOut(row);
+      _shiftRegister->finishShiftregisterWrite();
 
-        // hier kann man versuchen, das Taktverhaeltnis zu aendern (Auszeit)...
-        // delayMicroseconds mit Werten <= 3 macht Probleme...
-        if (_brightnessInPercent < 97) {
-          delayMicroseconds((100 - _brightnessInPercent) * PWM_DURATION);
-        }
+      digitalWrite(_outputEnablePin, LOW); // �ber OE einschalten und nach PWM-Anteil wieder ausschalten, wenn das Display aktiv ist
+      delayMicroseconds(_delayNewMatrix);
+      digitalWrite(_outputEnablePin, HIGH); // bleibt danach ausgeschaltet
+
+      // hier kann man versuchen, das Taktverhaeltnis zu aendern (Auszeit)...
+      // delayMicroseconds mit Werten <= 3 macht Probleme...
+      if (_brightnessInPercent < 97) {
+        delayMicroseconds((100 - _brightnessInPercent) * PWM_DURATION);
       }
 
 #ifdef SKIP_BLANK_LINES
@@ -224,7 +221,6 @@ void LedDriverDefault::setLinesToWrite(byte linesToWrite) {
 */
 void LedDriverDefault::shutDown() {
   digitalWrite(_outputEnablePin, HIGH);
-  _displayOn = false;
 }
 
 /**
@@ -232,7 +228,6 @@ void LedDriverDefault::shutDown() {
 */
 void LedDriverDefault::wakeUp() {
   digitalWrite(_outputEnablePin, LOW);
-  _displayOn = true;
 }
 
 /**

@@ -142,7 +142,6 @@ void LedDriverUeberPixel::shutDown() {
   for (byte i = 0; i < 4; i++) {
     _ledControl->shutdown(i, true);
   }
-  _displayOn = false;
 }
 
 /**
@@ -152,7 +151,6 @@ void LedDriverUeberPixel::wakeUp() {
   for (byte i = 0; i < 4; i++) {
     _ledControl->shutdown(i, false);
   }
-  _displayOn = true;
 }
 
 /**

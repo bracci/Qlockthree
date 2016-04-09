@@ -68,7 +68,6 @@ class LedDriver {
     void demoTransition();
 
   protected:
-    boolean _displayOn; //Variable, die den Zustand des Displays beschreibt
     word _matrixOld[11];
     word _matrixNew[11];
     word _matrixOverlay[11];

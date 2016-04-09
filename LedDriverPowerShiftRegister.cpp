@@ -113,7 +113,6 @@ void LedDriverPowerShiftRegister::setLinesToWrite(byte linesToWrite) {
  */
 void LedDriverPowerShiftRegister::shutDown() {
   digitalWrite(_outputEnable, HIGH);
-  _displayOn = false;
 }
 
 /**
@@ -121,7 +120,6 @@ void LedDriverPowerShiftRegister::shutDown() {
  */
 void LedDriverPowerShiftRegister::wakeUp() {
   digitalWrite(_outputEnable, LOW);
-  _displayOn = true;
 }
 
 /**

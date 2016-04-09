@@ -51,7 +51,6 @@ LedDriverLPD8806::LedDriverLPD8806(byte dataPin, byte clockPin) {
   _transitionCounter = 0;
   _transitionCompleted = true;
   _lastColorUpdate = millis();
-  _displayOn = false;
   _dirty = false;
   _demoTransition = false;
   _lastLEDsOn = 0;
@@ -106,7 +105,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     _transitionCounter = 0;
   }
 
-  if ((onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) && _displayOn) {
+  if (onChange || _dirty || _demoTransition || updateWheelColor || (((_transitionCounter == 0) || (Settings::TRANSITION_MODE_FADE == settings.getTransitionMode())) && !_transitionCompleted)) {
     uint32_t color = 0;
     uint32_t colorNew = 0;
     uint32_t colorOld = 0;
@@ -321,7 +320,6 @@ void LedDriverLPD8806::setLinesToWrite(byte linesToWrite) {
 void LedDriverLPD8806::shutDown() {
   _clear();
   _strip->show();
-  _displayOn = false;
   _transitionCompleted = true;
 }
 
@@ -329,7 +327,6 @@ void LedDriverLPD8806::shutDown() {
    Das Display einschalten.
 */
 void LedDriverLPD8806::wakeUp() {
-  _displayOn = true;
 }
 
 /**
