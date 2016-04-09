@@ -1162,58 +1162,16 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
                FALSE -> counter clock wise -> gegen den Uhrzeigersinn.
 */
 void Renderer::setCorners(byte minutes, boolean cw, word matrix[16]) {
-  if (cw) {
-    // im Uhrzeigersinn
-    switch (minutes % 5) {
-      case 0:
-        break;
-      case 1:
-        matrix[1] |= 0b0000000000011111; // 1
-        break;
-      case 2:
-        matrix[1] |= 0b0000000000011111; // 1
-        matrix[0] |= 0b0000000000011111; // 2
-        break;
-      case 3:
-        matrix[1] |= 0b0000000000011111; // 1
-        matrix[0] |= 0b0000000000011111; // 2
-        matrix[3] |= 0b0000000000011111; // 3
-        break;
-      case 4:
-        matrix[1] |= 0b0000000000011111; // 1
-        matrix[0] |= 0b0000000000011111; // 2
-        matrix[3] |= 0b0000000000011111; // 3
-        matrix[2] |= 0b0000000000011111; // 4
-        break;
-      default:
-        ;
+  for (byte i = 0; i < (minutes % 5); i++) {
+    byte j;
+    if (cw) {
+      // j: 1, 0, 3, 2
+      j = (1 - i + 4) % 4;
+    } else {
+      // j: 0, 1, 2, 3
+      j = i;
     }
-  } else {
-    // gegen den Uhrzeigersinn
-    switch (minutes % 5) {
-      case 0:
-        break;
-      case 1:
-        matrix[0] |= 0b0000000000011111; // 1
-        break;
-      case 2:
-        matrix[0] |= 0b0000000000011111; // 1
-        matrix[1] |= 0b0000000000011111; // 2
-        break;
-      case 3:
-        matrix[0] |= 0b0000000000011111; // 1
-        matrix[1] |= 0b0000000000011111; // 2
-        matrix[2] |= 0b0000000000011111; // 3
-        break;
-      case 4:
-        matrix[0] |= 0b0000000000011111; // 1
-        matrix[1] |= 0b0000000000011111; // 2
-        matrix[2] |= 0b0000000000011111; // 3
-        matrix[3] |= 0b0000000000011111; // 4
-        break;
-      default:
-        ;
-    }
+    matrix[j] |= 0b0000000000011111;
   }
 }
 
