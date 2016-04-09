@@ -2083,8 +2083,11 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
         case EXT_MODE_LDR_MODE:
           enableFallBackCounter(settings.getJumpToNormalTimeout());
           break;
+#if defined(RGB_LEDS) || defined(RGBW_LEDS)
         case EXT_MODE_COLOR:
           enableFallBackCounter(2);
+          break;
+#endif
         default:
           break;
       }
