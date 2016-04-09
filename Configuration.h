@@ -47,6 +47,8 @@
 #define AUTO_JUMP_BLANK
 // Automatischer Rücksprung von Abschalt-/Einschaltzeit zu EXT_MODE_NIGHT_OFF/EXT_MODE_NIGHT_ON 
 #define FALL_BACK_TIME_NIGHT_MODE 5
+// LED Test Intro
+#define LED_TEST_INTRO_ENABLED
 
 /*
  * Alarmfunktion einschalten?

@@ -775,12 +775,13 @@ void setup() {
   ledDriver.wakeUp();
   ledDriver.setBrightness(settings.getBrightness());
 
+#ifdef LED_TEST_INTRO_ENABLED
   renderer.setAllScreenBuffer(matrix);
   unsigned long initMillis = millis();
   while(millis() < (initMillis + 5000)){
     ledDriver.writeScreenBufferToMatrix(matrix, true, eColors::color_white);
   }
-
+#endif
 
 #ifndef DCF77_USE_TIMER2
   // Timer1 für DCF77-Synchronisation
