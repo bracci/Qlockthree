@@ -1943,6 +1943,7 @@ void resetSeconds() {
   helperSeconds = 0;
 }
 
+#if defined(REMOTE_BLUETOOTH) || !defined(REMOTE_NO_REMOTE)
 void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
   DEBUG_PRINT(F("Decoded successfully as "));
   DEBUG_PRINTLN2(irDecodeResults.value, HEX);
@@ -2095,6 +2096,7 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
 
   settings.saveToEEPROM();
 }
+#endif
 
 void setMode(Mode a_mode) {
   mode = a_mode;
