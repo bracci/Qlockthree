@@ -1312,12 +1312,12 @@ void loop() {
      Display zeitgesteuert abschalten?
      Das Verbessert den DCF77-Empfang bzw. ermoeglicht ein dunkles Schlafzimmer.
   */
-  if ((settings.getNightModeTime(false)->getMinutesOfDay() != 0) && (settings.getNightModeTime(false)->getMinutesOfDay() != 0)) {
-    if ((mode < EXT_MODE_START) && (mode != STD_MODE_NIGHT) && (settings.getNightModeTime(false)->getMinutesOfDay() == rtc.getMinutesOfDay())) {
+  if ((settings.getNightModeTime(true)->getMinutesOfDay() != 0) && (settings.getNightModeTime(false)->getMinutesOfDay() != 0)) {
+    if ((mode < EXT_MODE_START) && (mode != STD_MODE_NIGHT) && (settings.getNightModeTime(false)->getMinutesOfDay() == rtc.getMinutesOfDay()) && (helperSeconds == 0)) {
       mode = STD_MODE_NIGHT;
       ledDriver.shutDown();
     }
-    if ((mode == STD_MODE_NIGHT) && (settings.getNightModeTime(true)->getMinutesOfDay() == rtc.getMinutesOfDay())) {
+    if ((mode == STD_MODE_NIGHT) && (settings.getNightModeTime(true)->getMinutesOfDay() == rtc.getMinutesOfDay()) && (helperSeconds == 0)) {
       mode = lastMode;
       ledDriver.wakeUp();
     }
