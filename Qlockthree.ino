@@ -1916,7 +1916,7 @@ void incDecMinutes(boolean inc) {
   else {
     rtc.decMinutes();
   }
-  resetSeconds()
+  resetSeconds();
   DEBUG_PRINT(F("M is now "));
   DEBUG_PRINTLN(rtc.getMinutes());
   DEBUG_FLUSH();
@@ -1929,7 +1929,7 @@ void incDecHours(boolean inc) {
   else {
     rtc.decHours();
   }
-  resetSeconds()
+  resetSeconds();
   DEBUG_PRINT(F("H is now "));
   DEBUG_PRINTLN(rtc.getHours());
   DEBUG_FLUSH();
