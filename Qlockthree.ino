@@ -1381,13 +1381,7 @@ void doubleStdModeNormalPressed() {
   needsUpdateFromRtc = true;
   DEBUG_PRINTLN(F("Minutes plus AND hours plus pressed in STD_MODE_NORMAL..."));
   DEBUG_FLUSH();
-  if ( ( (settings.getNightModeTime(false)->getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) && 
-         ( (rtc.getMinutesOfDay() > settings.getNightModeTime(false)->getMinutesOfDay()) && 
-           (rtc.getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) ) ) ||
-       ( (settings.getNightModeTime(false)->getMinutesOfDay() > settings.getNightModeTime(true)->getMinutesOfDay()) &&
-         ( (rtc.getMinutesOfDay() > settings.getNightModeTime(false)->getMinutesOfDay()) ||
-           (rtc.getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) ) )
-     )
+  if ( isCurrentTimeInNightRange() )
   {
     mode = STD_MODE_NIGHT;
     ledDriver.shutDown();
@@ -1813,7 +1807,7 @@ void manageNewDCF77Data() {
 #endif
 #ifdef AUTO_JUMP_BLANK
     // falls im manuellen Dunkel-Modus, Display wieder einschalten... (Hilft bei der Erkennung, ob der DCF-Empfang geklappt hat).
-    if (mode == STD_MODE_BLANK) {
+    if ((mode == STD_MODE_BLANK) || ((mode == STD_MODE_NIGHT) && !isCurrentTimeInNightRange())) {
       setMode(STD_MODE_NORMAL);
       ledDriver.wakeUp();
     }
@@ -2102,5 +2096,15 @@ void setMode(Mode a_mode) {
   mode = a_mode;
   lastMode = mode;
 }
+
+bool isCurrentTimeInNightRange() {
+  return ( ( (settings.getNightModeTime(false)->getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) && 
+           ( (rtc.getMinutesOfDay() > settings.getNightModeTime(false)->getMinutesOfDay()) && 
+             (rtc.getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) ) ) ||
+         ( (settings.getNightModeTime(false)->getMinutesOfDay() > settings.getNightModeTime(true)->getMinutesOfDay()) &&
+           ( (rtc.getMinutesOfDay() > settings.getNightModeTime(false)->getMinutesOfDay()) ||
+             (rtc.getMinutesOfDay() < settings.getNightModeTime(true)->getMinutesOfDay()) ) ) );
+}
+
 
 
