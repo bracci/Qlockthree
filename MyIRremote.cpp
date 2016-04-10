@@ -30,39 +30,39 @@ volatile irparams_t irparams;
 // Normally macros are used for efficiency
 #ifdef DEBUG
 int MATCH(int measured, int desired) {
-  DEBUG_PRINT("Testing: ");
+  DEBUG_PRINT(F("Testing: "));
   DEBUG_PRINT(TICKS_LOW(desired), DEC);
-  DEBUG_PRINT(" <= ");
+  DEBUG_PRINT(F(" <= "));
   DEBUG_PRINT(measured, DEC);
-  DEBUG_PRINT(" <= ");
+  DEBUG_PRINT(F(" <= "));
   DEBUG_PRINTLN(TICKS_HIGH(desired), DEC);
   return measured >= TICKS_LOW(desired) && measured <= TICKS_HIGH(desired);
 }
 
 int MATCH_MARK(int measured_ticks, int desired_us) {
-  DEBUG_PRINT("Testing mark ");
+  DEBUG_PRINT(F("Testing mark "));
   DEBUG_PRINT(measured_ticks * USECPERTICK, DEC);
-  DEBUG_PRINT(" vs ");
+  DEBUG_PRINT(F(" vs "));
   DEBUG_PRINT(desired_us, DEC);
-  DEBUG_PRINT(": ");
+  DEBUG_PRINT(F(": "));
   DEBUG_PRINT(TICKS_LOW(desired_us + MARK_EXCESS), DEC);
-  DEBUG_PRINT(" <= ");
+  DEBUG_PRINT(F(" <= "));
   DEBUG_PRINT(measured_ticks, DEC);
-  DEBUG_PRINT(" <= ");
+  DEBUG_PRINT(F(" <= "));
   DEBUG_PRINTLN(TICKS_HIGH(desired_us + MARK_EXCESS), DEC);
   return measured_ticks >= TICKS_LOW(desired_us + MARK_EXCESS) && measured_ticks <= TICKS_HIGH(desired_us + MARK_EXCESS);
 }
 
 int MATCH_SPACE(int measured_ticks, int desired_us) {
-  DEBUG_PRINT("Testing space ");
+  DEBUG_PRINT(F("Testing space "));
   DEBUG_PRINT(measured_ticks * USECPERTICK, DEC);
-  DEBUG_PRINT(" vs ");
+  DEBUG_PRINT(F(" vs "));
   DEBUG_PRINT(desired_us, DEC);
-  DEBUG_PRINT(": ");
+  DEBUG_PRINT(F(": "));
   DEBUG_PRINT(TICKS_LOW(desired_us - MARK_EXCESS), DEC);
-  DEBUG_PRINT(" <= ");
+  DEBUG_PRINT(F(" <= "));
   DEBUG_PRINT(measured_ticks, DEC);
-  DEBUG_PRINT(" <= ");
+  DEBUG_PRINT(F(" <= "));
   DEBUG_PRINTLN(TICKS_HIGH(desired_us - MARK_EXCESS), DEC);
   return measured_ticks >= TICKS_LOW(desired_us - MARK_EXCESS) && measured_ticks <= TICKS_HIGH(desired_us - MARK_EXCESS);
 }
@@ -424,9 +424,7 @@ int IRrecv::decode(decode_results *results) {
   if (irparams.rcvstate != STATE_STOP) {
     return ERR;
   }
-#ifdef DEBUG
-  DEBUG_PRINTLN("Attempting NEC decode");
-#endif
+  DEBUG_PRINTLN(F("Attempting NEC decode"));
   if (decodeNEC(results)) {
     return DECODED;
   }
