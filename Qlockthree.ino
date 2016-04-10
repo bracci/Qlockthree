@@ -167,15 +167,7 @@
 #include <avr/pgmspace.h>
 #include <EEPROM.h>
 #include <SPI.h>
-#include <LedControl.h>
-#include <Adafruit_NeoPixel.h>
-#include <Adafruit_DotStar.h>
 #include "Configuration.h"
-#ifdef MATRIX_XXL
-#include <LPD8806DBL.h>
-#else
-#include <LPD8806.h>
-#endif
 #include "LedDriver.h"
 #include "LedDriverDefault.h"
 #include "LedDriverUeberPixel.h"
