@@ -36,11 +36,26 @@ extern MyRTC rtc;
 extern bool evtActive;
 
 /* Treiberkonfiguration */
-#define FADINGCOUNTERLOAD 70 // nicht ?ndern, bitte: ?berblendvariable Startwert
-#define FADINGDURATION 5
-
+#if defined(LED_DRIVER_LPD8806)
+#define FADINGCOUNTERLOAD 25
+#define SLIDINGCOUNTERLOAD 350
+#define MATRIXCOUNTERLOAD 950
+#elif defined(LED_DRIVER_NEOPIXEL)
+#define FADINGCOUNTERLOAD 100
+#define SLIDINGCOUNTERLOAD 525
+#define MATRIXCOUNTERLOAD 1400
+#elif defined(LED_DRIVER_DOTSTAR)
+#define FADINGCOUNTERLOAD 70
 #define SLIDINGCOUNTERLOAD 350
 #define MATRIXCOUNTERLOAD 1100
+#else
+#define FADINGCOUNTERLOAD 70
+#define SLIDINGCOUNTERLOAD 7
+#define MATRIXCOUNTERLOAD 1100
+#endif
+
+#define FADINGDURATION 5
+
 #define NORMALCOUNTERLOAD 1000
 
 class LedDriver {

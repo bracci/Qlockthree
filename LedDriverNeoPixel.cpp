@@ -132,7 +132,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
               _matrixOverlay[i] = 0;
             }
             _transitionCompleted = false;
-            _transitionCounter = FADINGCOUNTERLOAD * 2;
+            _transitionCounter = FADINGCOUNTERLOAD;
             break;
           case Settings::TRANSITION_MODE_MATRIX:
           case Settings::TRANSITION_MODE_SLIDE:
@@ -172,11 +172,11 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     if ((_transitionCounter == 0) && !_transitionCompleted) {
       switch (settings.getTransitionMode()) {
         case Settings::TRANSITION_MODE_MATRIX:
-          _transitionCounter = MATRIXCOUNTERLOAD * 1.5;
+          _transitionCounter = MATRIXCOUNTERLOAD;
           _transitionCompleted = Transitions::nextMatrixStep(_matrixOld, _matrixNew, _matrixOverlay, matrix);
           break;
         case Settings::TRANSITION_MODE_SLIDE:
-          _transitionCounter = SLIDINGCOUNTERLOAD * 1.5;
+          _transitionCounter = SLIDINGCOUNTERLOAD;
           _transitionCompleted = Transitions::nextSlideStep(_matrixNew, matrix);
           break;
         case Settings::TRANSITION_MODE_NORMAL:
@@ -192,8 +192,8 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     **************/
 
     if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
-      brightnessOld = map(_transitionCounter, 0, FADINGCOUNTERLOAD * 2, 0, _brightnessInPercent);
-      brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD * 2, 0 , 0 , _brightnessInPercent);
+      brightnessOld = map(_transitionCounter, 0, FADINGCOUNTERLOAD, 0, _brightnessInPercent);
+      brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD, 0 , 0 , _brightnessInPercent);
       if (_transitionCounter == 0) {
         _transitionCompleted = true;
       }

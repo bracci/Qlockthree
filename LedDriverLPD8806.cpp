@@ -200,7 +200,7 @@ void LedDriverLPD8806::writeScreenBufferToMatrix(word matrix[16], boolean onChan
     **************/
 
     if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
-      brightnessOld = map(max(FADINGCOUNTERLOAD / 2, _transitionCounter), FADINGCOUNTERLOAD / 2, FADINGCOUNTERLOAD, 0, _brightnessInPercent);
+      brightnessOld = map(_transitionCounter, 0, FADINGCOUNTERLOAD, 0, _brightnessInPercent);
       brightnessNew = map(_transitionCounter, FADINGCOUNTERLOAD, 0 , 0 , _brightnessInPercent);
       if (_transitionCounter == 0) {
         _transitionCompleted = true;

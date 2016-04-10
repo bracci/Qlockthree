@@ -123,7 +123,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
   if ((_transitionCounter == 0) && !_transitionCompleted) {
     switch (settings.getTransitionMode()) {
       case Settings::TRANSITION_MODE_SLIDE:
-        _transitionCounter = SLIDINGCOUNTERLOAD / 50;
+        _transitionCounter = SLIDINGCOUNTERLOAD;
         _transitionCompleted = Transitions::nextSlideStep(_matrixNew, matrix);
         break;
       default:
