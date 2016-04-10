@@ -424,7 +424,9 @@ int IRrecv::decode(decode_results *results) {
   if (irparams.rcvstate != STATE_STOP) {
     return ERR;
   }
+#ifdef DEBUG
   DEBUG_PRINTLN(F("Attempting NEC decode"));
+#endif
   if (decodeNEC(results)) {
     return DECODED;
   }
