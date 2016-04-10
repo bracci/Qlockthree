@@ -134,7 +134,7 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
   word row = 1;
 
   if ((Settings::TRANSITION_MODE_FADE == settings.getTransitionMode()) && !_transitionCompleted) {
-    _delayOldMatrix =  map(_transitionCounter, 0, FADINGCOUNTERLOAD, 1, ((_brightnessInPercent * PWM_DURATION) + 132)); //Summand ist Korrektur um die Zeit, die das Einschieben der 32 bit f�r "PWM dunkel" dauert
+    _delayOldMatrix =  map(_transitionCounter, 0, FADINGCOUNTERLOAD, 1, ((_brightnessInPercent * PWM_DURATION) + 132)); //Summand ist Korrektur um die Zeit, die das Einschieben der 32 bit für "PWM dunkel" dauert
     _delayNewMatrix =  map(_transitionCounter, FADINGCOUNTERLOAD, 0, 1, ((_brightnessInPercent * PWM_DURATION) + 132));
     if (_transitionCounter == 0) {
       _transitionCompleted = true;
@@ -166,13 +166,13 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
         digitalWrite(_outputEnablePin, HIGH);
       }
       // Neuer Zeileninhalt
-      // Zeile �berschreiben...
+      // Zeile überschreiben...
       _shiftRegister->prepareShiftregisterWrite();
       _shiftRegister->shiftOut(~_matrixNew[k]);
       _shiftRegister->shiftOut(row);
       _shiftRegister->finishShiftregisterWrite();
 
-      digitalWrite(_outputEnablePin, LOW); // �ber OE einschalten und nach PWM-Anteil wieder ausschalten, wenn das Display aktiv ist
+      digitalWrite(_outputEnablePin, LOW); // über OE einschalten und nach PWM-Anteil wieder ausschalten, wenn das Display aktiv ist
       delayMicroseconds(_delayNewMatrix);
       digitalWrite(_outputEnablePin, HIGH); // bleibt danach ausgeschaltet
 
