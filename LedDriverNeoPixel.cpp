@@ -71,10 +71,21 @@ void LedDriverNeoPixel::printSignature() {
 void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onChange, eColors a_color) {
   boolean updateWheelColor = false;
 
-  if (((settings.getColor() == color_rgb_continuous) || (a_color == color_rgb_continuous)) && _transitionCompleted) {
+  byte wheelPosIncrement = 0;
+  
+  if ((a_color == color_rgb_continuous) && _transitionCompleted) {
     if ((millis() - _lastColorUpdate) > 300) {
       updateWheelColor = true;
       _lastColorUpdate = millis();
+      wheelPosIncrement = 2;
+    }
+  }
+
+  if (a_color == color_rgb_step) {
+    if (!(rtc.getMinutes() % 5) && (helperSeconds == 0) &&  onChange) {
+      updateWheelColor = true;
+      _lastColorUpdate = millis();
+      wheelPosIncrement = 200;
     }
   }
 
@@ -161,11 +172,11 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     if ((_transitionCounter == 0) && !_transitionCompleted) {
       switch (settings.getTransitionMode()) {
         case Settings::TRANSITION_MODE_MATRIX:
-          _transitionCounter = MATRIXCOUNTERLOAD * 2;
+          _transitionCounter = MATRIXCOUNTERLOAD * 1.5;
           _transitionCompleted = Transitions::nextMatrixStep(_matrixOld, _matrixNew, _matrixOverlay, matrix);
           break;
         case Settings::TRANSITION_MODE_SLIDE:
-          _transitionCounter = SLIDINGCOUNTERLOAD * 2;
+          _transitionCounter = SLIDINGCOUNTERLOAD * 1.5;
           _transitionCompleted = Transitions::nextSlideStep(_matrixNew, matrix);
           break;
         case Settings::TRANSITION_MODE_NORMAL:
@@ -194,27 +205,19 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
     /*************
        COLOR
     **************/
-    if ((a_color != color_none) && (a_color <= color_single_max))
+    if (a_color <= color_single_max)
     {
-      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue))); 
+      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[a_color].green)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[a_color].blue)));
+      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].green)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[a_color].blue)));
+      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[a_color].red)), _brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[a_color].green)), _brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[a_color].blue)));
     }
-    else if ((settings.getColor() == color_rgb_continuous) || (a_color == color_rgb_continuous) ) {
+    else if ((a_color == color_rgb_continuous || a_color == color_rgb_step)) {
       if (updateWheelColor) {
-        if (_wheelPos >= 254) {
-          _wheelPos = 0;
-        }
-        else {
-          _wheelPos += 2;
-        }
+        _wheelPos += wheelPosIncrement;
       }
       color = _wheel(_brightnessInPercent, _wheelPos);
       colorNew = _wheel(brightnessNew, _wheelPos);
       colorOld = _wheel(brightnessOld, _wheelPos);
-    }
-    else {
-      color = _strip->Color(_brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].green)), _brightnessScaleColor(_brightnessInPercent, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)));
-      colorNew = _strip->Color(_brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].green)), _brightnessScaleColor(brightnessNew, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)));
-      colorOld = _strip->Color(_brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].red)), _brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].green)), _brightnessScaleColor(brightnessOld, pgm_read_byte_near(&defaultColors[settings.getColor()].blue)));
     }
 
     if ( (settings.getTransitionMode() == Settings::TRANSITION_MODE_MATRIX) && !_transitionCompleted ) {
