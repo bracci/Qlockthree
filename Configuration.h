@@ -38,7 +38,7 @@
 //#define USE_EXT_MODE_TEST
 
 // DCF Debuganzeige
-#define USE_EXT_MODE_DCF_DEBUG
+//#define USE_EXT_MODE_DCF_DEBUG
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
