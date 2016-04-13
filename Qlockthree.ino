@@ -1766,8 +1766,7 @@ void manageNewDCF77Data() {
   // Pruefung mit Datum!
   if (dcf77Helper.samplesOk()) {
     rtc.setFrom(&dcf77);
-
-    rtc.writeTime();
+    resetSeconds();
     DEBUG_PRINTLN(F("DCF77-Time written to RTC."));
     DEBUG_FLUSH();
 #ifdef USE_EXT_MODE_DCF_SYNC
