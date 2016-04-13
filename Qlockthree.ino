@@ -570,13 +570,8 @@ bool evtActive = false;
 */
 void updateFromRtc() {
   needsUpdateFromRtc = true;
-  // die Zeit verursacht ein kurzes Flackern. Wir muessen
-  // sie aber nicht immer lesen, im Modus 'normal' alle 60 Sekunden,
-  // im Modus 'seconds' alle Sekunde, sonst garnicht.
+
   helperSeconds++;
-  if (helperSeconds >= 60) {
-    helperSeconds = 0;
-  }
 
   if (fallBackCounter > 0) {
     if( mode != STD_MODE_BLANK ){
@@ -847,32 +842,13 @@ void loop() {
     needsUpdateFromRtc = false;
 
     //
-    // Zeit einlesen...
+    // Zeit einlesen... 
+    // ... nur alle 60 Sekunden, um die Minuten und evtl. Stunden zu aktualisieren.
     //
-    switch (mode) {
-      case STD_MODE_NORMAL:
-      case EXT_MODE_TIMESET:
-#ifdef ALARM
-      case STD_MODE_ALARM:
-        if (alarm.isActive()) {
-          rtc.readTime();
-        }
-#endif
-        if (helperSeconds == 0) {
-          rtc.readTime();
-          helperSeconds = rtc.getSeconds();
-        }
-        break;
-      case STD_MODE_SECONDS:
-      case STD_MODE_BLANK:
-      case STD_MODE_NIGHT:
-        rtc.readTime();
-        helperSeconds = rtc.getSeconds();
-        break;
-      default:
-        // andere Modi egal...
-        break;
-    }
+    if (helperSeconds > 59) {
+      rtc.readTime();
+      helperSeconds = rtc.getSeconds();
+    }         
 
     //
     // Bildschirmpuffer beschreiben...
