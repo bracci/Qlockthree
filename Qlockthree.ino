@@ -1901,7 +1901,7 @@ void resetSeconds() {
   rtc.setSeconds(0);
   rtc.writeTime();
   rtc.readTime();
-  helperSeconds = 0;
+  helperSeconds = rtc.getSeconds();
 }
 
 #if defined(REMOTE_BLUETOOTH) || !defined(REMOTE_NO_REMOTE)
