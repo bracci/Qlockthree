@@ -691,7 +691,7 @@ void setup() {
   DEBUG_PRINT(F(":"));
   DEBUG_PRINT(rtc.getMinutes());
   DEBUG_PRINT(F(":"));
-  DEBUG_PRINT(rtc.getSeconds());
+  DEBUG_PRINT(helperSeconds);
   DEBUG_PRINT(F(" RTC-Date: "));
   DEBUG_PRINT(rtc.getDate());
   DEBUG_PRINT(F("."));
@@ -975,8 +975,8 @@ void loop() {
       case STD_MODE_SECONDS:
         renderer.clearScreenBuffer(matrix);
         for (byte i = 0; i < 7; i++) {
-          matrix[1 + i] |= pgm_read_byte_near(&(ziffern[rtc.getSeconds() / 10][i])) << 11;
-          matrix[1 + i] |= pgm_read_byte_near(&(ziffern[rtc.getSeconds() % 10][i])) << 5;
+          matrix[1 + i] |= pgm_read_byte_near(&(ziffern[helperSeconds / 10][i])) << 11;
+          matrix[1 + i] |= pgm_read_byte_near(&(ziffern[helperSeconds % 10][i])) << 5;
         }
         break;
       case EXT_MODE_LDR_MODE:
@@ -1333,7 +1333,7 @@ void loop() {
       setMode(STD_MODE_NORMAL);
     }
     // Krach machen...
-    if (rtc.getSeconds() % 2 == 0) {
+    if (helperSeconds % 2 == 0) {
       alarm.buzz(true);
     } else {
       alarm.buzz(false);
