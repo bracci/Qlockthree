@@ -2051,6 +2051,7 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
           break;
 #endif
         default:
+          disableFallBackCounter();
           break;
       }
   }
