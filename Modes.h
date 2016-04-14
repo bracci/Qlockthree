@@ -49,6 +49,7 @@ typedef enum eMode : byte
   EXT_MODE_TRANSITION,
 #if defined(RGB_LEDS) || defined(RGBW_LEDS)
   EXT_MODE_COLOR,
+  EXT_MODE_COLOR_CHANGE,
 #endif
 #ifdef EVENTS
   EXT_MODE_EVENT,

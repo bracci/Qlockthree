@@ -1039,6 +1039,14 @@ void loop() {
           }
         }
         break;
+      case EXT_MODE_COLOR_CHANGE:
+        renderer.clearScreenBuffer(matrix);
+        renderer.setMenuText("CR", Renderer::TEXT_POS_TOP, matrix);
+        for (byte i = 0; i < 7; i++) {
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColorChangeRate() / 10][i])) << 11;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[settings.getColorChangeRate() % 10][i])) << 5;
+        }
+        break;
 #endif
       case EXT_MODE_JUMP_TIMEOUT:
         renderer.clearScreenBuffer(matrix);
@@ -1562,6 +1570,11 @@ void hourPlusPressed() {
         settings.setColor((eColors)(settings.getColor() - 1));
       }
       break;
+    case EXT_MODE_COLOR_CHANGE:
+      if (settings.getColorChangeRate() > 0) {
+        settings.setColorChangeRate(settings.getColorChangeRate() - 1);
+      }
+      break;
 #endif
     case EXT_MODE_JUMP_TIMEOUT:
       if (settings.getJumpToNormalTimeout() > 0) {
@@ -1681,6 +1694,11 @@ void minutePlusPressed() {
       }
       if (settings.getColor() > color_single_max){
         ledDriver.resetWheelPos();
+      }
+      break;
+    case EXT_MODE_COLOR_CHANGE:
+      if (settings.getColorChangeRate() < 10) {
+        settings.setColorChangeRate(settings.getColorChangeRate() + 1);
       }
       break;
 #endif

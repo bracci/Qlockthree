@@ -74,7 +74,7 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
   byte wheelPosIncrement = 0;
   
   if ((a_color == color_rgb_continuous) && _transitionCompleted) {
-    if ((millis() - _lastColorUpdate) > 300) {
+    if ((millis() - _lastColorUpdate) > ((1 + (10-settings.getColorChangeRate())) * 100)) {
       updateWheelColor = true;
       _lastColorUpdate = millis();
       wheelPosIncrement = 2;

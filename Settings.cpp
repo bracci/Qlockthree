@@ -23,7 +23,7 @@
 #include "Renderer.h"
 
 #define SETTINGS_MAGIC_NUMBER 0xCA
-#define SETTINGS_VERSION 5
+#define SETTINGS_VERSION 6
 
 /**
  *  Konstruktor.
@@ -53,6 +53,7 @@ void Settings::resetToDefault() {
   _dcfSignalIsInverted = false;
   _timeShift = 0;
   _color = color_white;
+  _colorChangeRate = 0;
   // um 3 Uhr Display abschalten (Minuten, Stunden, -, -, -, -)
   _nightModeTime[0]->set(0, 3, 0, 0, 0, 0);
   // um 4:30 Uhr Display wieder anschalten (Minuten, Stunden, -, -, -, -)
@@ -180,6 +181,14 @@ TimeStamp* Settings::getNightModeTime(bool onTime) {
   return _nightModeTime[onTime];
 }
 
+void Settings::setColorChangeRate(byte rate) {
+  _colorChangeRate = rate;
+}
+
+byte Settings::getColorChangeRate() {
+  return _colorChangeRate;
+}
+
 /**
  * Die Einstellungen laden.
  */
@@ -199,6 +208,7 @@ void Settings::loadFromEEPROM() {
     _nightModeTime[0]->set(EEPROM.read(12), EEPROM.read(13), 0, 0, 0, 0);
     _nightModeTime[1]->set(EEPROM.read(14), EEPROM.read(15), 0, 0, 0, 0);
     _jumpToNormalTimeout = EEPROM.read(16);
+    _colorChangeRate = EEPROM.read(17);
   }
 }
 
@@ -256,5 +266,8 @@ void Settings::saveToEEPROM() {
   }
   if (EEPROM.read(16) != _jumpToNormalTimeout) {
     EEPROM.write(16, _jumpToNormalTimeout);
+  }
+  if (EEPROM.read(17) != _colorChangeRate) {
+    EEPROM.write(17, _colorChangeRate);
   }
 }

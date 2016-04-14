@@ -71,6 +71,9 @@ class Settings {
     byte getJumpToNormalTimeout();
     void setJumpToNormalTimeout(byte jumpToNormalTimeout);
 
+    byte getColorChangeRate();
+    void setColorChangeRate(byte rate);
+
     void loadFromEEPROM();
     void saveToEEPROM();
 
@@ -92,6 +95,7 @@ class Settings {
     TimeStamp* _nightModeTime[2];
 
     byte _jumpToNormalTimeout;
+    byte _colorChangeRate;
 };
 
 #endif
