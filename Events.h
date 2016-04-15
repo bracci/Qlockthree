@@ -20,7 +20,7 @@ const char* eventText[] = {
   "Happy Valentine's Day",
   "Happy New Year",
   "Merry Christmas",
-  "Happy Birthday",
+//  "Happy Birthday",
 //  "Happy bra-G Day",
 //  "Testevent"
 };
@@ -36,7 +36,7 @@ Event events[] = {
   Event(2, 14, eventText[0], Effects::EFFECT_HEART, color_red),
   Event(1, 1, eventText[1], Effects::EFFECT_FIREWORK, color_rgb_continuous),
   Event(12, 25, eventText[2], Effects::EFFECT_CANDLE, color_orange1),
-  Event(7, 30, eventText[3], Effects::EFFECT_FIREWORK, color_rgb_continuous),
+//  Event(7, 30, eventText[3], Effects::EFFECT_FIREWORK, color_rgb_continuous),
 //  Event(7, 29, eventText[4], Effects::ANI_BITMAP_SMILEY_WINK, color_yellow),
 //  Event(1, 16, eventText[5], Effects::ANI_BITMAP_SMILEY_WINK, color_orange2),
 };
