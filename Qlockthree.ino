@@ -317,61 +317,61 @@ LedDriverPowerShiftRegister ledDriver(10, 12, 11, 3);
 
 #define PIN_SPEAKER -1
 
-///**
-//   Der LED-Treiber fuer NeoPixel-Stripes an einem BBRTCAD.
-//   Data: 6
-//*/
-//#elif defined (LED_DRIVER_NEOPIXEL)
-//LedDriverNeoPixel ledDriver(6);
-//
-//#define PIN_MODE 11
-//#define PIN_M_PLUS 13
-//#define PIN_H_PLUS 12
-//
-//#define BUTTONS_PRESSING_AGAINST LOW
-//
-//#define PIN_IR_RECEIVER A1
-//
-//#define PIN_LDR A0
-//#define IS_INVERTED true
-//
-//#define PIN_SQW_SIGNAL 2
-//#define PIN_DCF77_SIGNAL 3
-//
-//#define PIN_DCF77_PON 4
-//
-//#define PIN_SQW_LED 9
-//#define PIN_DCF77_LED 10
-//
-//#define PIN_SPEAKER -1
-
 /**
-* Der LED-Treiber fuer NeoPixel-Stripes an einer CLT.
-* Data: 13
+   Der LED-Treiber fuer NeoPixel-Stripes an einem BBRTCAD.
+   Data: 6
 */
 #elif defined (LED_DRIVER_NEOPIXEL)
-LedDriverNeoPixel ledDriver(13);
+LedDriverNeoPixel ledDriver(6);
 
-#define PIN_MODE 7
-#define PIN_M_PLUS 5
-#define PIN_H_PLUS 6
+#define PIN_MODE 11
+#define PIN_M_PLUS 13
+#define PIN_H_PLUS 12
 
-#define BUTTONS_PRESSING_AGAINST HIGH
+#define BUTTONS_PRESSING_AGAINST LOW
 
-#define PIN_IR_RECEIVER 10
+#define PIN_IR_RECEIVER A1
 
-#define PIN_LDR A3
+#define PIN_LDR A0
 #define IS_INVERTED true
 
 #define PIN_SQW_SIGNAL 2
-#define PIN_DCF77_SIGNAL 9
+#define PIN_DCF77_SIGNAL 3
 
-#define PIN_DCF77_PON -1
+#define PIN_DCF77_PON 4
 
-#define PIN_SQW_LED 4
-#define PIN_DCF77_LED 8
+#define PIN_SQW_LED 9
+#define PIN_DCF77_LED 10
 
 #define PIN_SPEAKER -1
+
+///**
+//* Der LED-Treiber fuer NeoPixel-Stripes an einer CLT.
+//* Data: 13
+//*/
+//#elif defined (LED_DRIVER_NEOPIXEL)
+//LedDriverNeoPixel ledDriver(13);
+//
+//#define PIN_MODE 7
+//#define PIN_M_PLUS 5
+//#define PIN_H_PLUS 6
+//
+//#define BUTTONS_PRESSING_AGAINST HIGH
+//
+//#define PIN_IR_RECEIVER 10
+//
+//#define PIN_LDR A3
+//#define IS_INVERTED true
+//
+//#define PIN_SQW_SIGNAL 2
+//#define PIN_DCF77_SIGNAL 9
+//
+//#define PIN_DCF77_PON -1
+//
+//#define PIN_SQW_LED 4
+//#define PIN_DCF77_LED 8
+//
+//#define PIN_SPEAKER -1
 
 
 /**

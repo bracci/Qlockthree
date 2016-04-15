@@ -26,22 +26,20 @@
  * Selten gebrauchte externe Modi einschalten
  */
 // Datumanzeige
-#define USE_STD_MODE_DATE
-
+//#define USE_STD_MODE_DATE         
 // Anzeige der vergangenen Stunden und Minuten seit der letzten erfolgreichen DCF-Synchronisation im Menü EXT_MODE_DCF_DEBUG (Standard: eingeschaltet).
 #define USE_EXT_MODE_DCF_SYNC
-
 // Einstellmöglichkeit Minuten LEDs im/gegen Uhrzeigersinn
-#define USE_EXT_MODE_CORNERS
-
+//#define USE_EXT_MODE_CORNERS
 // Einstellmöglichkeit Zeitverschiebung zum DCF Signal
 #define USE_EXT_MODE_TIME_SHIFT
-
 // LED Test spaltenweise
-#define USE_EXT_MODE_TEST
-
+//#define USE_EXT_MODE_TEST
 // DCF Debuganzeige
 #define USE_EXT_MODE_DCF_DEBUG
+
+// Alle Sprachen einstellbar machen. Ansonsten nur deutsche Sprachen verfügbar (alle CH, alle DE)
+#define ENABLE_ALL_LANGUAGES
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
@@ -53,8 +51,8 @@
 #define FALL_BACK_TIME_NIGHT_MODE 5
 
 // Schaltet für jede Eckled und das Alarmsymbol (Glockensymbol) nur die dazu passende Kathode und
-// nicht immer alle ein. Dies verhindert das Glimmen bei richtiger Verdrahtung. (Standard: ausgeschaltet)
-#define USE_INDIVIDUAL_CATHODES
+// nicht immer alle ein. Dies verhindert das Glimmen bei richtiger Verdrahtung. Funktioniert noch nicht. (Standard: ausgeschaltet)
+//#define USE_INDIVIDUAL_CATHODES
 
 // Beim Einschalten leuchten alle LEDs während 5s
 #define LED_TEST_INTRO_ENABLED
@@ -73,7 +71,7 @@
  * - SPEAKER_FREQUENCY ist die Tonhoehe, wenn der Speaker ein Lautpsrecher ist.
  * - SPEAKER_IS_BUZZER: wenn einkommentiert wird davon ausgegangen, dass am Pin SPEAKER ein Buzzer haengt (Reichelt: SUMMER TDB 05).
  */
-#define ALARM
+//#define ALARM
 #define SPEAKER_FREQUENCY 200000
 #define MAX_BUZZ_TIME_IN_MINUTES 10
 #define SPEAKER_IS_BUZZER
@@ -88,10 +86,10 @@
 /*
  * Welcher LED-Treiber soll benutzt werden?
  */
-//#define LED_DRIVER_DEFAULT
+#define LED_DRIVER_DEFAULT
 // #define LED_DRIVER_UEBERPIXEL
 // #define LED_DRIVER_POWER_SHIFT_REGISTER
- #define LED_DRIVER_NEOPIXEL
+// #define LED_DRIVER_NEOPIXEL
 // #define LED_DRIVER_DOTSTAR
 // #define LED_DRIVER_LPD8806
 
@@ -110,20 +108,17 @@
 /*
  * Welche IR-Fernbedienung soll benutzt werden?
  */
-//#define REMOTE_NO_REMOTE
+#define REMOTE_NO_REMOTE
 //#define REMOTE_SPARKFUN
 //#define REMOTE_MOONCANDLES
 //#define REMOTE_LUNARTEC
-#define REMOTE_CLT
+//#define REMOTE_CLT
 
 // kann separat oder zusätzlich zu einer IR-Fernbedienung genutzt werden
 //#define REMOTE_BLUETOOTH
 
 // Möglichkeit um Events (Geburts-, Jahres-, Feiertage) mit Laufschrift und Effekt zu konfigurieren
 #define EVENTS
-
-// Alle Sprachen einstellbar machen. Ansonsten nur deutsche Sprachen verfügbar (alle CH, alle DE)
-//#define ENABLE_ALL_LANGUAGES
 
 /*
  *
