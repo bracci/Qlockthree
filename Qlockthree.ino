@@ -545,6 +545,11 @@ word frames = 0;
 unsigned long lastFpsCheck = 0;
 #endif
 
+#ifdef USE_EXT_MODE_DCF_SYNC
+// Fuer die DCF_DEBUG Anzeige
+unsigned int dcf77ErrorMinutes;
+#endif
+
 // Zähler für fall back timer im Menu
 byte fallBackCounter = 0;
 
@@ -1175,11 +1180,12 @@ void loop() {
       case EXT_MODE_DCF_SYNC:
         // Anzeige des letzten erfolgreichen DCF-Syncs (samplesOK) in Stunden:Minuten
         renderer.clearScreenBuffer(matrix);
+        dcf77ErrorMinutes = dcf77.getDcf77LastSuccessSyncMinutes();
         for (byte i = 0; i < 5; i++) {
-          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77.getDcf77LastSuccessSyncMinutes() / 60 / 10][i])) << 11;
-          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77.getDcf77LastSuccessSyncMinutes() / 60 % 10][i])) << 6;
-          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77.getDcf77LastSuccessSyncMinutes() % 60 / 10][i])) << 11;
-          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77.getDcf77LastSuccessSyncMinutes() % 60 % 10][i])) << 6;
+          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes / 60 / 10][i])) << 11;
+          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes / 60 % 10][i])) << 6;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes % 60 / 10][i])) << 11;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes % 60 % 10][i])) << 6;
         }
         ledDriver.setPixelInScreenBuffer(10, 1, matrix);
         ledDriver.setPixelInScreenBuffer(10, 3, matrix);
