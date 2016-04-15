@@ -56,8 +56,8 @@
 // nicht immer alle ein. Dies verhindert das Glimmen bei richtiger Verdrahtung. (Standard: ausgeschaltet)
 #define USE_INDIVIDUAL_CATHODES
 
-// Beim Einschalten leuchten alle LEDs während den hier definierten Sekunden
-#define LED_TEST_INTRO_ENABLED 5
+// Beim Einschalten leuchten alle LEDs während 5s
+#define LED_TEST_INTRO_ENABLED
 
 /*
  * Alarmfunktion einschalten?

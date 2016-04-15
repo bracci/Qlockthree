@@ -747,9 +747,9 @@ void setup() {
   ledDriver.setBrightness(settings.getBrightness());
 
 #ifdef LED_TEST_INTRO_ENABLED
-  renderer.setAllScreenBuffer(matrix);
   unsigned long initMillis = millis();
-  while((millis() - initMillis) > (LED_TEST_INTRO_ENABLED * 1000)){
+  while((millis() - initMillis) < 5000){
+    renderer.setAllScreenBuffer(matrix);
     ledDriver.writeScreenBufferToMatrix(matrix, true, eColors::color_white);
   }
 #endif
