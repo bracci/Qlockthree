@@ -33,12 +33,14 @@ extern LedDriverPowerShiftRegister ledDriver;
 #elif defined(LED_DRIVER_NEOPIXEL)
 #include "LedDriverNeoPixel.h"
 extern LedDriverNeoPixel ledDriver;
+#define RGB_SPEED_CORRECTION 13
 #elif defined(LED_DRIVER_DOTSTAR)
 #include "LedDriverDotStar.h"
 extern LedDriverDotStar ledDriver;
 #elif defined(LED_DRIVER_LPD8806)
 #include "LedDriverLPD8806.h"
 extern LedDriverLPD8806 ledDriver;
+#define RGB_SPEED_CORRECTION 11
 #endif
 
 class Effects {

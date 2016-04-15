@@ -206,7 +206,7 @@ void Effects::writeToBuffer(word aMatrix[], unsigned int aDuration, eColors colo
 {
 #if defined(RGB_LEDS) || defined(RGBW_LEDS)
   ledDriver.writeScreenBufferToMatrix(aMatrix, true, color);
-  delay(aDuration * 11);
+  delay(aDuration * RGB_SPEED_CORRECTION);
 #else
   for (int i = 0; i < aDuration; i++) {
     ledDriver.writeScreenBufferToMatrix(aMatrix, true, color);
