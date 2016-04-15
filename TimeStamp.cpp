@@ -33,7 +33,7 @@ byte TimeStamp::getMinutes() {
     return _minutes;
 }
 
-unsigned int TimeStamp::getMinutesOfDay() {
+int TimeStamp::getMinutesOfDay() {
     return _minutes + 60 * _hours;
 }
 
@@ -41,7 +41,7 @@ unsigned int TimeStamp::getMinutesOfDay() {
  * Minuten des Tages ohne die Beruecksichtigung von 12/24 Stunden
  * (fuer den Wecker)...
  */
-unsigned int TimeStamp::getMinutesOf12HoursDay(int minutesDiff) {
+int TimeStamp::getMinutesOf12HoursDay(int minutesDiff) {
     int ret = _minutes + 60 * _hours + minutesDiff;
 
     while (ret > 12 * 60) {
@@ -49,6 +49,43 @@ unsigned int TimeStamp::getMinutesOf12HoursDay(int minutesDiff) {
     }
 
     return ret;
+}
+
+unsigned long TimeStamp::getMinutesOfCentury() {
+    /* Funktion gibt NICHT die Minuten des aktuellen Jahrhunderts aus,
+     * sondern ermöglicht nur eine eindeutige Zuordnung. Das ist für
+     * die DCF-Auswertung nötig.
+     * Die Funktion reicht nicht aus, um Zeitvergleiche über eine 
+     * Tagesgrenze hinaus durchzuführen (außer DCF-Auswertung).
+     */
+//    return ( ((( _year * 12 + _month ) * 31 + _date) * 24 + _hours) * 60 + _minutes );
+
+    /* Exakte Berechnung der Minuten des aktuellen Jahrhunderts.
+     * Diese Funktion braucht mehr Speicher, ist dafür aber auch für 
+     * Zeitvergleiche über einen Tag hinaus geeignet, z.B. für den Countdown.
+     * Alternativ kann auch die obige Funktion für den Countdown verwendet werden,
+     * dann muss aber die Prüfung während eines Countdowns entfallen.
+     */
+    unsigned long retVal = 0;
+    if (_year) retVal += ( (_year + 3) / 4 + _year * 365);
+    switch (_month) {
+        case 12: retVal += 30;
+        case 11: retVal += 31;
+        case 10: retVal += 30;
+        case 9: retVal += 31;
+        case 8: retVal += 31;
+        case 7: retVal += 30;
+        case 6: retVal += 31;
+        case 5: retVal += 30;
+        case 4: retVal += 31;
+        case 3: retVal += 28;
+                if (_year / 4) {
+                    retVal++;
+                }
+        case 2: retVal += 31;
+    }
+    retVal = ((retVal + _date - 1) * 24 + _hours) * 60 + _minutes;
+    return retVal;
 }
 
 byte TimeStamp::getHours() {
@@ -69,10 +106,6 @@ byte TimeStamp::getMonth() {
 
 byte TimeStamp::getYear() {
     return _year;
-}
-
-unsigned long TimeStamp::getMinutesOfCentury() {
-    return ( ((( _year * 12 + _month ) * 31 + _date) * 24 + _hours) * 60 + _minutes );
 }
 
 void TimeStamp::setMinutes(byte minutes) {
@@ -99,15 +132,6 @@ void TimeStamp::setYear(byte year) {
     _year = year;
 }
 
-void TimeStamp::setFrom(TimeStamp* timeStamp) {
-    _minutes = timeStamp->_minutes;
-    _hours = timeStamp->_hours;
-    _date = timeStamp->_date;
-    _dayOfWeek = timeStamp->_dayOfWeek;
-    _month = timeStamp->_month;
-    _year = timeStamp->_year;
-}
-
 void TimeStamp::set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year) {
     _minutes = minutes;
     _hours = hours;
@@ -115,6 +139,15 @@ void TimeStamp::set(byte minutes, byte hours, byte date, byte dayOfWeek, byte mo
     _dayOfWeek = dayOfWeek;
     _month = month;
     _year = year;
+}
+
+void TimeStamp::set(TimeStamp* timeStamp) {
+    _minutes = timeStamp->_minutes;
+    _hours = timeStamp->_hours;
+    _date = timeStamp->_date;
+    _dayOfWeek = timeStamp->_dayOfWeek;
+    _month = timeStamp->_month;
+    _year = timeStamp->_year;
 }
 
 /**

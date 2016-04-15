@@ -4,12 +4,14 @@
  *
  * @mc       Arduino/RBBB
  * @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.0
+ * @version  1.0a
  * @created  16.2.2015
- * @updated  -
+ * @updated  15.04.2016 (Ergänzungen von A. Mueller)
  *
  * Versionshistorie:
  * V 1.0:  - Erstellt.
+ * V 1.0a: - Überlauf in millis() zu berücksichtigen ist nicht notwendig,
+ *           wenn Differenz verglichen wird, daher wieder entfernt.
  */
 #include "AnalogButton.h"
 
@@ -36,22 +38,18 @@ AnalogButton::AnalogButton(byte pin, boolean inverse) {
 boolean AnalogButton::pressed() {
   boolean _retVal = false;
 
-  if (millis() < _lastPressTime) {
-    // wir hatten einen Ueberlauf...
-    _lastPressTime = millis();
-  }
-
-  if (!_inverse) {
-    if ((analogRead(_pin) >= 512) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
-      _lastPressTime = millis();
-      _retVal = true;
+    if (!_inverse) {
+        if ((analogRead(_pin) >= 512) && (millis() - _lastPressTime > BUTTON_TRESHOLD)) {
+            _lastPressTime = millis();
+            _retVal = true;
+        }
+    } else {
+        if ((analogRead(_pin) < 512) && (millis() - _lastPressTime > BUTTON_TRESHOLD)) {
+            _lastPressTime = millis();
+            _retVal = true;
+        }
     }
-  } else {
-    if ((analogRead(_pin) < 512) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
-      _lastPressTime = millis();
-      _retVal = true;
-    }
-  }
 
   return _retVal;
 }
+

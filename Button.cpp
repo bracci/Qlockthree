@@ -69,28 +69,23 @@ Button::Button(byte pin1, byte pin2, byte pressedAgainst) {
 boolean Button::pressed() {
   boolean _retVal = false;
 
-  if (millis() < _lastPressTime) {
-    // wir hatten einen Ueberlauf...
-    _lastPressTime = millis();
-  }
-
-  if (!_doubleMode) {
-    if ((digitalRead(_pin1) == _pressedAgainst) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
-      _lastPressTime = millis();
-      _retVal = true;
+    if (!_doubleMode) {
+        if ((digitalRead(_pin1) == _pressedAgainst) && (millis() - _lastPressTime > BUTTON_TRESHOLD)) {
+            _lastPressTime = millis();
+            _retVal = true;
+        }
+    } else {
+        if ((digitalRead(_pin1) == _pressedAgainst) && (digitalRead(_pin2) == _pressedAgainst) && (millis() - _lastPressTime > BUTTON_TRESHOLD)) {
+            _lastPressTime = millis();
+            _retVal = true;
+        }
     }
-  } else {
-    if ((digitalRead(_pin1) == _pressedAgainst) && (digitalRead(_pin2) == _pressedAgainst) && (_lastPressTime + BUTTON_TRESHOLD < millis())) {
-      _lastPressTime = millis();
-      _retVal = true;
-    }
-  }
 
   return _retVal;
 }
 
 /**
- * Wurde der Taster gedrueckt?
+ * Ist der Taster aktuell gedrueckt?
  */
 boolean Button::pressedRaw() {
   boolean _retVal = false;

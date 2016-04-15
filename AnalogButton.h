@@ -4,12 +4,14 @@
  *
  * @mc       Arduino/RBBB
  * @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.0
+ * @version  1.0a
  * @created  16.2.2015
- * @updated  -
+ * @updated  15.04.2016 (Ergänzungen von A. Mueller)
  *
  * Versionshistorie:
  * V 1.0:  - Erstellt.
+ * V 1.0a: - Überlauf in millis() zu berücksichtigen ist nicht notwendig,
+ *           wenn Differenz verglichen wird, daher wieder entfernt.
  */
 #ifndef ANALOG_BUTTON_H
 #define ANALOG_BUTTON_H

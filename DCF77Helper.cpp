@@ -42,11 +42,11 @@ DCF77Helper::DCF77Helper() {
  */
 void DCF77Helper::addSample(TimeStamp* dcf77, TimeStamp* rtc) {
     DEBUG_PRINT(F("Adding sample from dcf77: "));
-    _zeitstempelDcf77[_cursor]->setFrom(dcf77);
+    _zeitstempelDcf77[_cursor]->set(dcf77);
     DEBUG_PRINTLN(_zeitstempelDcf77[_cursor]->asString());
 
     DEBUG_PRINT(F("Adding sample from rtc: "));
-    _zeitstempelRtc[_cursor]->setFrom(rtc);
+    _zeitstempelRtc[_cursor]->set(rtc);
     DEBUG_PRINTLN(_zeitstempelRtc[_cursor]->asString());
     DEBUG_FLUSH();
 
@@ -93,3 +93,4 @@ boolean DCF77Helper::samplesOk() {
 
     return ret;
 }
+

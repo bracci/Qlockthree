@@ -25,30 +25,39 @@
 /*
  * Selten gebrauchte externe Modi einschalten
  */
+// Datumanzeige
+#define USE_STD_MODE_DATE
+
 // Anzeige der vergangenen Stunden und Minuten seit der letzten erfolgreichen DCF-Synchronisation im Menü EXT_MODE_DCF_DEBUG (Standard: eingeschaltet).
 #define USE_EXT_MODE_DCF_SYNC
 
 // Einstellmöglichkeit Minuten LEDs im/gegen Uhrzeigersinn
-//#define USE_EXT_MODE_CORNERS
+#define USE_EXT_MODE_CORNERS
 
 // Einstellmöglichkeit Zeitverschiebung zum DCF Signal
 #define USE_EXT_MODE_TIME_SHIFT
 
 // LED Test spaltenweise
-//#define USE_EXT_MODE_TEST
+#define USE_EXT_MODE_TEST
 
 // DCF Debuganzeige
-//#define USE_EXT_MODE_DCF_DEBUG
+#define USE_EXT_MODE_DCF_DEBUG
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
  */
 // Automatischer Rücksprung von STD_MODE_BLANK, wenn DCF-Synchronisation erfolgreich war (Standard: eingeschaltet).
 #define AUTO_JUMP_BLANK
+
 // Automatischer Rücksprung von Abschalt-/Einschaltzeit zu EXT_MODE_NIGHT_OFF/EXT_MODE_NIGHT_ON 
 #define FALL_BACK_TIME_NIGHT_MODE 5
-// LED Test Intro
-#define LED_TEST_INTRO_ENABLED
+
+// Schaltet für jede Eckled und das Alarmsymbol (Glockensymbol) nur die dazu passende Kathode und
+// nicht immer alle ein. Dies verhindert das Glimmen bei richtiger Verdrahtung. (Standard: ausgeschaltet)
+#define USE_INDIVIDUAL_CATHODES
+
+// Beim Einschalten leuchten alle LEDs während den hier definierten Sekunden
+#define LED_TEST_INTRO_ENABLED 5
 
 /*
  * Alarmfunktion einschalten?
@@ -64,7 +73,7 @@
  * - SPEAKER_FREQUENCY ist die Tonhoehe, wenn der Speaker ein Lautpsrecher ist.
  * - SPEAKER_IS_BUZZER: wenn einkommentiert wird davon ausgegangen, dass am Pin SPEAKER ein Buzzer haengt (Reichelt: SUMMER TDB 05).
  */
-//#define ALARM
+#define ALARM
 #define SPEAKER_FREQUENCY 200000
 #define MAX_BUZZ_TIME_IN_MINUTES 10
 #define SPEAKER_IS_BUZZER
@@ -79,10 +88,10 @@
 /*
  * Welcher LED-Treiber soll benutzt werden?
  */
-#define LED_DRIVER_DEFAULT
+//#define LED_DRIVER_DEFAULT
 // #define LED_DRIVER_UEBERPIXEL
 // #define LED_DRIVER_POWER_SHIFT_REGISTER
-// #define LED_DRIVER_NEOPIXEL
+ #define LED_DRIVER_NEOPIXEL
 // #define LED_DRIVER_DOTSTAR
 // #define LED_DRIVER_LPD8806
 
@@ -101,20 +110,20 @@
 /*
  * Welche IR-Fernbedienung soll benutzt werden?
  */
-#define REMOTE_NO_REMOTE
+//#define REMOTE_NO_REMOTE
 //#define REMOTE_SPARKFUN
 //#define REMOTE_MOONCANDLES
 //#define REMOTE_LUNARTEC
-//#define REMOTE_CLT
+#define REMOTE_CLT
 
 // kann separat oder zusätzlich zu einer IR-Fernbedienung genutzt werden
 //#define REMOTE_BLUETOOTH
 
 // Möglichkeit um Events (Geburts-, Jahres-, Feiertage) mit Laufschrift und Effekt zu konfigurieren
-//#define EVENTS
+#define EVENTS
 
 // Alle Sprachen einstellbar machen. Ansonsten nur deutsche Sprachen verfügbar (alle CH, alle DE)
-#define ENABLE_ALL_LANGUAGES
+//#define ENABLE_ALL_LANGUAGES
 
 /*
  *
@@ -185,19 +194,21 @@
  * Default: 59
  */
 #define MYDCF77_TELEGRAMMLAENGE 59
+
 /*
  * Die Sekunde wird in die entsprechende Zahl
  * von Signalbins unterteilt, um das Wegdriften
  * der internen RTC quantifizieren zu können.
  * Dieser Wert entspricht einer Auflösung.
  * ACHTUNG! Wird diese Zahl zu groß gewählt (> 30), 
- * überschreitet sie die Frequenz (fps) der loop().
+ * überschreitet sie die Frequenz der loop().
  * Eine Steigerung der Auflösung ist dann nicht mehr
- * möglich, aber der Overhead steigt weiter an.
+ * möglich, die Drift wird beliebig und es kann 
+ * keine Zeiteinstellung via DCF mehr erfolgen.
  * Werte < 4 sind ebenso sinnlos.
- * Default: 10  (sinnvoll: 5 - 25)
+ * Default: 11  (sinnvoll: 5 - 25)
  */
-#define MYDCF77_SIGNAL_BINS 10
+#define MYDCF77_SIGNAL_BINS 11
 /*
  * Dieser Wert gibt an wie viele Sekunden
  * die Drift bestimmt, bevor sie korrigiert wird.
@@ -214,11 +225,6 @@
  * Jetzt im EEPROM! Hier hat es keine Bedeutung mehr!
  * #define MYDCF77_SIGNAL_IS_INVERTED
  */
-/*
- * Anzahl der Glaettungspunkte fuer das DCF77-Signal.
- * Default: bis v3.3.0 8, jetzt 59.
- */
-#define MYDCF77_MEANCOUNT 59
 
 /*
  * Startwerte fuer den Mittelwert.

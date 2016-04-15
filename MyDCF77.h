@@ -12,9 +12,9 @@
  * @mc       Arduino/RBBB
  * @autor    Andreas Mueller
  *           Vorlage von: Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.1
+ * @version  1.2
  * @created  21.3.2016
- * @updated  30.03.2016
+ * @updated  13.04.2016
  *
  * Versionshistorie:
  * V 1.0:   * Signalauswertealgoritmus komplett neu geschrieben! *
@@ -24,8 +24,10 @@
  *            zuverlässig möglich.
  *            Das Fehlen der korrekten Erkennung dieser Schaltsekunde in früheren Versionen
  *            verhinderte eine zuverlässige Zeitsynchronisation.
- *          - Deutlich exaktere Einstellung der Zeit dank Driftkorrektur möglich. *            
- * V 1.1:   Funktion für EXT_MODE_DCF_DEBUG eingeführt.
+ *          - Deutlich exaktere Einstellung der Zeit dank Driftkorrektur möglich.        
+ * V 1.1:   - Funktion für EXT_MODE_DCF_DEBUG eingeführt.
+ *          - Umschaltung von Timer1 auf Timer2 in Header-Datei möglich.
+ * V 1.2:   * Die Driftkorrektur benötigt keinen Timer mehr! *
  */
 #ifndef MYDCF77_H
 #define MYDCF77_H
@@ -34,16 +36,14 @@
 #include "Configuration.h"
 #include "TimeStamp.h"
 
-//#define DCF77_USE_TIMER2
-
 class MyDCF77 : public TimeStamp {
+
 public:
     MyDCF77(byte signalPin, byte statusLedPin);
 
     void statusLed(boolean on);
 
     boolean poll(boolean signalIsInverted);
-    void TimerPoll();
 
     unsigned int getDcf77LastSuccessSyncMinutes();
     void setDcf77SuccessSync();
@@ -69,15 +69,14 @@ private:
     byte _driftTimer = 0;
 
     int _updateFromDCF77 = -1;
-    volatile boolean _timerInterrupt = false;
-    #ifdef DCF77_USE_TIMER2
-        unsigned int _timerInterruptCounter = 0;
-    #endif
+
+    unsigned long _dcf77LastTime;
+    unsigned long _dcf77Freq;
 
     unsigned long _dcf77lastSyncTime = 0;
     boolean _toggleSignal = false;
     byte _errorCorner = 0;
-    
+
     void newCycle();
     void OutputSignal(unsigned int average, unsigned int imax, unsigned int isum);
 
@@ -88,3 +87,4 @@ private:
 };
 
 #endif
+

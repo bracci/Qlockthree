@@ -12,9 +12,9 @@
  * @mc       Arduino/RBBB
  * @autor    Andreas Mueller
  *           Vorlage von: Christian Aschoff / caschoff _AT_ mac _DOT_ com
- * @version  1.1
+ * @version  1.2
  * @created  21.3.2016
- * @updated  30.03.2016
+ * @updated  14.04.2016
  *
  * Versionshistorie:
  * V 1.0:   * Signalauswertealgoritmus komplett neu geschrieben! *
@@ -24,29 +24,27 @@
  *            zuverlässig möglich.
  *            Das Fehlen der korrekten Erkennung dieser Schaltsekunde in früheren Versionen
  *            verhinderte eine zuverlässige Zeitsynchronisation.
- *          - Deutlich exaktere Einstellung der Zeit dank Driftkorrektur möglich. *            
+ *          - Deutlich exaktere Einstellung der Zeit dank Driftkorrektur möglich.        
  * V 1.1:   - Funktion für EXT_MODE_DCF_DEBUG eingeführt.
- *          - Umschaltung von Timer1 auf Timer2 in Header-Datei möglich.
+ *          - Umschaltung von Timer1 auf Timer2 in Header-Datei möglich. (Entfällt ab V 1.2)
+ * V 1.2:   * Die Driftkorrektur benötigt keinen Timer mehr! *
  */
 #include "MyDCF77.h"
 
 //#define DEBUG
+#include "Debug.h"
+
 // Anzeige des Signalgraphen, nur wenn auch DEBUG gesetzt
 #define DEBUG_SIGNAL
 // Höhe des Signalgraphen, wenn DEBUG_SIGNAL gesetzt (Default: 40.)
 #define DEBUG_SIGNAL_VIS_HEIGHT 40.
-#include "Debug.h"
 
 byte MyDCF77::DCF77Factors[] = {1, 2, 4, 8, 10, 20, 40, 80};
-
-#ifdef DCF77_USE_TIMER2 
-    static MyDCF77* mydcf77;
-#endif
 
 /**
  * Initialisierung mit dem Pin, an dem das Signal des Empfaengers anliegt
  */
-MyDCF77::MyDCF77(byte signalPin, byte statusLedPin) : TimeStamp(0, 0, 0, 0, 0, 0){
+MyDCF77::MyDCF77(byte signalPin, byte statusLedPin) : TimeStamp(0, 0, 0, 0, 0, 0) {
     _signalPin = signalPin;
 #ifndef MYDCF77_SIGNAL_IS_ANALOG
     pinMode(_signalPin, INPUT);
@@ -59,9 +57,8 @@ MyDCF77::MyDCF77(byte signalPin, byte statusLedPin) : TimeStamp(0, 0, 0, 0, 0, 0
     clearBits();
     clearBins();
 
-    #ifdef DCF77_USE_TIMER2 
-        mydcf77 = this;
-    #endif
+    _dcf77Freq = 1000000/MYDCF77_SIGNAL_BINS;
+    _dcf77LastTime = micros();
 }
 
 /**
@@ -102,11 +99,11 @@ boolean MyDCF77::signal(boolean signalIsInverted) {
 boolean MyDCF77::poll(boolean signalIsInverted) {
     boolean retVal = false;
 
-    if (_timerInterrupt) {
-        _timerInterrupt = false;
+    if (micros() - _dcf77LastTime >= _dcf77Freq) {
+        _dcf77LastTime += _dcf77Freq;
         newCycle();
     }
-    
+
     if (!_updateFromDCF77) {
         retVal = true;
         _updateFromDCF77 = -1;
@@ -127,33 +124,13 @@ boolean MyDCF77::poll(boolean signalIsInverted) {
  * Der ( 1 / MYDCF77_SIGNAL_BINS )-ste Teil einer Sekunde startet.
  * Muss von einem externen Zeitgeber, z. B. einer RTC, aufgerufen werden.
  *
- * Diese Funktion setzt updateFromDCF77 auf eine Zeitdauer, das abgewartet
+ * Diese Funktion setzt updateFromDCF77 auf eine Zeitdauer, die abgewartet
  * wird, bevor die Funktion poll() (siehe oben) WAHR zurückgibt.
  * TRUE bedeutet, das Zeittelegramm wurde korrekt ausgewertet, die Zeitdaten
  * koennen mit den Gettern abgerufen werden.
  * FALSE bedeutet, die Auswertung laeuft oder war falsch, die Getter liefern
  * alte Informationen.
  */
-#ifdef DCF77_USE_TIMER2
-    ISR(TIMER2_OVF_vect) {
-        TCNT2 = 131;           //Reset Timer to 130 out of 255
-        TIFR2 = 0x00;  
-        mydcf77->TimerPoll();
-    }
-#endif
- 
-void MyDCF77::TimerPoll() {
-    #ifdef DCF77_USE_TIMER2
-        _timerInterruptCounter++;
-        if (_timerInterruptCounter >= 1000/MYDCF77_SIGNAL_BINS) {
-            _timerInterruptCounter = 0;
-    #endif
-            _timerInterrupt = true;
-    #ifdef DCF77_USE_TIMER2
-        }
-    #endif    
-}
- 
 void MyDCF77::newCycle() {
 
         // (1s / MYDCF77_SIGNAL_BINS) sind vorbei
@@ -228,6 +205,7 @@ void MyDCF77::newCycle() {
             if (_binsPointer) {
                 DEBUG_PRINT(F("Driftkorrektur erforderlich! Offset: "));
                 DEBUG_PRINTLN(_binsPointer);
+                DEBUG_FLUSH();
             }            
             _binsOffset = 0;
         }     
@@ -267,6 +245,7 @@ void MyDCF77::OutputSignal(unsigned int average, unsigned int imax, unsigned int
     DEBUG_PRINT(" ");
     DEBUG_PRINTLN(_bitsPointer);
     DEBUG_PRINTLN();
+    DEBUG_FLUSH();
 }
 
 /**
@@ -280,7 +259,8 @@ byte MyDCF77::getBitAtPos(byte pos) {
  * Vergangene Minuten seit der letzten erfolgreichen DCF-Auswertung bekommen.
  */
 unsigned int MyDCF77::getDcf77LastSuccessSyncMinutes() {
-    return ( (millis() - _dcf77lastSyncTime) / 60000 );
+//    return ( (millis() - _dcf77lastSyncTime) / 60000 );
+    return ( ( (millis() - _dcf77lastSyncTime) / 60000) % 1440 );
 }
 
 /*
@@ -484,3 +464,9 @@ void MyDCF77::clearBins() {
         _bins[i] = 0;
     }   
 }
+
+//
+// Getter
+//
+
+

@@ -24,8 +24,6 @@
 #define DCF77HELPER_H
 
 #include "Arduino.h"
-#include "MyRTC.h"
-#include "MyDCF77.h"
 #include "TimeStamp.h"
 #include "Configuration.h"
 
@@ -43,3 +41,4 @@ private:
 };
 
 #endif
+

@@ -317,61 +317,61 @@ LedDriverPowerShiftRegister ledDriver(10, 12, 11, 3);
 
 #define PIN_SPEAKER -1
 
-/**
-   Der LED-Treiber fuer NeoPixel-Stripes an einem BBRTCAD.
-   Data: 6
-*/
-#elif defined (LED_DRIVER_NEOPIXEL)
-LedDriverNeoPixel ledDriver(6);
-
-#define PIN_MODE 11
-#define PIN_M_PLUS 13
-#define PIN_H_PLUS 12
-
-#define BUTTONS_PRESSING_AGAINST LOW
-
-#define PIN_IR_RECEIVER A1
-
-#define PIN_LDR A0
-#define IS_INVERTED true
-
-#define PIN_SQW_SIGNAL 2
-#define PIN_DCF77_SIGNAL 3
-
-#define PIN_DCF77_PON 4
-
-#define PIN_SQW_LED 9
-#define PIN_DCF77_LED 10
-
-#define PIN_SPEAKER -1
-
 ///**
-//* Der LED-Treiber fuer NeoPixel-Stripes an einer CLT.
-//* Data: 13
+//   Der LED-Treiber fuer NeoPixel-Stripes an einem BBRTCAD.
+//   Data: 6
 //*/
 //#elif defined (LED_DRIVER_NEOPIXEL)
-//LedDriverNeoPixel ledDriver(13);
+//LedDriverNeoPixel ledDriver(6);
 //
-//#define PIN_MODE 7
-//#define PIN_M_PLUS 5
-//#define PIN_H_PLUS 6
+//#define PIN_MODE 11
+//#define PIN_M_PLUS 13
+//#define PIN_H_PLUS 12
 //
-//#define BUTTONS_PRESSING_AGAINST HIGH
+//#define BUTTONS_PRESSING_AGAINST LOW
 //
-//#define PIN_IR_RECEIVER 10
+//#define PIN_IR_RECEIVER A1
 //
-//#define PIN_LDR A3
+//#define PIN_LDR A0
 //#define IS_INVERTED true
 //
 //#define PIN_SQW_SIGNAL 2
-//#define PIN_DCF77_SIGNAL 9
+//#define PIN_DCF77_SIGNAL 3
 //
-//#define PIN_DCF77_PON -1
+//#define PIN_DCF77_PON 4
 //
-//#define PIN_SQW_LED 4
-//#define PIN_DCF77_LED 8
+//#define PIN_SQW_LED 9
+//#define PIN_DCF77_LED 10
 //
 //#define PIN_SPEAKER -1
+
+/**
+* Der LED-Treiber fuer NeoPixel-Stripes an einer CLT.
+* Data: 13
+*/
+#elif defined (LED_DRIVER_NEOPIXEL)
+LedDriverNeoPixel ledDriver(13);
+
+#define PIN_MODE 7
+#define PIN_M_PLUS 5
+#define PIN_H_PLUS 6
+
+#define BUTTONS_PRESSING_AGAINST HIGH
+
+#define PIN_IR_RECEIVER 10
+
+#define PIN_LDR A3
+#define IS_INVERTED true
+
+#define PIN_SQW_SIGNAL 2
+#define PIN_DCF77_SIGNAL 9
+
+#define PIN_DCF77_PON -1
+
+#define PIN_SQW_LED 4
+#define PIN_DCF77_LED 8
+
+#define PIN_SPEAKER -1
 
 
 /**
@@ -545,17 +545,6 @@ word frames = 0;
 unsigned long lastFpsCheck = 0;
 #endif
 
-#ifdef USE_EXT_MODE_DCF_SYNC
-// Fuer die DCF_DEBUG Anzeige
-unsigned int dcf77ErrorMinutes;
-#endif
-
-#ifndef DCF77_USE_TIMER2
-void DCF77Polling() {
-  dcf77.TimerPoll();
-}
-#endif
-
 // Zähler für fall back timer im Menu
 byte fallBackCounter = 0;
 
@@ -659,13 +648,8 @@ void setup() {
   if ((rtc.getSeconds() >= 60) || (rtc.getMinutes() >= 60) || (rtc.getHours() >= 24) || (rtc.getYear() < 15)) {
     // Echtzeituhr enthaelt Schrott, neu mit erkennbaren Zahlen beschreiben...
     DEBUG_PRINT(F("Resetting RTC..."));
-    rtc.setHours(11);
-    rtc.setMinutes(11);
+    rtc.set(11, 11, 1, 1, 1, 15);
     rtc.setSeconds(11);
-    rtc.setYear(15);
-    rtc.setMonth(1);
-    rtc.setDate(1);
-    rtc.setDayOfWeek(1);
   }
 
 #ifdef DS1307
@@ -765,25 +749,9 @@ void setup() {
 #ifdef LED_TEST_INTRO_ENABLED
   renderer.setAllScreenBuffer(matrix);
   unsigned long initMillis = millis();
-  while(millis() < (initMillis + 5000)){
+  while((millis() - initMillis) > (LED_TEST_INTRO_ENABLED * 1000)){
     ledDriver.writeScreenBufferToMatrix(matrix, true, eColors::color_white);
   }
-#endif
-
-#ifndef DCF77_USE_TIMER2
-  // Timer1 für DCF77-Synchronisation
-  Timer1.initialize(1000000 / MYDCF77_SIGNAL_BINS);
-  Timer1.attachInterrupt(DCF77Polling);
-#endif
-
-#ifdef DCF77_USE_TIMER2
-  // Timer2 für DCF77-Synchronisation
-  TCCR2B = 0x00;        //Disbale Timer2 while we set it up
-  TCNT2  = 131;         //Reset Timer Count to 130 out of 255
-  TIFR2  = 0x00;        //Timer2 INT Flag Reg: Clear Timer Overflow Flag
-  TIMSK2 = 0x01;        //Timer2 INT Reg: Timer2 Overflow Interrupt Enable
-  TCCR2A = 0x00;        //Timer2 Control Reg A: Wave Gen Mode normal
-  TCCR2B = 0x05;
 #endif
 }
 
@@ -791,12 +759,6 @@ void setup() {
    loop() wird endlos auf alle Ewigkeit vom Microcontroller durchlaufen
 */
 void loop() {
-
-  //  Serial.print(F("Free ram: "));
-  //  Serial.println(freeRam());
-  //  Serial.println(F(" bytes."));
-  //  Serial.flush();
-
   //
   // FPS
   //
@@ -936,16 +898,31 @@ void loop() {
         if (alarm.getShowAlarmTimeTimer() == 0) {
           renderer.setMinutes(rtc.getHours() + settings.getTimeShift(), rtc.getMinutes(), settings.getLanguage(), matrix);
           renderer.setCorners(rtc.getMinutes(), settings.getRenderCornersCw(), matrix);
-          matrix[4] |= 0b0000000000011111; // Alarm-LED
+          renderer.activateAlarmLed(matrix); // Alarm-LED
         } else {
           renderer.setMinutes(alarm.getHours() + settings.getTimeShift(), alarm.getMinutes(), settings.getLanguage(), matrix);
           renderer.setCorners(alarm.getMinutes(), settings.getRenderCornersCw(), matrix);
           renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if (alarm.getShowAlarmTimeTimer() % 2 == 0) {
-            matrix[4] |= 0b0000000000011111; // Alarm-LED
+            renderer.activateAlarmLed(matrix); // Alarm-LED
           }
           alarm.decShowAlarmTimeTimer();
         }
+        break;
+#endif
+#ifdef USE_STD_MODE_DATE
+      case STD_MODE_DATE:
+        renderer.clearScreenBuffer(matrix);
+        // Anzeige des Datums
+        for (byte i = 0; i < 5; i++) {
+          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() / 10][i])) << 11;
+          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() % 10][i])) << 6;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() / 10][i])) << 11;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() % 10][i])) << 6;
+        }
+        
+        ledDriver.setPixelInScreenBuffer(10, 3, matrix);
+        ledDriver.setPixelInScreenBuffer(10, 9, matrix);
         break;
 #endif
       case STD_MODE_SECONDS:
@@ -1174,10 +1151,10 @@ void loop() {
         renderer.setCorners(helperSeconds % 5, settings.getRenderCornersCw(), matrix);
 #ifdef ALARM
         if (settings.getEnableAlarm()) {
-          matrix[4] |= 0b0000000000011111; // Alarm-LED
+          renderer.activateAlarmLed(matrix); // Alarm-LED
         }
 #endif
-        for (int i = 0; i < 11; i++) {
+        for (byte i = 0; i < 11; i++) {
           ledDriver.setPixelInScreenBuffer(testColumn, i, matrix);
         }
         testColumn++;
@@ -1190,12 +1167,11 @@ void loop() {
       case EXT_MODE_DCF_SYNC:
         // Anzeige des letzten erfolgreichen DCF-Syncs (samplesOK) in Stunden:Minuten
         renderer.clearScreenBuffer(matrix);
-        dcf77ErrorMinutes = dcf77.getDcf77LastSuccessSyncMinutes();
         for (byte i = 0; i < 5; i++) {
-          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes / 60 / 10][i])) << 11;
-          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes / 60 % 10][i])) << 6;
-          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes % 60 / 10][i])) << 11;
-          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77ErrorMinutes % 60 % 10][i])) << 6;
+          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77.getDcf77LastSuccessSyncMinutes() / 60 / 10][i])) << 11;
+          matrix[0 + i] |= pgm_read_byte_near(&(ziffernB[dcf77.getDcf77LastSuccessSyncMinutes() / 60 % 10][i])) << 6;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77.getDcf77LastSuccessSyncMinutes() % 60 / 10][i])) << 11;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[dcf77.getDcf77LastSuccessSyncMinutes() % 60 % 10][i])) << 6;
         }
         ledDriver.setPixelInScreenBuffer(10, 1, matrix);
         ledDriver.setPixelInScreenBuffer(10, 3, matrix);
@@ -1292,10 +1268,10 @@ void loop() {
     }
   }
 
+#ifdef ALARM
   /*
      Alarm?
   */
-#ifdef ALARM
   if ((mode == STD_MODE_ALARM) && (alarm.getShowAlarmTimeTimer() == 0) && !alarm.isActive()) {
     if (alarm.getMinutesOf12HoursDay(0) == rtc.getMinutesOf12HoursDay(0)) {
       alarm.activate();
@@ -1334,9 +1310,9 @@ void loop() {
   rtc.statusLed(digitalRead(PIN_SQW_SIGNAL) == HIGH);
 #endif
 
-  /*
-     DCF77-Empfaenger anticken...
-  */
+/*
+   DCF77-Empfaenger anticken...
+*/
   if (dcf77.poll(settings.getDcfSignalIsInverted()))
     manageNewDCF77Data();
 }
@@ -1467,6 +1443,9 @@ void modePressed() {
   switch (mode) {
     case STD_MODE_SECONDS:
     case STD_MODE_BRIGHTNESS:
+#ifdef USE_STD_MODE_DATE
+    case STD_MODE_DATE:
+#endif
       // Timeout für den automatischen Rücksprung von STD_MODE_SECONDS,
       // STD_MODE_DATE und STD_MODE_BRIGHTNESS zurücksetzen
       enableFallBackCounter(settings.getJumpToNormalTimeout());
@@ -1765,7 +1744,7 @@ void manageNewDCF77Data() {
   // Stimmen die Abstaende im Array?
   // Pruefung mit Datum!
   if (dcf77Helper.samplesOk()) {
-    rtc.setFrom(&dcf77);
+    rtc.set(&dcf77);
     resetSeconds();
     DEBUG_PRINTLN(F("DCF77-Time written to RTC."));
     DEBUG_FLUSH();
@@ -1826,9 +1805,7 @@ void setDisplayBrighter() {
     if (b > LDR_MAX_PERCENT) {
       b = LDR_MAX_PERCENT;
     }
-    settings.setBrightness(b);
-    settings.saveToEEPROM();
-    ledDriver.setBrightness(b);
+    setDisplayBrightness(b);
   }
 }
 
@@ -1841,10 +1818,17 @@ void setDisplayDarker() {
     if (i < LDR_MIN_PERCENT) {
       i = LDR_MIN_PERCENT;
     }
-    settings.setBrightness(i);
-    settings.saveToEEPROM();
-    ledDriver.setBrightness(i);
+    setDisplayBrightness(i);
   }
+}
+
+/**
+ * Die Helligkeit des Display einstellen.
+ */
+void setDisplayBrightness(byte brightness) {
+    settings.setBrightness(brightness);
+    settings.saveToEEPROM();
+    ledDriver.setBrightness(brightness);
 }
 
 void enableFallBackCounter(byte timeoutSec) {
@@ -2041,6 +2025,9 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
           // Timeout für den automatischen Rücksprung von STD_MODE_SECONDS,
           // STD_MODE_DATE und STD_MODE_BRIGHTNESS zurücksetzen
         case STD_MODE_BRIGHTNESS:
+#ifdef USE_STD_MODE_DATE
+        case STD_MODE_DATE:
+#endif
         case EXT_MODE_LANGUAGE:
         case EXT_MODE_LDR_MODE:
           enableFallBackCounter(settings.getJumpToNormalTimeout());

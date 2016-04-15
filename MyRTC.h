@@ -29,7 +29,7 @@
 #include "TimeStamp.h"
 
 class MyRTC : public TimeStamp {
-  public:
+public:
     MyRTC(int address, byte statusLedPin);
 
     void statusLed(boolean on);
@@ -40,19 +40,20 @@ class MyRTC : public TimeStamp {
     void enableSQWOnDS1307();
     void enableSQWOnDS3231();
 
-    void set(const char* date, const char* time);
     void setSeconds(byte seconds);
+
     byte getSeconds();
 
-  private:
+private:
     int _address;
     byte _statusLedPin;
 
     byte _seconds;
-    
+
     byte decToBcd(byte val);
     byte bcdToDec(byte val);
     uint8_t conv2d(const char* p);
 };
 
 #endif
+

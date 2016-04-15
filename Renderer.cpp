@@ -1150,28 +1150,41 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
 }
 
 /**
-   Setzt die vier Punkte in den Ecken, je nach minutes % 5 (Rest).
-
-   @param ccw: TRUE -> clock wise -> im Uhrzeigersinn.
-               FALSE -> counter clock wise -> gegen den Uhrzeigersinn.
+   Im Alarm-Einstell-Modus muessen bestimmte Woerter weg, wie z.B. "ES IST" im Deutschen.
 */
 void Renderer::setCorners(byte minutes, boolean cw, word matrix[16]) {
-  for (byte i = 0; i < (minutes % 5); i++) {
-    byte j;
-    if (cw) {
-      // j: 1, 0, 3, 2
-      j = (1 - i + 4) % 4;
-    } else {
-      // j: 0, 1, 2, 3
-      j = i;
+    byte b_minutes = minutes % 5;
+    for (byte i = 0; i < b_minutes; i++) {
+        byte j;
+        if (cw) {
+          // j: 1, 0, 3, 2
+          j = (1 - i + 4) % 4;
+        } else {
+          // j: 0, 1, 2, 3
+          j = i;
+        }
+        #ifdef USE_INDIVIDUAL_CATHODES
+            matrix[j] |= (0b0000000000010000 >> j);
+        #else
+            matrix[j] |= 0b0000000000011111;
+        #endif
     }
-    matrix[j] |= 0b0000000000011111;
-  }
 }
 
 /**
-   Im Alarm-Einstell-Modus muessen bestimmte Woerter weg, wie z.B. "ES IST" im Deutschen.
-*/
+ * Schalte die Alarm-LED ein
+ */
+void Renderer::activateAlarmLed(word matrix[16]) {
+    #ifdef USE_INDIVIDUAL_CATHODES
+        matrix[4] |= 0b0000000000000001;
+    #else
+        matrix[4] |= 0b0000000000011111;
+    #endif 
+}
+
+/**
+ * Im Alarm-Einstell-Modus muessen bestimmte Woerter weg, wie z.B. "ES IST" im Deutschen.
+ */
 void Renderer::cleanWordsForAlarmSettingMode(byte language, word matrix[16]) {
   switch (language) {
     case LANGUAGE_DE_DE:

@@ -14,6 +14,8 @@
 #ifndef MODES_H
 #define MODES_H
 
+#include "Configuration.h"
+
 /**
    Die Standard-Modi.
 */
@@ -24,6 +26,9 @@ typedef enum eMode : byte
   STD_MODE_ALARM,
 #endif
   STD_MODE_SECONDS,
+#ifdef USE_STD_MODE_DATE
+  STD_MODE_DATE,
+#endif
   STD_MODE_BRIGHTNESS,
   STD_MODE_BLANK,
   STD_MODE_COUNT,

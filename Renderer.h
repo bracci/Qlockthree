@@ -52,6 +52,7 @@ class Renderer {
 
     void setMinutes(char hours, byte minutes, byte language, word matrix[16]);
     void setCorners(byte minutes, boolean cw, word matrix[16]);
+    void activateAlarmLed(word matrix[16]);
 
     void cleanWordsForAlarmSettingMode(byte language, word matrix[16]);
 

@@ -36,13 +36,15 @@ public:
     void decHours();
 
     byte getMinutes();
-    unsigned int getMinutesOfDay();
-    unsigned int getMinutesOf12HoursDay(int minutesDiff);
+    int getMinutesOfDay();
+    int getMinutesOf12HoursDay(int minutesDiff);
     byte getHours();
+
     byte getDate();
     byte getDayOfWeek();
     byte getMonth();
     byte getYear();
+    unsigned long getMinutesOfCentury();
 
     void setMinutes(byte minutes);
     void setHours(byte hours);
@@ -50,10 +52,9 @@ public:
     void setDate(byte date);
     void setMonth(byte month);
     void setYear(byte year);
-    unsigned long getMinutesOfCentury();
-    
-    void setFrom(TimeStamp* timeStamp);
+
     void set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year);
+    void set(TimeStamp* timeStamp);
 
     char* asString();
 
