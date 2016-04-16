@@ -1274,6 +1274,8 @@ void loop() {
     irrecv.resume();
   }
   if (lastIrCode != 0) {
+    DEBUG_PRINT(F("Decoded successfully as "));
+    DEBUG_PRINTLN2(irDecodeResults.value, HEX);
     remoteAction(lastIrCode, &irTranslator);
   }
 #endif
@@ -1925,8 +1927,6 @@ void resetSeconds() {
 
 #if defined(REMOTE_BLUETOOTH) || !defined(REMOTE_NO_REMOTE)
 void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
-  DEBUG_PRINT(F("Decoded successfully as "));
-  DEBUG_PRINTLN2(irDecodeResults.value, HEX);
   needsUpdateFromRtc = true;
   switch (irCode) {
     case REMOTE_BUTTON_TOGGLEBLANK:
