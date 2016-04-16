@@ -194,10 +194,6 @@
 #include "Zahlen.h"
 #include "Modes.h"
 
-#ifndef DCF77_USE_TIMER2
-#include "TimerOne.h"
-#endif
-
 #ifdef EVENTS
 #include "Events.h"
 #endif
