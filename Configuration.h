@@ -39,7 +39,7 @@
 #define USE_EXT_MODE_DCF_DEBUG
 
 // Alle Sprachen einstellbar machen. Ansonsten nur deutsche Sprachen verfügbar (alle CH, alle DE)
-#define ENABLE_ALL_LANGUAGES
+//#define ENABLE_ALL_LANGUAGES
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
