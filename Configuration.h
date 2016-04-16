@@ -86,9 +86,10 @@
 /*
  * Welches Board wird benutzt? Wird aktuell nur für das Pinmapping von LPD8806 und Neopixel gebraucht
  */
-#define BOARD_DEFAULT
+//#define BOARD_DEFAULT
 //#define BOARD_CLT
 //#define BOARD_BBRTCAD
+#define BOARD_AMBBRTCAD
 
 /*
  * Welcher LED-Treiber soll benutzt werden?

@@ -372,6 +372,34 @@ LedDriverNeoPixel ledDriver(13);
 #define PIN_DCF77_LED 8
 
 #define PIN_SPEAKER -1
+
+/**
+ * ...an einem AMBBRTCB V1.0
+ * Data: 0
+ */
+#elif defined(BOARD_AMBBRTCAD)
+LedDriverNeoPixel ledDriver(0);
+
+#define PIN_MODE 5
+#define PIN_M_PLUS 7
+#define PIN_H_PLUS 6
+
+#define BUTTONS_PRESSING_AGAINST LOW
+
+#define PIN_IR_RECEIVER A1
+
+#define PIN_LDR A0                
+#define IS_INVERTED false
+
+#define PIN_SQW_SIGNAL 10
+#define PIN_DCF77_SIGNAL 3
+
+#define PIN_DCF77_PON -1
+
+#define PIN_SQW_LED 1
+#define PIN_DCF77_LED 2
+
+#define PIN_SPEAKER -1
 #endif
 
 /**
