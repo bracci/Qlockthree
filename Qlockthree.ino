@@ -1229,9 +1229,8 @@ void loop() {
 
 #ifdef USE_EXT_MODE_DCF_DEBUG
       case EXT_MODE_DCF_DEBUG:
-        needsUpdateFromRtc = true;
         renderer.clearScreenBuffer(matrix);
-        renderer.setCorners(dcf77.getDcf77ErrorCorner(settings.getDcfSignalIsInverted()), settings.getRenderCornersCw(), matrix);
+        renderer.setCorners(dcf77.getDcf77ErrorCorner(), settings.getRenderCornersCw(), matrix);
         break;
 #endif
       default:
@@ -1242,7 +1241,16 @@ void loop() {
     // Entweder weil wir eine Sekunde weiter sind, oder weil eine Taste gedrueckt wurde.
     ledDriver.writeScreenBufferToMatrix(matrix, true, settings.getColor());
   }
-
+#ifdef USE_EXT_MODE_DCF_DEBUG
+  if (mode == EXT_MODE_DCF_DEBUG) {
+    byte currentErrorCorner = dcf77.getDcf77ErrorCorner();
+    dcf77.updateDcf77ErrorCorner(settings.getDcfSignalIsInverted());
+    if (currentErrorCorner != dcf77.getDcf77ErrorCorner()) {
+      needsUpdateFromRtc = true;
+    }
+  }
+#endif
+  
   /*
      Tasten abfragen (Code mit 3.3.0 ausgelagert, wegen der Fernbedienung)
   */// M+ und H+ im STD_MODE_NORMAL gedrueckt?

@@ -273,7 +273,14 @@ void MyDCF77::setDcf77SuccessSync() {
 /**
  * Die passende Eckled zum Debuggen bekommen.
  */
-byte MyDCF77::getDcf77ErrorCorner(boolean signalIsInverted) {
+byte MyDCF77::getDcf77ErrorCorner() {
+    return _errorCorner;
+}
+
+/**
+ * Die passende Eckled zum Debuggen updaten.
+ */
+void MyDCF77::updateDcf77ErrorCorner(boolean signalIsInverted) {
     if (signal(signalIsInverted)) {
         if (!_toggleSignal) {
             _toggleSignal = true;
@@ -283,7 +290,6 @@ byte MyDCF77::getDcf77ErrorCorner(boolean signalIsInverted) {
     } else {
         _toggleSignal = false;   
     }
-    return _errorCorner;
 }
 
 /**

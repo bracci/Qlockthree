@@ -49,7 +49,8 @@ public:
     void setDcf77SuccessSync();
 
     byte getBitAtPos(byte pos);
-    byte getDcf77ErrorCorner(boolean signalIsInverted);
+    void updateDcf77ErrorCorner(boolean signalIsInverted);
+    byte getDcf77ErrorCorner();
 
     boolean signal(boolean signalIsInverted);
 
