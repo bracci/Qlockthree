@@ -1962,14 +1962,14 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
     case REMOTE_BUTTON_RESUME:
       setDisplayToResume();
       break;
+    case REMOTE_BUTTON_MODE:
+        modePressed();
+        break;
   }
 
   if ( (mode != STD_MODE_BLANK) && 
        (mode != STD_MODE_NIGHT) ) { 
     switch (irCode) {
-      case REMOTE_BUTTON_MODE:
-        modePressed();
-        break;
       case REMOTE_BUTTON_MINUTE_PLUS:
         minutePlusPressed();
         break;
