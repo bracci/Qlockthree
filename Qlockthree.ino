@@ -1484,6 +1484,12 @@ void modePressed() {
   if (settings.getUseLdr() && (mode == STD_MODE_BRIGHTNESS)) {
     mode++;
   }
+#ifdef ALARM
+  // Alarm ueberspringen, wenn kein Alarm enabled ist.
+  if (!settings.getEnableAlarm() && (mode == STD_MODE_ALARM)) {
+      mode++;
+  }
+#endif
 
   if ((mode == STD_MODE_COUNT) || (mode == EXT_MODE_COUNT)) {
     mode = STD_MODE_NORMAL;
