@@ -961,7 +961,7 @@ void loop() {
           matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() % 10][i])) << 6;
         }
         
-        ledDriver.setPixelInScreenBuffer(10, 3, matrix);
+        ledDriver.setPixelInScreenBuffer(10, 4, matrix);
         ledDriver.setPixelInScreenBuffer(10, 9, matrix);
         break;
 #endif
