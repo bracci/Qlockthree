@@ -1963,8 +1963,8 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
       setDisplayToResume();
       break;
     case REMOTE_BUTTON_MODE:
-        modePressed();
-        break;
+      modePressed();
+      break;
   }
 
   if ( (mode != STD_MODE_BLANK) && 
@@ -2078,6 +2078,9 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
 
   if ( (irCode != REMOTE_BUTTON_TIME_H_PLUS) &&
        (irCode != REMOTE_BUTTON_TIME_M_PLUS) &&
+       (irCode != REMOTE_BUTTON_HOUR_PLUS)   &&
+       (irCode != REMOTE_BUTTON_MINUTE_PLUS) &&
+       (irCode != REMOTE_BUTTON_MODE)        &&
        (irCode != REMOTE_BUTTON_EXTMODE) ) {
       switch (mode) {
         case STD_MODE_SECONDS:
