@@ -740,6 +740,7 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
       switch (hours) {
         case 0:
         case 12:
+        case 24:
           DE_H_ZWOELF;
           break;
         case 1:
