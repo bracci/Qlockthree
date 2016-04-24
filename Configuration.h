@@ -44,10 +44,10 @@
 #define ENABLE_LANGUAGE_DE
 #define ENABLE_LANGUAGE_CH
 #define ENABLE_LANGUAGE_EN
-//#define ENABLE_LANGUAGE_FR
-//#define ENABLE_LANGUAGE_IT
-//#define ENABLE_LANGUAGE_NL
-//#define ENABLE_LANGUAGE_ES
+#define ENABLE_LANGUAGE_FR
+#define ENABLE_LANGUAGE_IT
+#define ENABLE_LANGUAGE_NL
+#define ENABLE_LANGUAGE_ES
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
