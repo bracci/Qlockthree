@@ -262,10 +262,10 @@ void LedDriverNeoPixel::writeScreenBufferToMatrix(word matrix[16], boolean onCha
         _setPixel(110 + i, color);
       }
       else {
-        if (((_matrixOld[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
+        if (((_matrixOld[cornerLedCount[i]] & 0b0000000000010000) > 0) ) {
           _setPixel(110 + i, colorOld);
         }
-        else if (((_matrixNew[cornerLedCount[i]] & 0b0000000000011111) > 0) ) {
+        else if (((_matrixNew[cornerLedCount[i]] & 0b0000000000010000) > 0) ) {
           _setPixel(110 + i, colorNew);
         }
       }
