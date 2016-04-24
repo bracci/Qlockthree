@@ -38,8 +38,14 @@
 // DCF Debuganzeige
 #define USE_EXT_MODE_DCF_DEBUG
 
-// Alle Sprachen einstellbar machen. Ansonsten nur deutsche Sprachen verfügbar (alle CH, alle DE)
-//#define ENABLE_ALL_LANGUAGES
+// Im Menu auswählbare Sprachen aktivieren.
+#define ENABLE_LANGUAGE_DE
+#define ENABLE_LANGUAGE_CH
+#define ENABLE_LANGUAGE_EN
+//#define ENABLE_LANGUAGE_FR
+//#define ENABLE_LANGUAGE_IT
+//#define ENABLE_LANGUAGE_NL
+//#define ENABLE_LANGUAGE_ES
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.

@@ -24,17 +24,29 @@
 #include "Configuration.h"
 
 enum eLanguage : byte{
+#ifdef ENABLE_LANGUAGE_CH
+  LANGUAGE_CH,
+  LANGUAGE_CH_X,
+#endif
+#ifdef ENABLE_LANGUAGE_DE
   LANGUAGE_DE_DE,
   LANGUAGE_DE_SW,
   LANGUAGE_DE_BA,
   LANGUAGE_DE_SA,
-  LANGUAGE_CH,
-  LANGUAGE_CH_X,
-#ifdef ENABLE_ALL_LANGUAGES
+#endif
+#ifdef ENABLE_LANGUAGE_EN
   LANGUAGE_EN,
+#endif
+#ifdef ENABLE_LANGUAGE_FR
   LANGUAGE_FR,
+#endif
+#ifdef ENABLE_LANGUAGE_IT
   LANGUAGE_IT,
+#endif
+#ifdef ENABLE_LANGUAGE_NL
   LANGUAGE_NL,
+#endif
+#ifdef ENABLE_LANGUAGE_ES
   LANGUAGE_ES,
 #endif
   LANGUAGE_COUNT,
@@ -64,11 +76,15 @@ class Renderer {
   private:
     void setHours(byte hours, boolean glatt, byte language, word matrix[16]);
     boolean isNumber(char symbol);
-    
-#ifdef ENABLE_ALL_LANGUAGES
+
 // Spezialfaelle
+#ifdef ENABLE_LANGUAGE_FR
     void FR_hours(byte hours, word matrix[16]);
+#endif
+#ifdef ENABLE_LANGUAGE_IT
     void IT_hours(byte hours, word matrix[16]);
+#endif
+#ifdef ENABLE_LANGUAGE_ES
     void ES_hours(byte hours, word matrix[16]);
 #endif
 };

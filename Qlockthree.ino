@@ -1149,6 +1149,7 @@ void loop() {
       case EXT_MODE_LANGUAGE:
         renderer.clearScreenBuffer(matrix);
         switch (settings.getLanguage()) {
+#ifdef ENABLE_LANGUAGE_DE
           case LANGUAGE_DE_DE:
             renderer.setMenuText("DE", Renderer::TEXT_POS_MIDDLE, matrix);
             break;
@@ -1164,6 +1165,8 @@ void loop() {
             renderer.setMenuText("DE", Renderer::TEXT_POS_TOP, matrix);
             renderer.setMenuText("SA", Renderer::TEXT_POS_BOTTOM, matrix);
             break;
+#endif
+#ifdef ENABLE_LANGUAGE_CH
           case LANGUAGE_CH:
             renderer.setMenuText("CH", Renderer::TEXT_POS_MIDDLE, matrix);
             break;
@@ -1171,19 +1174,28 @@ void loop() {
             renderer.setMenuText("CH", Renderer::TEXT_POS_TOP, matrix);
             renderer.setMenuText("X", Renderer::TEXT_POS_BOTTOM, matrix);
             break;
-#ifdef ENABLE_ALL_LANGUAGES
+#endif
+#ifdef ENABLE_LANGUAGE_EN
           case LANGUAGE_EN:
             renderer.setMenuText("EN", Renderer::TEXT_POS_MIDDLE, matrix);
             break;
+#endif
+#ifdef ENABLE_LANGUAGE_FR
           case LANGUAGE_FR:
             renderer.setMenuText("FR", Renderer::TEXT_POS_MIDDLE, matrix);
             break;
+#endif
+#ifdef ENABLE_LANGUAGE_IT
           case LANGUAGE_IT:
             renderer.setMenuText("IT", Renderer::TEXT_POS_MIDDLE, matrix);
             break;
+#endif
+#ifdef ENABLE_LANGUAGE_NL
           case LANGUAGE_NL:
             renderer.setMenuText("NL", Renderer::TEXT_POS_MIDDLE, matrix);
             break;
+#endif
+#ifdef ENABLE_LANGUAGE_ES
           case LANGUAGE_ES:
             renderer.setMenuText("ES", Renderer::TEXT_POS_MIDDLE, matrix);
             break;

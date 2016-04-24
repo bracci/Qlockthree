@@ -76,6 +76,7 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
   }
 
   switch (language) {
+#ifdef ENABLE_LANGUAGE_DE
     //
     // Deutsch: Hochdeutsch
     //
@@ -185,6 +186,8 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
           ;
       }
       break;
+#endif
+#ifdef ENABLE_LANGUAGE_CH
     //
     // Schweiz: Berner-Deutsch
     //
@@ -271,7 +274,8 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
           ;
       }
       break;
-#ifdef ENABLE_ALL_LANGUAGES
+#endif
+#ifdef ENABLE_LANGUAGE_EN
     //
     // Englisch
     //
@@ -355,6 +359,8 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
                 break;
         }
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_FR
         //
         // Franzoesisch
         //
@@ -447,6 +453,8 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
                 break;
         }
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_IT
         //
         // Italienisch
         //
@@ -540,6 +548,8 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
                 break;
         }
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_NL
         //
         // Niederlaendisch
         //
@@ -622,6 +632,8 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
                 break;
         }
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_ES
         //
         // Spanisch
         //
@@ -726,6 +738,7 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
 void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16]) {
   
   switch (language) {
+#ifdef ENABLE_LANGUAGE_DE
     //
     // Deutsch (Hochdeutsch, Schwaebisch, Bayrisch)
     //
@@ -795,6 +808,8 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
           ;
       }
       break;
+#endif
+#ifdef ENABLE_LANGUAGE_CH
     //
     // Schweiz: Berner-Deutsch
     //
@@ -854,7 +869,8 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
           ;
       }
       break;
-#ifdef ENABLE_ALL_LANGUAGES
+#endif
+#ifdef ENABLE_LANGUAGE_EN
     //
     // Englisch
     //
@@ -915,6 +931,8 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
                 break;
         }
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_FR
         //
         // Franzoesisch
     case LANGUAGE_FR:
@@ -972,6 +990,8 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
                 break;
         }
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_IT
         //
         // Italienisch
         //
@@ -1028,6 +1048,8 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
                 break;
         }
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_NL
         //
         // Niederlaendisch
         //
@@ -1088,6 +1110,8 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
                 break;
         }
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_ES
         //
         // Spanisch
         //
@@ -1188,30 +1212,42 @@ void Renderer::activateAlarmLed(word matrix[16]) {
  */
 void Renderer::cleanWordsForAlarmSettingMode(byte language, word matrix[16]) {
   switch (language) {
+#ifdef ENABLE_LANGUAGE_DE
     case LANGUAGE_DE_DE:
     case LANGUAGE_DE_SW:
     case LANGUAGE_DE_BA:
     case LANGUAGE_DE_SA:
       matrix[0] &= 0b0010001111111111; // ES IST weg
       break;
+#endif
+#ifdef ENABLE_LANGUAGE_CH
     case LANGUAGE_CH:
     case LANGUAGE_CH_X:
       matrix[0] &= 0b0010000111111111; // ES ISCH weg
       break;
-#ifdef ENABLE_ALL_LANGUAGES
+#endif
+#ifdef ENABLE_LANGUAGE_EN
     case LANGUAGE_EN:
         matrix[0] &= 0b0010011111111111; // IT IS weg
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_FR
     case LANGUAGE_FR:
         matrix[0] &= 0b0010001111111111; // IL EST weg
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_IT
     case LANGUAGE_IT:
         matrix[0] &= 0b0000100111111111; // SONO LE weg
         matrix[1] &= 0b0111111111111111; // E (L'UNA) weg
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_NL
     case LANGUAGE_NL:
         matrix[0] &= 0b0001001111111111; // HET IS weg
         break;
+#endif
+#ifdef ENABLE_LANGUAGE_ES
     case LANGUAGE_ES:
         matrix[0] &= 0b1000100011111111; // SON LAS weg
         matrix[0] &= 0b0011100111111111; // ES LA weg
@@ -1222,7 +1258,7 @@ void Renderer::cleanWordsForAlarmSettingMode(byte language, word matrix[16]) {
   }
 }
 
-#ifdef ENABLE_ALL_LANGUAGES
+#ifdef ENABLE_LANGUAGE_FR
 /**
  * Sprachlicher Spezialfall fuer Franzoesisch.
  */
@@ -1235,7 +1271,9 @@ void Renderer::FR_hours(byte hours, word matrix[16]) {
         FR_HEURES;
     }
 }
+#endif
 
+#ifdef ENABLE_LANGUAGE_IT
 /**
  * Sprachlicher Spezialfall fuer Italienisch.
  */
@@ -1246,7 +1284,9 @@ void Renderer::IT_hours(byte hours, word matrix[16]) {
         IT_E;
     }
 }
+#endif
 
+#ifdef ENABLE_LANGUAGE_ES
 /**
  * Sprachlicher Spezialfall fuer Spanisch.
  */

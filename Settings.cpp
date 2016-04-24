@@ -23,7 +23,7 @@
 #include "Renderer.h"
 
 #define SETTINGS_MAGIC_NUMBER 0xCA
-#define SETTINGS_VERSION 6
+#define SETTINGS_VERSION 7
 
 /**
  *  Konstruktor.
@@ -43,7 +43,7 @@ Settings::Settings() {
  * Setzt alle Werte auf Defauleinstellungen zurück
  */
 void Settings::resetToDefault() {
-  _language = LANGUAGE_CH;
+  _language = 0; //erste Sprache in Renderer::eLanguage
   _event = 0;
   _renderCornersCw = true;
   _use_ldr = true;
@@ -195,7 +195,9 @@ byte Settings::getColorChangeRate() {
 void Settings::loadFromEEPROM() {
   if ((EEPROM.read(0) == SETTINGS_MAGIC_NUMBER) && (EEPROM.read(1) == SETTINGS_VERSION)) {
     // es sind gueltige Einstellungen vorhanden...
+    if (EEPROM.read(2) < LANGUAGE_COUNT){
     _language = EEPROM.read(2);
+    }
     _renderCornersCw = EEPROM.read(3);
     _use_ldr = EEPROM.read(4);
     _brightness = EEPROM.read(5);
