@@ -40,7 +40,7 @@ DCF77Helper::DCF77Helper() {
 /**
  * Einen neuen Sample hinzufuegen.
  */
-void DCF77Helper::addSample(TimeStamp* dcf77, TimeStamp* rtc) {
+void DCF77Helper::addSample(MyDCF77* dcf77, MyRTC* rtc) {
     DEBUG_PRINT(F("Adding sample from dcf77: "));
     _zeitstempelDcf77[_cursor]->set(dcf77);
     DEBUG_PRINTLN(_zeitstempelDcf77[_cursor]->asString());

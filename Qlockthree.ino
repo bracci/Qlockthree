@@ -752,8 +752,8 @@ void setup() {
   // ein paar Infos ausgeben
   DEBUG_PRINTLN(F("... done and ready to rock!"));
 
-  DEBUG_PRINT(F("Version: "));
-  DEBUG_PRINTLN(F(FIRMWARE_VERSION));
+  Serial.print(F("Version: "));
+  Serial.println(FIRMWARE_VERSION);
 
   DEBUG_PRINT(F("Driver: "));
   ledDriver.printSignature();

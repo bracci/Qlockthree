@@ -25,13 +25,15 @@
 
 #include "Arduino.h"
 #include "TimeStamp.h"
+#include "MyDCF77.h"
+#include "MyRTC.h"
 #include "Configuration.h"
 
 class DCF77Helper {
 public:
     DCF77Helper();
 
-    void addSample(TimeStamp* dcf77, TimeStamp* rtc);
+    void addSample(MyDCF77* dcf77, MyRTC* rtc);
     boolean samplesOk();
 
 private:
