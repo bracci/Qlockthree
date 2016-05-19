@@ -23,13 +23,14 @@ void Effects::showTickerString(const char* str2disp, byte tickerSpeed, eColors c
   byte strLength = strlen(str2disp);
   unsigned int bufLen;
   char actChar;
-  char lastChar = 'W';
+  char lastChar;
   byte offsetV = 2;
   bool finish = false;
   unsigned int i = 0;
 
   while (!finish) {
     renderer.clearScreenBuffer(matrix);
+    lastChar = 'W';
     unsigned int shift = 0; // Schiebekorrektur aufgrund variierender Buchstabenbreite
     for (byte k = 0; k < strLength; k++) {
       actChar = str2disp[k];
