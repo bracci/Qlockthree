@@ -211,7 +211,9 @@ void MyDCF77::newCycle() {
         }     
 
         // Lösche den nächsten Datenpunkt
-        _bins[_binsPointer] = 0;
+        if (_binsPointer >= 0) {
+          _bins[_binsPointer] = 0;
+        }
 }
 
 void MyDCF77::OutputSignal(unsigned int average, unsigned int imax, unsigned int isum) {
