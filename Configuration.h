@@ -118,8 +118,8 @@
 #endif
 
 #if defined(LED_DRIVER_LPD8806) || defined(LED_DRIVER_NEOPIXEL)
-#define RGB_LEDS
-//#define RGBW_LEDS
+//#define RGB_LEDS
+#define RGBW_LEDS
 //#define MATRIX_XXL
 #endif
 

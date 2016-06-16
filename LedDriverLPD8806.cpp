@@ -345,14 +345,18 @@ void LedDriverLPD8806::clearData() {
    Einen X/Y-koordinierten Pixel in der Matrix setzen.
 */
 void LedDriverLPD8806::_setPixel(byte x, byte y, uint32_t c) {
+#ifdef RGBW_LEDS
+  _setPixel(y + (x * 10), c);
+#else
   _setPixel(x + (y * 11), c);
+#endif
 }
 
 /**
    Einen Pixel im Streifen setzten (die Eck-LEDs sind am Ende).
 */
 void LedDriverLPD8806::_setPixel(byte num, uint32_t c) {
-#if defined(MATRIX_XXL) || defined(RGBW_LEDS)
+#if defined(MATRIX_XXL) //|| defined(RGBW_LEDS)
   if (num < 110) {
     if ((num / 11) % 2 == 0) {
       _strip->setPixelColor(num, c);
@@ -374,6 +378,47 @@ void LedDriverLPD8806::_setPixel(byte num, uint32_t c) {
         _strip->setPixelColor(110, c);
         break;
       case 114:                         // die Alarm-LED
+        _strip->setPixelColor(114, c);
+        break;
+      default:
+        ;
+    }
+  }
+#elif defined(RGBW_LEDS)
+  byte ledNum;
+  if (num < 110) {
+    if ((num / 10) % 2 == 0) {
+      ledNum = num;
+    } else {
+      ledNum = ((num / 10) * 10) + 9 - (num % 10);
+    }
+    if (ledNum < 10)
+    {
+      _strip->setPixelColor(ledNum + 1, c);
+    }
+    else if (ledNum < 100)
+    {
+      _strip->setPixelColor(ledNum + 2, c);
+    }
+    else
+    {
+      _strip->setPixelColor(ledNum + 3, c);
+    }
+  } else {
+    switch (num) {
+      case 110:
+        _strip->setPixelColor(0, c);
+        break;
+      case 111:
+        _strip->setPixelColor(102, c);
+        break;
+      case 112:
+        _strip->setPixelColor(113, c);
+        break;
+      case 113:
+        _strip->setPixelColor(11, c);
+        break;
+      case 114:
         _strip->setPixelColor(114, c);
         break;
       default:
