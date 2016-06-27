@@ -20,6 +20,8 @@
 #include "MyIRremote.h"
 #include "MyIRremoteInt.h"
 
+#ifndef __arm__
+
 // Provides ISR
 #include <avr/interrupt.h>
 
@@ -1160,3 +1162,4 @@ void IRsend::sendDISH(unsigned long data, int nbits) {
     data <<= 1;
   }
 }
+#endif
