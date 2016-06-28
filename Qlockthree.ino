@@ -493,6 +493,30 @@ LedDriverLPD8806 ledDriver(13, 11);
 #define PIN_DCF77_LED 8
 
 #define PIN_SPEAKER -1
+#elif defined(BOARD_TEENSY)
+LedDriverLPD8806 ledDriver(7, 14);
+#define PIN_MODE 15
+#define PIN_M_PLUS 16
+#define PIN_H_PLUS 17
+
+#define BUTTONS_PRESSING_AGAINST LOW
+
+#define PIN_IR_RECEIVER 10
+
+#define PIN_LDR A6
+#define IS_INVERTED true
+
+#define PIN_SQW_SIGNAL -1
+#define PIN_DCF77_SIGNAL 2
+
+#define PIN_DCF77_PON -1
+
+#define PIN_SQW_LED -1
+#define PIN_DCF77_LED 13
+
+#define PIN_SPEAKER -1
+#else
+#error Kein passendes Board für LPD8806 Treiber definiert
 #endif
 
 #endif
