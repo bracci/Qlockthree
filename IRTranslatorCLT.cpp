@@ -61,8 +61,7 @@ byte IRTranslatorCLT::buttonForCode(unsigned long code) {
     case CLT_REGION:
       return REMOTE_BUTTON_REGION;
     case CLT_SECONDS:
-      setMode(STD_MODE_SECONDS);
-      return REMOTE_BUTTON_SETMODE;
+      return REMOTE_BUTTON_SECONDS;
     case CLT_ON_OFF:
       return REMOTE_BUTTON_TOGGLEBLANK;
     case CLT_RED:

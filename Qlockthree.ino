@@ -2058,6 +2058,20 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
           setMode(EXT_MODE_LANGUAGE);
         }
         break;
+      case REMOTE_BUTTON_SECONDS:
+      #ifdef USE_STD_MODE_DATE
+        if ( mode == STD_MODE_SECONDS )
+        {
+          setMode(STD_MODE_DATE);
+        }
+        else
+        {
+      #endif
+          setMode(STD_MODE_SECONDS);
+      #ifdef USE_STD_MODE_DATE
+        }
+      #endif
+        break;
       case REMOTE_BUTTON_LDR:
         if (EXT_MODE_LDR_MODE == mode) {
           settings.setUseLdr(!settings.getUseLdr());

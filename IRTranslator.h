@@ -45,6 +45,7 @@
 #define REMOTE_BUTTON_TIME_M_PLUS  106
 #define REMOTE_BUTTON_TIME_M_MINUS 107
 #define REMOTE_BUTTON_TRANSITION   108
+#define REMOTE_BUTTON_SECONDS      109
 
 class IRTranslator {
   public:
