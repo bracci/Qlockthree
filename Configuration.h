@@ -111,6 +111,7 @@
 #define RGB_LEDS
 //#define RGBW_LEDS
 //#define MATRIX_XXL
+#define LPD_ALTLAYOUT
 #endif
 
 /*

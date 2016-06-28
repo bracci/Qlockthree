@@ -337,12 +337,59 @@ void LedDriverLPD8806::clearData() {
   _strip->show();
 }
 
+
+#if defined(LDP_ALT_LAYOUT)
+void LedDriverLPD8806::_setEcke(uint8_t ecke, uint32_t c) {
+    switch(ecke) {
+    case 0:
+        _strip->setPixelColor(1, c);
+        break;
+    case 1:
+        // led unten links + zeile + 1. led
+        _strip->setPixelColor(2 + 12  + 1 , c);
+        break;
+    case 2:
+        // 2 * leds + 9 zeilen + 1. led
+        _strip->setPixelColor(2*2 + 9 *12 + 1, c);
+        break;
+    case 3:
+        // 10 zeilen + 3 * leds
+        _strip->setPixelColor(10 *12 + (3 * 2) + 1, c);
+        break;
+    }
+}
+
+/**
+ * Einen X/Y-koordinierten Pixel in der Matrix setzen.
+ */
+void LedDriverLPD8806::_setPixel(byte x, byte y, uint32_t c) {
+    y = 9-y;
+    if (y % 2==1) {
+        // Gegenläufige Reiche
+        x = 11 -x;
+    } else {
+        // Ganz links freilassen
+        x = x;
+    }
+    if (y == 0) {
+        _strip->setPixelColor(2+x, c);
+    } else if (y <=8) {
+        _strip->setPixelColor(y*12 +4 + x, c);
+    } else {
+        // oberste reihe
+        _strip->setPixelColor(y*12 +6 + x, c);
+    }
+
+    
+}
+#else
 /**
    Einen X/Y-koordinierten Pixel in der Matrix setzen.
 */
 void LedDriverLPD8806::_setPixel(byte x, byte y, uint32_t c) {
   _setPixel(x + (y * 11), c);
 }
+#endif
 
 /**
    Einen Pixel im Streifen setzten (die Eck-LEDs sind am Ende).
@@ -375,6 +422,12 @@ void LedDriverLPD8806::_setPixel(byte num, uint32_t c) {
       default:
         ;
     }
+  }
+#elif defined(LDP_ALT_LAYOUT)
+  if (num < 110) {
+      _setPixel(num, c);
+  } else {
+      _setEcke(num-110,c);
   }
 #else
   if (num < 110) {
