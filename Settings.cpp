@@ -151,7 +151,7 @@ void Settings::setDcfSignalIsInverted(boolean dcfSignalIsInverted) {
 /**
  * Zeitverschiebung
  */
-char Settings::getTimeShift() {
+signed char Settings::getTimeShift() {
   return _timeShift;
 }
 
@@ -166,7 +166,7 @@ void Settings::setJumpToNormalTimeout(byte jumpToNormalTimeout) {
     _jumpToNormalTimeout = jumpToNormalTimeout;
 }
 
-void Settings::setTimeShift(char timeShift) {
+void Settings::setTimeShift(signed char timeShift) {
   _timeShift = timeShift;
 }
 

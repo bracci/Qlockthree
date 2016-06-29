@@ -15,6 +15,8 @@
 
 #ifndef My_IRremote_h
 #define My_IRremote_h
+// ARM benutzt die normale IRremote Bibliothek
+#ifndef __arm__
 
 // The following are compile-time library options.
 // If you change them, recompile the library.
@@ -124,5 +126,7 @@ class IRsend
 // Marks tend to be 100us too long, and spaces 100us too short
 // when received due to sensor lag.
 #define MARK_EXCESS 100
+
+#endif
 
 #endif

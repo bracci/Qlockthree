@@ -24,6 +24,7 @@
 
 #include "Settings.h"
 #include "MyRTC.h"
+#include "TeensyRTC.h"
 #include "Transitions.h"
 #include "Modes.h"
 #include "Configuration.h"
@@ -32,7 +33,11 @@
 extern volatile byte helperSeconds;
 extern Mode mode;
 extern Settings settings;
+#ifdef TEENSYRTC
+extern TeensyRTC rtc;
+#else
 extern MyRTC rtc;
+#endif
 extern bool evtActive;
 
 /* Treiberkonfiguration */

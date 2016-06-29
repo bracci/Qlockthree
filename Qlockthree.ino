@@ -180,11 +180,18 @@
 #include "IRTranslatorMooncandles.h"
 #include "IRTranslatorLunartec.h"
 #include "IRTranslatorCLT.h"
+// Der Teenys hat 256k Flash und kein Problem mit der großen Orginal Bibliothek
+#ifdef __arm__
+#include <IRremote.h>
+#endif
+
 #include "MyIRremote.h"
 #include "MyRTC.h"
+#include "TeensyRTC.h"
 #include "MyDCF77.h"
 #include "Button.h"
 #include "AnalogButton.h"
+#include "TouchButton.h"
 #include "LDR.h"
 #include "DCF77Helper.h"
 #include "Renderer.h"
@@ -207,7 +214,7 @@
    Serial-Monitor muss mit der hier angegeben uebereinstimmen.
    Default: ausgeschaltet
 */
-// #define DEBUG
+#define DEBUG
 #include "Debug.h"
 // Die Geschwindigkeit der seriellen Schnittstelle. Default: 57600. Die Geschwindigkeit brauchen wir immer,
 // da auch ohne DEBUG Meldungen ausgegeben werden!
@@ -492,6 +499,30 @@ LedDriverLPD8806 ledDriver(13, 11);
 #define PIN_DCF77_LED 8
 
 #define PIN_SPEAKER -1
+#elif defined(BOARD_TEENSY)
+LedDriverLPD8806 ledDriver(7, 14);
+#define PIN_MODE 16
+#define PIN_M_PLUS 15
+#define PIN_H_PLUS 17
+
+#define BUTTONS_PRESSING_AGAINST LOW
+
+#define PIN_IR_RECEIVER 10
+
+#define PIN_LDR A6
+#define IS_INVERTED true
+
+#define PIN_SQW_SIGNAL -1
+#define PIN_DCF77_SIGNAL 2
+
+#define PIN_DCF77_PON -1
+
+#define PIN_SQW_LED -1
+#define PIN_DCF77_LED 13
+
+#define PIN_SPEAKER -1
+#else
+#error Kein passendes Board für LPD8806 Treiber definiert
 #endif
 
 #endif
@@ -523,9 +554,15 @@ IRTranslatorCLT irTranslatorBT;
 // Werden zur Kommunikation mit der
 // RTC verwendet.
 /**
-   Die Real-Time-Clock mit der Status-LED fuer das SQW-Signal.
-*/
+ * Die Real-Time-Clock mit der Status-LED fuer das SQW-Signal.
+ */
+#ifdef TEENSYRTC
+TeensyRTC rtc(PIN_SQW_LED);
+IntervalTimer rtcTimer;
+#else
 MyRTC rtc(0x68, PIN_SQW_LED);
+#endif
+
 volatile byte helperSeconds;
 
 /**
@@ -555,13 +592,21 @@ byte brightnessToDisplay;
 /**
    Die Tasten.
 */
+#ifdef TOUCHBUTTONS
+TouchButton minutesPlusButton(PIN_M_PLUS);
+TouchButton hoursPlusButton(PIN_H_PLUS);
+DoubleTouchButton extModeDoubleButton(minutesPlusButton, hoursPlusButton);
+TouchButton modeChangeButton(PIN_MODE);
+#else
 Button minutesPlusButton(PIN_M_PLUS, BUTTONS_PRESSING_AGAINST);
 Button hoursPlusButton(PIN_H_PLUS, BUTTONS_PRESSING_AGAINST);
 Button extModeDoubleButton(PIN_M_PLUS, PIN_H_PLUS, BUTTONS_PRESSING_AGAINST);
 Button modeChangeButton(PIN_MODE, BUTTONS_PRESSING_AGAINST);
+#endif
 
 // Startmode...
 Mode mode = STD_MODE_NORMAL;
+//Mode mode = EXT_MODE_TEST;
 // Merker fuer den Modus vor der Abschaltung...
 Mode lastMode = mode;
 
@@ -609,14 +654,25 @@ void updateFromRtc() {
   }
 }
 
+#ifdef __arm__
+/* unistd.h inkludieren definiert auch alarm, was Problem mit Alarm Klasse macht.
+ * deshalb prototype fur sbrk einzeln definieren*/
+extern "C" char* sbrk(int incr);
+#endif
+
 /**
    Den freien Specher abschaetzen.
    Kopiert von: http://playground.arduino.cc/Code/AvailableMemory
 */
 int freeRam() {
-  extern int __heap_start, *__brkval;
-  int v;
-  return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+#ifdef __arm__
+    char top;
+	return &top - reinterpret_cast<char*>(sbrk(0));
+#else
+    extern int __heap_start, *__brkval;
+    int v;
+    return (int) &v - (__brkval == 0 ? (int) &__heap_start : (int) __brkval);
+#endif
 }
 
 /**
@@ -698,6 +754,8 @@ void setup() {
 #elif defined DS3231
   DEBUG_PRINTLN(F("Uhrentyp ist DS3231."));
   rtc.enableSQWOnDS3231();
+#elif defined TEENSYRTC
+  DEBUG_PRINTLN(F("Uhrentyp ist Teensy RTC (Freescale MK20)"));
 #else
   Definition_des_Uhrtyps_fehlt!
   In der Configuration.h muss der Uhrentyp angegeben werden!
@@ -729,6 +787,16 @@ void setup() {
   for (int i = 0; i < 1000; i++) {
     analogRead(PIN_LDR);
   }
+#ifdef TEENSYRTC
+   // Bei der internen RTC vom Teensy wird kein Rechtecksignal
+   // an einem externen pin geniert. Deshalb normaler Software Timer
+   // IntervalTimer ist hochpräziser Timer, eigentlich unnötig
+   rtcTimer.priority(255);
+   if(!rtcTimer.begin(updateFromRtc, 1*1000*1000))
+       Serial.printf("Failed to set teensy timer\n");
+#else
+    attachInterrupt(0, updateFromRtc, FALLING);
+#endif
 
   // rtcSQWLed-LED drei Mal als 'Hello' blinken lassen
   // und Speaker piepsen kassen, falls ENABLE_ALARM eingeschaltet ist.

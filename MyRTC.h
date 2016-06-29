@@ -44,15 +44,17 @@ public:
 
     byte getSeconds();
 
-private:
+
     int _address;
     byte _statusLedPin;
 
+protected:
     byte _seconds;
 
     byte decToBcd(byte val);
     byte bcdToDec(byte val);
     uint8_t conv2d(const char* p);
+
 };
 
 #endif

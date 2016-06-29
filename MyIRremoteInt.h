@@ -17,6 +17,7 @@
 
 #ifndef My_IRremoteint_h
 #define My_IRremoteint_h
+#ifndef __arm__
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include <Arduino.h>
@@ -514,4 +515,5 @@ extern volatile irparams_t irparams;
 #define BLINKLED_OFF() (PORTB &= B11011111)
 #endif
 
+#endif
 #endif

@@ -111,13 +111,15 @@
 #define RGB_LEDS
 //#define RGBW_LEDS
 //#define MATRIX_XXL
+#define LPD_ALTLAYOUT
 #endif
 
 /*
  * Welche Uhr soll benutzt werden?
  */
-#define DS1307
+//#define DS1307
 // #define DS3231
+#define TEENSYRTC
 
 /*
  * Welche IR-Fernbedienung soll benutzt werden?
@@ -177,6 +179,18 @@
  * Default: 300
  */
 #define BUTTON_TRESHOLD 300
+
+// Buttons sind kapazitive Button (Teensy)
+#define TOUCHBUTTONS
+
+//! Wie viele samples gesammelt werden, bis der Durchschnitt als stabil erachtet wird
+#define TOUCHSAMPLES 1500
+
+//! Minimal Erhöhung des Wertes, um mal als berüht zu gelten
+#define TOUCHTHRESHOLD 30
+
+//! Nummer der Samples die über dem Durchschnitt liegen müssen, vermeidet spontanes Rauschen
+#define NUMTOUCHSAMPLES 3
 
 // ------------------ DCF77-Empfaenger ---------------------
 /*

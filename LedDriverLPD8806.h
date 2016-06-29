@@ -62,6 +62,10 @@ class LedDriverLPD8806 : public LedDriver {
     void _setPixel(byte x, byte y, uint32_t c);
     void _setPixel(byte num, uint32_t c);
 
+#ifdef LDP_ALT_LAYOUT
+    void _setEcke(uint8_t ecke, uint32_t c);
+#endif
+
     uint32_t _wheel(byte brightness, byte wheelPos);
 
     void _clear();
