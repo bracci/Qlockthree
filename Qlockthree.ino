@@ -180,6 +180,11 @@
 #include "IRTranslatorMooncandles.h"
 #include "IRTranslatorLunartec.h"
 #include "IRTranslatorCLT.h"
+// Der Teenys hat 256k Flash und kein Problem mit der großen Orginal Bibliothek
+#ifdef __arm__
+#include <IRremote.h>
+#endif
+
 #include "MyIRremote.h"
 #include "MyRTC.h"
 #include "TeensyRTC.h"
