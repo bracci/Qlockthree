@@ -180,6 +180,18 @@
  */
 #define BUTTON_TRESHOLD 300
 
+// Buttons sind kapazitive Button (Teensy)
+#define TOUCHBUTTONS
+
+//! Wie viele samples gesammelt werden, bis der Durchschnitt als stabil erachtet wird
+#define TOUCHSAMPLES 1500
+
+//! Minimal Erhöhung des Wertes, um mal als berüht zu gelten
+#define TOUCHTHRESHOLD 30
+
+//! Nummer der Samples die über dem Durchschnitt liegen müssen, vermeidet spontanes Rauschen
+#define NUMTOUCHSAMPLES 3
+
 // ------------------ DCF77-Empfaenger ---------------------
 /*
  * Fuer wieviele DCF77-Samples muessen die Zeitabstaende stimmen, damit das DCF77-Telegramm als gueltig zaehlt?

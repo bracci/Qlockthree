@@ -191,6 +191,7 @@
 #include "MyDCF77.h"
 #include "Button.h"
 #include "AnalogButton.h"
+#include "TouchButton.h"
 #include "LDR.h"
 #include "DCF77Helper.h"
 #include "Renderer.h"
@@ -213,7 +214,7 @@
    Serial-Monitor muss mit der hier angegeben uebereinstimmen.
    Default: ausgeschaltet
 */
-// #define DEBUG
+#define DEBUG
 #include "Debug.h"
 // Die Geschwindigkeit der seriellen Schnittstelle. Default: 57600. Die Geschwindigkeit brauchen wir immer,
 // da auch ohne DEBUG Meldungen ausgegeben werden!
@@ -500,8 +501,8 @@ LedDriverLPD8806 ledDriver(13, 11);
 #define PIN_SPEAKER -1
 #elif defined(BOARD_TEENSY)
 LedDriverLPD8806 ledDriver(7, 14);
-#define PIN_MODE 15
-#define PIN_M_PLUS 16
+#define PIN_MODE 16
+#define PIN_M_PLUS 15
 #define PIN_H_PLUS 17
 
 #define BUTTONS_PRESSING_AGAINST LOW
@@ -591,13 +592,21 @@ byte brightnessToDisplay;
 /**
    Die Tasten.
 */
+#ifdef TOUCHBUTTONS
+TouchButton minutesPlusButton(PIN_M_PLUS);
+TouchButton hoursPlusButton(PIN_H_PLUS);
+DoubleTouchButton extModeDoubleButton(minutesPlusButton, hoursPlusButton);
+TouchButton modeChangeButton(PIN_MODE);
+#else
 Button minutesPlusButton(PIN_M_PLUS, BUTTONS_PRESSING_AGAINST);
 Button hoursPlusButton(PIN_H_PLUS, BUTTONS_PRESSING_AGAINST);
 Button extModeDoubleButton(PIN_M_PLUS, PIN_H_PLUS, BUTTONS_PRESSING_AGAINST);
 Button modeChangeButton(PIN_MODE, BUTTONS_PRESSING_AGAINST);
+#endif
 
 // Startmode...
 Mode mode = STD_MODE_NORMAL;
+//Mode mode = EXT_MODE_TEST;
 // Merker fuer den Modus vor der Abschaltung...
 Mode lastMode = mode;
 
