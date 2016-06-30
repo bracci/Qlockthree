@@ -1200,6 +1200,11 @@ void loop() {
             renderer.setMenuText("ES", Renderer::TEXT_POS_MIDDLE, matrix);
             break;
 #endif
+#ifdef ENABLE_LANGUAGE_D3
+          case LANGUAGE_D3:
+            renderer.setMenuText("D3", Renderer::TEXT_POS_MIDDLE, matrix);
+            break;
+#endif
           default:
             ;
         }
