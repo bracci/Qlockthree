@@ -46,6 +46,7 @@
 //#define ENABLE_LANGUAGE_IT
 //#define ENABLE_LANGUAGE_NL
 //#define ENABLE_LANGUAGE_ES
+#define ENABLE_LANGUAGE_D3
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
