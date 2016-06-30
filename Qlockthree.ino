@@ -4,9 +4,9 @@
 
    @mc       Arduino/RBBB (ATMEGA328)
    @autor    Christian Aschoff / caschoff _AT_ mac _DOT_ com
-   @version  3.4.8
+   @version  3.4.9
    @created  1.11.2011
-   @updated  15.3.2015
+   @updated  30.6.2016
 
    Versionshistorie:
    V 1.1:   - DCF77 auf reine Zeit ohne Strings umgestellt.
@@ -162,6 +162,7 @@
             - Unterstuetzung fuer die alte Arduino-IDE (bis 1.0.6) entfernt, da sich die Firmware damit eh nicht mehr kompilieren laesst.
             - Library fuer MAX7219 (LedControl) ausgelagert, sie muss jetzt im Librarys-Ordner liegen.
    V 3.4.8. - HelperSeconds-Behandlung in Interrupt-Funktion verschoben, damit die nicht aufgrund von Tastendruecken hochgezaehlt werden, danke an Meikel.
+   V 3.4.9. - Schwaebisch (D3) hinzugefügt
 */
 #include <Wire.h> // Wire library fuer I2C
 #include <avr/pgmspace.h>
@@ -199,7 +200,7 @@
 #endif
 
 
-#define FIRMWARE_VERSION "V 3.4.9.x"
+#define FIRMWARE_VERSION "V 3.4.9_D3"
 
 /*
    Den DEBUG-Schalter gibt es in allen Bibiliotheken. Wird er eingeschaltet, werden ueber den
