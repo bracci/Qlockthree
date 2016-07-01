@@ -193,6 +193,7 @@
 #include "Settings.h"
 #include "Zahlen.h"
 #include "Modes.h"
+#include "MyTempSens.h"
 
 #ifdef EVENTS
 #include "Events.h"
@@ -256,6 +257,7 @@ LedDriverDefault ledDriver(10, 12, 11, 3, 10);
 
 #define PIN_SPEAKER 13
 
+#define PIN_TEMP_SENS A2
 
 /**
    Der LED-Treiber fuer 4 MAX7219-Treiber wie im Ueberpixel.
@@ -285,6 +287,8 @@ LedDriverUeberPixel ledDriver(5, 6, 7);
 
 #define PIN_SPEAKER 13
 
+#define PIN_TEMP_SENS A2
+
 /**
    Der LED-Treiber fuer Power-Shift-Register.
    Data: 10; Clock: 11; Load: 12
@@ -312,6 +316,8 @@ LedDriverPowerShiftRegister ledDriver(10, 12, 11, 3);
 #define PIN_DCF77_LED -1
 
 #define PIN_SPEAKER -1
+
+#define PIN_TEMP_SENS A2
 
 /**
    Der LED-Treiber fuer NeoPixel-Stripes...
@@ -345,6 +351,8 @@ LedDriverNeoPixel ledDriver(6);
 
 #define PIN_SPEAKER -1
 
+#define PIN_TEMP_SENS A2
+
 /**
 * ...an einer CLT.
 * Data: 13
@@ -373,6 +381,8 @@ LedDriverNeoPixel ledDriver(13);
 
 #define PIN_SPEAKER -1
 
+#define PIN_TEMP_SENS A0
+
 /**
  * ...an einem AMBBRTCB V1.0
  * Data: 0
@@ -400,6 +410,8 @@ LedDriverNeoPixel ledDriver(0);
 #define PIN_DCF77_LED 2
 
 #define PIN_SPEAKER -1
+
+#define PIN_TEMP_SENS -1
 #endif
 
 /**
@@ -430,6 +442,8 @@ LedDriverDotStar ledDriver(6, 7);
 #define PIN_DCF77_LED 10
 
 #define PIN_SPEAKER -1
+
+#define PIN_TEMP_SENS -1
 
 /**
   Der LED-Treiber fuer LPD8806-Stripes...
@@ -464,6 +478,8 @@ LedDriverLPD8806 ledDriver(6, 7);
 
 #define PIN_SPEAKER -1
 
+#define PIN_TEMP_SENS -1
+
 /**
   ...an einer CLT.
   Data: 13
@@ -492,6 +508,8 @@ LedDriverLPD8806 ledDriver(13, 11);
 #define PIN_DCF77_LED 8
 
 #define PIN_SPEAKER -1
+
+#define PIN_TEMP_SENS -1
 #endif
 
 #endif
@@ -533,6 +551,13 @@ volatile byte helperSeconds;
 */
 MyDCF77 dcf77(PIN_DCF77_SIGNAL, PIN_DCF77_LED);
 DCF77Helper dcf77Helper;
+
+/**
+ * Tempsensor
+ */
+#ifndef TEMP_SENS_NONE
+  MyTempSens tempSens(PIN_TEMP_SENS);
+#endif
 
 /**
    Variablen fuer den Alarm.
@@ -607,6 +632,10 @@ void updateFromRtc() {
       updateFallBackCounter();
     }
   }
+
+#ifndef TEMP_SENS_NONE
+  tempSens.takeSample();
+#endif
 }
 
 /**
@@ -691,6 +720,14 @@ void setup() {
     rtc.set(11, 11, 1, 1, 1, 15);
     rtc.setSeconds(11);
   }
+
+#ifdef TEMP_SENS_LM35
+  DEBUG_PRINTLN(F("Temperatursensortyp ist LM35."));
+  tempSens.initLM35();
+#elif defined TEMP_SENS_LM335
+  DEBUG_PRINTLN(F("Temperatursensortyp ist LM335."));
+  tempSens.initLM335();
+#endif
 
 #ifdef DS1307
   DEBUG_PRINTLN(F("Uhrentyp ist DS1307."));
@@ -963,6 +1000,17 @@ void loop() {
         
         ledDriver.setPixelInScreenBuffer(10, 4, matrix);
         ledDriver.setPixelInScreenBuffer(10, 9, matrix);
+        break;
+#endif
+#ifdef USE_STD_MODE_TEMP
+      case STD_MODE_TEMP:
+      Serial.println(tempSens.getTempC());
+        renderer.clearScreenBuffer(matrix);
+        for (byte i = 0; i < 7; i++) {
+          matrix[1 + i] |= pgm_read_byte_near(&(ziffern[tempSens.getTempC() / 10][i])) << 11;
+          matrix[1 + i] |= pgm_read_byte_near(&(ziffern[tempSens.getTempC() % 10][i])) << 5;
+        }
+        matrix[0] |= 0b0000000000011111;
         break;
 #endif
       case STD_MODE_SECONDS:
@@ -1522,6 +1570,9 @@ void modePressed() {
     case STD_MODE_BRIGHTNESS:
 #ifdef USE_STD_MODE_DATE
     case STD_MODE_DATE:
+#endif
+#ifdef USE_STD_MODE_TEMP
+    case STD_MODE_TEMP:
 #endif
       // Timeout für den automatischen Rücksprung von STD_MODE_SECONDS,
       // STD_MODE_DATE und STD_MODE_BRIGHTNESS zurücksetzen

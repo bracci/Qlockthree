@@ -29,6 +29,9 @@ typedef enum eMode : byte
 #ifdef USE_STD_MODE_DATE
   STD_MODE_DATE,
 #endif
+#ifdef USE_STD_MODE_TEMP
+  STD_MODE_TEMP,
+#endif
   STD_MODE_BRIGHTNESS,
   STD_MODE_BLANK,
   STD_MODE_COUNT,

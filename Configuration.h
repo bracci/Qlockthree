@@ -120,6 +120,18 @@
 // #define DS3231
 
 /*
+ * Welcher Temperatursensor soll benutzt werden?
+ */
+#define TEMP_SENS_NONE
+//#define TEMP_SENS_LM35
+//#define TEMP_SENS_LM335
+
+#ifndef TEMP_SENS_NONE
+  // Temperaturanzeige
+  #define USE_STD_MODE_TEMP
+#endif 
+
+/*
  * Welche IR-Fernbedienung soll benutzt werden?
  */
 #define REMOTE_NO_REMOTE
