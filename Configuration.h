@@ -107,6 +107,14 @@
 // #define LED_DRIVER_DOTSTAR
 // #define LED_DRIVER_LPD8806
 
+/*
+ * wenn LED_DRIVER_DEFAULT dann normalerweise Hardware mit UDN, 
+ * wenn Hardware mit einzelnen FETs dann MODS_DRIVER  setzen
+ */
+#ifdef LED_DRIVER_DEFAULT
+   #define MOS_DRIVER
+#endif
+
 #if defined(LED_DRIVER_LPD8806) || defined(LED_DRIVER_NEOPIXEL)
 #define RGB_LEDS
 //#define RGBW_LEDS

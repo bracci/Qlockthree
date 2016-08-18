@@ -56,7 +56,11 @@ void LedDriverDefault::init() {
 }
 
 void LedDriverDefault::printSignature() {
+#ifdef MOS_DRIVER
+  DEBUG_PRINTLN(F("Default - 74HC595 MOS"));
+#else
   DEBUG_PRINTLN(F("Default - 74HC595"));
+#endif
 }
 
 /**
@@ -157,8 +161,13 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
         // Alter Zeileninhalt
         // Zeile schreiben...
         _shiftRegister->prepareShiftregisterWrite();
+#ifdef MOS_DRIVER
+        _shiftRegister->shiftOut(_matrixOld[k]);
+        _shiftRegister->shiftOut(~row);
+#else
         _shiftRegister->shiftOut(~_matrixOld[k]);
         _shiftRegister->shiftOut(row);
+#endif
         _shiftRegister->finishShiftregisterWrite();
 
         digitalWrite(_outputEnablePin, LOW);
@@ -168,8 +177,13 @@ void LedDriverDefault::writeScreenBufferToMatrix(word matrix[16], boolean onChan
       // Neuer Zeileninhalt
       // Zeile überschreiben...
       _shiftRegister->prepareShiftregisterWrite();
+#ifdef MOS_DRIVER
+      _shiftRegister->shiftOut(_matrixNew[k]);
+      _shiftRegister->shiftOut(~row);
+#else
       _shiftRegister->shiftOut(~_matrixNew[k]);
       _shiftRegister->shiftOut(row);
+#endif
       _shiftRegister->finishShiftregisterWrite();
 
       digitalWrite(_outputEnablePin, LOW); // über OE einschalten und nach PWM-Anteil wieder ausschalten, wenn das Display aktiv ist
@@ -235,7 +249,12 @@ void LedDriverDefault::wakeUp() {
 */
 void LedDriverDefault::clearData() {
   _shiftRegister->prepareShiftregisterWrite();
+#ifdef MOS_DRIVER
+  _shiftRegister->shiftOut(0);
+  _shiftRegister->shiftOut(65535);
+#else
   _shiftRegister->shiftOut(65535);
   _shiftRegister->shiftOut(0);
+#endif
   _shiftRegister->finishShiftregisterWrite();
 }
