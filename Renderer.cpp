@@ -1177,16 +1177,41 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
 /**
    Im Alarm-Einstell-Modus muessen bestimmte Woerter weg, wie z.B. "ES IST" im Deutschen.
 */
-void Renderer::setCorners(byte minutes, boolean cw, word matrix[16]) {
+void Renderer::setCorners(byte minutes, byte mode, word matrix[16]) {
     byte b_minutes = minutes % 5;
     for (byte i = 0; i < b_minutes; i++) {
         byte j;
-        if (cw) {
-          // j: 1, 0, 3, 2
+        switch(mode) {
+          case 0: // CW; j: 1, 0, 3, 2
           j = (1 - i + 4) % 4;
-        } else {
-          // j: 0, 1, 2, 3
+          break;
+          case 1: // CCW; j: 0, 1, 2, 3
           j = i;
+          break;
+          case 2: // LW; j: 0, 1, 3, 2
+          switch(j) {
+            case 0:
+            case 1:
+            j = i;
+            break;
+            case 2:
+            case 3:
+            j = (1 - i + 4) % 4;
+            break;
+          }
+          break;
+          case 3: // CLW: j: 1, 0, 2, 3
+          switch(j) {
+            case 0:
+            case 1:
+            j = (1 - i + 4) % 4;
+            break;
+            case 2:
+            case 3:
+            j = i;
+            break;
+          }
+          break;
         }
         #ifdef USE_INDIVIDUAL_CATHODES
             matrix[j] |= (0b0000000000010000 >> j);

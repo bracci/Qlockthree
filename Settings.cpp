@@ -45,7 +45,7 @@ Settings::Settings() {
 void Settings::resetToDefault() {
   _language = 0; //erste Sprache in Renderer::eLanguage
   _event = 0;
-  _renderCornersCw = true;
+  _renderCornersMode = 0;
   _use_ldr = true;
   _brightness = 75;
   _enableAlarm = false;
@@ -84,12 +84,12 @@ void Settings::setEvent(byte event) {
 /**
  * Die Laufrichtung der Eck-LEDs.
  */
-boolean Settings::getRenderCornersCw() {
-  return _renderCornersCw;
+boolean Settings::getRenderCornersMode() {
+  return _renderCornersMode;
 }
 
-void Settings::setRenderCornersCw(boolean cw) {
-  _renderCornersCw = cw;
+void Settings::setRenderCornersMode(byte mode) {
+  _renderCornersMode = mode;
 }
 
 /**
@@ -198,7 +198,7 @@ void Settings::loadFromEEPROM() {
     if (EEPROM.read(2) < LANGUAGE_COUNT){
     _language = EEPROM.read(2);
     }
-    _renderCornersCw = EEPROM.read(3);
+    _renderCornersMode = EEPROM.read(3);
     _use_ldr = EEPROM.read(4);
     _brightness = EEPROM.read(5);
     _enableAlarm = EEPROM.read(6);
@@ -227,8 +227,8 @@ void Settings::saveToEEPROM() {
   if (EEPROM.read(2) != _language) {
     EEPROM.write(2, _language);
   }
-  if (EEPROM.read(3) != _renderCornersCw) {
-    EEPROM.write(3, _renderCornersCw);
+  if (EEPROM.read(3) != _renderCornersMode) {
+    EEPROM.write(3, _renderCornersMode);
   }
   if (EEPROM.read(4) != _use_ldr) {
     EEPROM.write(4, _use_ldr);
