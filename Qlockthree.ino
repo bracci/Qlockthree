@@ -1608,7 +1608,7 @@ void hourPlusPressed() {
       break;
 #ifdef USE_EXT_MODE_CORNERS
     case EXT_MODE_CORNERS:
-      settings.setRenderCornersMode(!settings.getRenderCornersMode());
+      settings.setRenderCornersMode((settings.getRenderCornersMode() + 1) % 4);
       break;
 #endif
 #ifdef ALARM
