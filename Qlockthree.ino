@@ -2137,7 +2137,7 @@ void remoteAction(unsigned int irCode, IRTranslator* irTranslatorGeneric) {
       case REMOTE_BUTTON_TIME_H_PLUS:
         if(mode == STD_MODE_NORMAL) {
         incDecHours(true);
-        } else if (mode > EXT_MODE_START) {
+        } else if (mode >= EXT_MODE_START) {
           hourPlusPressed();
         }
         break;
