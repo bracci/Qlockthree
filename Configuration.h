@@ -112,7 +112,7 @@
  * wenn Hardware mit einzelnen FETs dann MODS_DRIVER  setzen
  */
 #ifdef LED_DRIVER_DEFAULT
-   #define MOS_DRIVER
+   //#define MOS_DRIVER
 #endif
 
 #if defined(LED_DRIVER_LPD8806) || defined(LED_DRIVER_NEOPIXEL)
