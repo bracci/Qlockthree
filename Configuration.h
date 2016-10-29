@@ -37,6 +37,8 @@
 //#define USE_EXT_MODE_TEST
 // DCF Debuganzeige
 #define USE_EXT_MODE_DCF_DEBUG
+// Datum manuell einstellen
+#define USE_EXT_MODE_DATE_MANUALLY
 
 // Im Menu auswählbare Sprachen aktivieren.
 #define ENABLE_LANGUAGE_DE

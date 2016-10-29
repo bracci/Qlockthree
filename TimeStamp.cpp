@@ -120,16 +120,19 @@ void TimeStamp::setDayOfWeek(byte dayOfWeek) {
     _dayOfWeek = dayOfWeek;
 }
 
-void TimeStamp::setDate(byte date) {
+void TimeStamp::setDate(byte date, boolean overflow) {
     _date = date;
+    CheckDateValidity(overflow);
 }
 
-void TimeStamp::setMonth(byte month) {
+void TimeStamp::setMonth(byte month, boolean overflow) {
     _month = month;
+    CheckDateValidity(overflow);
 }
 
-void TimeStamp::setYear(byte year) {
+void TimeStamp::setYear(byte year, boolean overflow) {
     _year = year;
+    CheckDateValidity(overflow);
 }
 
 void TimeStamp::set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year) {
@@ -205,6 +208,27 @@ void TimeStamp::decHours() {
 }
 
 /**
+ * Die Stunden erhoehen.
+ */
+void TimeStamp::incYear(byte addYear, boolean overflow) {
+    setYear(_year + addYear, overflow);
+}
+
+/**
+ * Die Stunden erhoehen.
+ */
+void TimeStamp::incMonth(byte addMonth, boolean overflow) {
+    setMonth(_month + addMonth, overflow);
+}
+
+/**
+ * Die Stunden erhoehen.
+ */
+void TimeStamp::incDate(byte addDate, boolean overflow) {
+    setDate(_date + addDate, overflow);
+}
+
+/**
  * Die Zeit als String bekommen
  */
 char* TimeStamp::asString() {
@@ -248,4 +272,82 @@ char* TimeStamp::asString() {
     strncat(_cDateTime, temp, strlen(temp));
 
     return _cDateTime;
+}
+
+void TimeStamp::CheckDateValidity(boolean overflow) {
+    if (_month < 1)
+        _month = 1;
+    while (_month > 12) {
+        _month -= 12;
+        if (overflow) _year++;
+    }
+
+    if (_date < 1)
+        _date = 1;
+    while (_date > getDaysOfMonth(_month, _year)) {
+        _date -= getDaysOfMonth(_month, _year);
+        if (overflow) {
+            _month++;
+            while (_month > 12) {
+                _month -= 12;
+                _year++;   
+            }
+        }
+    }
+    
+    _year %= 100;
+    
+    CalculateAndSetDayOfWeek();
+}
+
+void TimeStamp::CalculateAndSetDayOfWeek() {
+    // (Adopted) alghorithm by Schwerdtfeger
+    // This alghorithm is only valid from 1st March 2000 to 31st December 2099
+    byte g = _year;
+    if (_month < 3) g--;
+    byte e;
+    switch (_month) {
+        default: e = 0; break;
+        case 2: 
+        case 6:  e = 3; break;
+        case 3:
+        case 11: e = 2; break;
+        case 4: 
+        case 7:  e = 5; break;
+        case 8:  e = 1; break;
+        case 9: 
+        case 12: e = 4; break;
+        case 10: e = 6; break;
+    }
+    byte w = (_date + e + g + g/4) % 7;
+    if (!w) w = 7;
+    setDayOfWeek(w);
+}
+
+byte TimeStamp::getDaysOfMonth(byte month, byte year) {
+    // Only valid for years from 2000 to 2099
+    switch (month) {
+        default: return 0;
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12: 
+            return 31;
+            break;
+        case 2:
+            if (year % 4)
+                return 28;
+            else
+                return 29;
+            break;
+       case 4:
+       case 6:
+       case 9:
+       case 11:
+            return 30;
+            break;
+    }
 }

@@ -1194,6 +1194,48 @@ void loop() {
           renderer.setMenuText("NO", Renderer::TEXT_POS_BOTTOM, matrix);
         }
         break;
+
+#ifdef USE_EXT_MODE_DATE_MANUALLY
+      case EXT_MODE_YEARSET:   // Einstellung Jahr
+        renderer.clearScreenBuffer(matrix);
+        renderer.setMenuText("YY", Renderer::TEXT_POS_TOP, matrix);
+          for (byte i = 0; i < 5; i++) {
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getYear() % 10][i])) << 5;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getYear() / 10][i])) << 10;
+         }
+        break;    
+
+      case EXT_MODE_MONTHSET:   // Einstellung Monat
+        renderer.clearScreenBuffer(matrix);
+        renderer.setMenuText("MM", Renderer::TEXT_POS_TOP, matrix);
+         if (rtc.getMonth() > 9) {
+          for (byte i = 0; i < 5; i++) {
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() % 10][i])) << 5;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() / 10][i])) << 10;
+          }
+          } else {
+          for (byte i = 0; i < 5; i++) {
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getMonth() % 10][i])) << 7;           
+         }
+        }
+        break;      
+
+      case EXT_MODE_DATESET:   // Einstellung Tag
+        renderer.clearScreenBuffer(matrix);
+        renderer.setMenuText("DD", Renderer::TEXT_POS_TOP, matrix);
+         if (rtc.getDate() > 9) {
+          for (byte i = 0; i < 5; i++) {
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() % 10][i])) << 5;
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() / 10][i])) << 10;
+          }
+          } else {
+          for (byte i = 0; i < 5; i++) {
+          matrix[5 + i] |= pgm_read_byte_near(&(ziffernB[rtc.getDate() % 10][i])) << 7;           
+         }
+        }
+        break;      
+#endif        
+        
       case EXT_MODE_LANGUAGE:
         renderer.clearScreenBuffer(matrix);
         switch (settings.getLanguage()) {
@@ -1623,6 +1665,22 @@ void hourPlusPressed() {
       }
       break;
 #endif
+#ifdef USE_EXT_MODE_DATE_MANUALLY
+    case EXT_MODE_YEARSET:
+      rtc.incYear(10);
+      rtc.writeTime();
+    break;
+
+    case EXT_MODE_MONTHSET:
+      rtc.incMonth(10);
+      rtc.writeTime();
+    break;
+
+    case EXT_MODE_DATESET:
+      rtc.incDate(10);
+      rtc.writeTime();
+    break;
+#endif
 #ifdef ALARM
     case STD_MODE_ALARM:
       alarm.incHours();
@@ -1746,6 +1804,22 @@ void minutePlusPressed() {
       if (settings.getTimeShift() < 13) {
         settings.setTimeShift(settings.getTimeShift() + 1);
       }
+      break;
+#endif
+#ifdef USE_EXT_MODE_DATE_MANUALLY
+    case EXT_MODE_YEARSET:
+      rtc.incYear();
+      rtc.writeTime();
+      break;
+
+    case EXT_MODE_MONTHSET:
+      rtc.incMonth();
+      rtc.writeTime();
+      break;
+
+    case EXT_MODE_DATESET:
+      rtc.incDate();
+      rtc.writeTime();
       break;
 #endif
 #ifdef ALARM

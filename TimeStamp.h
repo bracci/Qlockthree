@@ -34,6 +34,9 @@ public:
     void incFiveMinutes();
     void incHours();
     void decHours();
+    void incDate(byte addDate = 1, boolean overflow = false);
+    void incMonth(byte addMonth = 1, boolean overflow = false);
+    void incYear(byte addYear = 1, boolean overflow = false);
 
     byte getMinutes();
     int getMinutesOfDay();
@@ -48,10 +51,10 @@ public:
 
     void setMinutes(byte minutes);
     void setHours(byte hours);
+    void setDate(byte date, boolean overflow = true);
     void setDayOfWeek(byte dayOfWeek);
-    void setDate(byte date);
-    void setMonth(byte month);
-    void setYear(byte year);
+    void setMonth(byte month, boolean overflow = true);
+    void setYear(byte year, boolean overflow = true);
 
     void set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year);
     void set(TimeStamp* timeStamp);
@@ -59,6 +62,10 @@ public:
     char* asString();
 
 protected:
+    byte getDaysOfMonth(byte month, byte year);
+    void CalculateAndSetDayOfWeek();
+    void CheckDateValidity(boolean overflow = true);
+
     byte _minutes;
     byte _hours;
 
