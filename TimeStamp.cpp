@@ -120,19 +120,19 @@ void TimeStamp::setDayOfWeek(byte dayOfWeek) {
     _dayOfWeek = dayOfWeek;
 }
 
-void TimeStamp::setDate(byte date, boolean overflow) {
+void TimeStamp::setDate(byte date) {
     _date = date;
-    CheckDateValidity(overflow);
+    CheckDateValidity();
 }
 
-void TimeStamp::setMonth(byte month, boolean overflow) {
+void TimeStamp::setMonth(byte month) {
     _month = month;
-    CheckDateValidity(overflow);
+    CheckDateValidity();
 }
 
-void TimeStamp::setYear(byte year, boolean overflow) {
+void TimeStamp::setYear(byte year) {
     _year = year;
-    CheckDateValidity(overflow);
+    CheckDateValidity();
 }
 
 void TimeStamp::set(byte minutes, byte hours, byte date, byte dayOfWeek, byte month, byte year) {
@@ -210,22 +210,22 @@ void TimeStamp::decHours() {
 /**
  * Die Stunden erhoehen.
  */
-void TimeStamp::incYear(byte addYear, boolean overflow) {
-    setYear(_year + addYear, overflow);
+void TimeStamp::incYear(byte addYear) {
+    setYear(_year + addYear);
 }
 
 /**
  * Die Stunden erhoehen.
  */
-void TimeStamp::incMonth(byte addMonth, boolean overflow) {
-    setMonth(_month + addMonth, overflow);
+void TimeStamp::incMonth(byte addMonth) {
+    setMonth(_month + addMonth);
 }
 
 /**
  * Die Stunden erhoehen.
  */
-void TimeStamp::incDate(byte addDate, boolean overflow) {
-    setDate(_date + addDate, overflow);
+void TimeStamp::incDate(byte addDate) {
+    setDate(_date + addDate);
 }
 
 /**
@@ -274,25 +274,17 @@ char* TimeStamp::asString() {
     return _cDateTime;
 }
 
-void TimeStamp::CheckDateValidity(boolean overflow) {
+void TimeStamp::CheckDateValidity() {
     if (_month < 1)
         _month = 1;
     while (_month > 12) {
         _month -= 12;
-        if (overflow) _year++;
     }
 
     if (_date < 1)
         _date = 1;
     while (_date > getDaysOfMonth(_month, _year)) {
         _date -= getDaysOfMonth(_month, _year);
-        if (overflow) {
-            _month++;
-            while (_month > 12) {
-                _month -= 12;
-                _year++;   
-            }
-        }
     }
     
     _year %= 100;
