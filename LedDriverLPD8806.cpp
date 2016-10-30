@@ -37,13 +37,17 @@
 */
 LedDriverLPD8806::LedDriverLPD8806(byte dataPin, byte clockPin) {
 #ifdef MATRIX_XXL
-  _strip = new LPD8806DBL(NUM_PIXEL, dataPin, clockPin);
+  #ifdef RGBW_LEDS
+    _strip = new LPD8806RGBW_DBL(NUM_PIXEL, dataPin, clockPin);
+  #else 
+    _strip = new LPD8806DBL(NUM_PIXEL, dataPin, clockPin);
+  #endif
 #else
-#ifdef RGBW_LEDS
-  _strip = new LPD8806RGBW(NUM_PIXEL, dataPin, clockPin);
-#else
-  _strip = new LPD8806(NUM_PIXEL, dataPin, clockPin);
-#endif
+  #ifdef RGBW_LEDS
+    _strip = new LPD8806RGBW(NUM_PIXEL, dataPin, clockPin);
+  #else
+    _strip = new LPD8806(NUM_PIXEL, dataPin, clockPin);
+  #endif
 #endif
 
   _strip->begin();
