@@ -84,7 +84,7 @@ void Settings::setEvent(byte event) {
 /**
  * Die Laufrichtung der Eck-LEDs.
  */
-boolean Settings::getRenderCornersMode() {
+byte Settings::getRenderCornersMode() {
   return _renderCornersMode;
 }
 

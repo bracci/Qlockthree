@@ -44,7 +44,7 @@ class Settings {
     byte getEvent();
     void setEvent(byte event);
 
-    boolean getRenderCornersMode();
+    byte getRenderCornersMode();
     void setRenderCornersMode(byte mode);
 
     boolean getUseLdr();
