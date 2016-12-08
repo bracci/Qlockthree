@@ -12,7 +12,7 @@ from Arduino Library Manager (guide: https://www.arduino.cc/en/Guide/Libraries):
 
 others you have to install/copy manually to your library directory (C:\Users\MyUserName\Documents\Arduino\libraries\):
 * [LPD8806DBL library](https://github.com/bracci/LPD8806DBL) (find download button on the right "Download ZIP")(only used for XXL-matrix using 2 LED each letter)
-* [LPD8806RGBW library](https://github.com/bracci/LPD8806DBL) (find download button on the right "Download ZIP")(only used for LPD8806 RGBW LED's)
+* [LPD8806RGBW library](https://github.com/bracci/LPD8806RGBW) (find download button on the right "Download ZIP")(only used for LPD8806 RGBW LED's)
 
 P.S.: Unfortunately the LPD8806 library from Adafruit includes a bug which prevents from successfully compile the sketch.
 You have to open the file "LPD8806.h" from "C:\Users\MyUserName\Documents\Arduino\libraries\LPD8806" and paste the following lines after file header:
