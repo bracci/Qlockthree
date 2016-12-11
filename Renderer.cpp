@@ -411,7 +411,7 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
                 setHours(hours, false, language, matrix);
                 FR_hours(hours, matrix);
                 FR_ET;
-                FR_DEMI;
+                FR_DEMIE;
                 break;
             case 7:
                 // 5 nach halb

@@ -39,7 +39,7 @@
 #define FR_DIX          matrix[6] |= 0b0000000011100000
 #define FR_QUART        matrix[7] |= 0b0001111100000000
 #define FR_VINGT        matrix[8] |= 0b1111100000000000
-#define FR_DEMI         matrix[9] |= 0b0001111000000000
+#define FR_DEMIE        matrix[9] |= 0b0001111100000000
 
 #define FR_H_UNE        matrix[2] |= 0b0000111000000000
 #define FR_H_DEUX       matrix[0] |= 0b0000000111100000
