@@ -27,6 +27,7 @@
 #include "Woerter_IT.h"
 #include "Woerter_NL.h"
 #include "Woerter_ES.h"
+#include "Woerter_D3.h"
 #include "Staben.h"
 #include "Zahlen.h"
 
@@ -724,6 +725,87 @@ void Renderer::setMinutes(char hours, byte minutes, byte language, word matrix[1
         }
         break;
 #endif
+#ifdef ENABLE_LANGUAGE_D3
+      //
+      // Schwaebisch (D3)
+      //
+      case LANGUAGE_D3:
+      D3_ESISCH;
+      switch (minutes / 5) {
+          case 0:
+              // glatte Stunde
+              setHours(hours, true, language, matrix);
+              break;
+          case 1:
+              // 5 nach
+              D3_FUENF;
+              D3_NACH;
+              setHours(hours, false, language, matrix);
+              break;
+          case 2:
+              // 10 nach
+              D3_ZEHN;
+              D3_NACH;
+              setHours(hours, false, language, matrix);
+              break;
+          case 3:
+              // viertl nach
+              D3_VIERTL;
+              setHours(hours + 1, false, language, matrix);  
+              break;
+          case 4:
+              // 10 vor halb
+              D3_ZEHN;
+              D3_VOR;
+              D3_HALB;
+              setHours(hours + 1, false, language, matrix);
+              break;
+          case 5:
+              // 5 vor halb
+              D3_FUENF;
+              D3_VOR;
+              D3_HALB;
+              setHours(hours + 1, false, language, matrix);
+              break;
+          case 6:
+              // halb
+              D3_HALB;
+              setHours(hours + 1, false, language, matrix);
+              break;
+          case 7:
+              // 5 nach halb
+              D3_FUENF;
+              D3_NACH;
+              D3_HALB;
+              setHours(hours + 1, false, language, matrix);
+              break;
+          case 8:
+              // 10 nach halb
+              D3_ZEHN;
+              D3_NACH;
+              D3_HALB;
+              setHours(hours + 1, false, language, matrix);
+              break;
+          case 9:
+              // viertel vor
+              D3_DREIVIERTL;
+              setHours(hours + 1, false, language, matrix);
+              break;
+          case 10:
+              // 10 vor
+              D3_ZEHN;
+              D3_VOR;
+              setHours(hours + 1, false, language, matrix);
+              break;
+          case 11:
+              // 5 vor
+              D3_FUENF;
+              D3_VOR;
+              setHours(hours + 1, false, language, matrix);
+              break;
+      }
+      break;
+#endif
     default:
       ;
   }
@@ -1169,13 +1251,71 @@ void Renderer::setHours(byte hours, boolean glatt, byte language, word matrix[16
         }
         break;
 #endif
+#ifdef ENABLE_LANGUAGE_D3
+      //
+      // Schwaebisch (D3)
+      //
+      case LANGUAGE_D3:
+          switch (hours) {
+              case 0:
+              case 12:
+              case 24:
+                  D3_H_ZWOELFE;
+                  break;
+              case 1:
+              case 13:
+                  D3_H_OISE;
+                  break;
+              case 2:
+              case 14:
+                  D3_H_ZWOIE;
+                  break;
+              case 3:
+              case 15:
+                  D3_H_DREIE;
+                  break;
+              case 4:
+              case 16:
+                  D3_H_VIERE;
+                  break;
+              case 5:
+              case 17:
+                  D3_H_FUENFE;
+                  break;
+              case 6:
+              case 18:
+                  D3_H_SECHSE;
+                  break;
+              case 7:
+              case 19:
+                  D3_H_SIEBNE;
+                  break;
+              case 8:
+              case 20:
+                  D3_H_ACHTE;
+                  break;
+              case 9:
+              case 21:
+                  D3_H_NEUNE;
+                  break;
+              case 10:
+              case 22:
+                  D3_H_ZEHNE;
+                  break;
+              case 11:
+              case 23:
+                  D3_H_ELFE;
+                  break;
+          }
+          break;
+#endif
     default:
       ;
   }
 }
 
 /**
-   Im Alarm-Einstell-Modus muessen bestimmte Woerter weg, wie z.B. "ES IST" im Deutschen.
+   Schalte die Eck-LEDs ein
 */
 void Renderer::setCorners(byte minutes, boolean cw, word matrix[16]) {
     byte b_minutes = minutes % 5;
@@ -1252,6 +1392,11 @@ void Renderer::cleanWordsForAlarmSettingMode(byte language, word matrix[16]) {
         matrix[0] &= 0b1000100011111111; // SON LAS weg
         matrix[0] &= 0b0011100111111111; // ES LA weg
         break;
+#endif
+#ifdef ENABLE_LANGUAGE__D3
+   case LANGUAGE_D3:
+         matrix[0] &= 0b0010000111111111; // ES ISCH weg
+         break;
 #endif
     default:
       ;
