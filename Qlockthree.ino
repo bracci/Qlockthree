@@ -944,7 +944,7 @@ void loop() {
       case EXT_MODE_TIMESET:
         renderer.clearScreenBuffer(matrix);
         renderer.setMinutes(rtc.getHours() + settings.getTimeShift(), rtc.getMinutes(), settings.getLanguage(), matrix);
-        renderer.setCorners(rtc.getMinutes(), settings.getRenderCornersCw(), matrix);
+        renderer.setCorners(rtc.getMinutes(), settings.getRenderCornersMode(), matrix);
         break;
 #ifdef USE_EXT_MODE_TIME_SHIFT
       case EXT_MODE_TIME_SHIFT:
@@ -974,11 +974,11 @@ void loop() {
         renderer.clearScreenBuffer(matrix);
         if (alarm.getShowAlarmTimeTimer() == 0) {
           renderer.setMinutes(rtc.getHours() + settings.getTimeShift(), rtc.getMinutes(), settings.getLanguage(), matrix);
-          renderer.setCorners(rtc.getMinutes(), settings.getRenderCornersCw(), matrix);
+          renderer.setCorners(rtc.getMinutes(), settings.getRenderCornersMode(), matrix);
           renderer.activateAlarmLed(matrix); // Alarm-LED
         } else {
           renderer.setMinutes(alarm.getHours() + settings.getTimeShift(), alarm.getMinutes(), settings.getLanguage(), matrix);
-          renderer.setCorners(alarm.getMinutes(), settings.getRenderCornersCw(), matrix);
+          renderer.setCorners(alarm.getMinutes(), settings.getRenderCornersMode(), matrix);
           renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if (alarm.getShowAlarmTimeTimer() % 2 == 0) {
             renderer.activateAlarmLed(matrix); // Alarm-LED
@@ -1048,11 +1048,22 @@ void loop() {
 #ifdef USE_EXT_MODE_CORNERS
       case EXT_MODE_CORNERS:
         renderer.clearScreenBuffer(matrix);
-        if (settings.getRenderCornersCw()) {
+        switch(settings.getRenderCornersMode()) {
+          case 0:
           renderer.setMenuText("CW", Renderer::TEXT_POS_MIDDLE, matrix);
-        } else {
+          break;
+          case 1:
           renderer.setMenuText("C", Renderer::TEXT_POS_TOP, matrix);
           renderer.setMenuText("CW", Renderer::TEXT_POS_BOTTOM, matrix);
+          break;
+          case 2:
+          renderer.setMenuText("C", Renderer::TEXT_POS_TOP, matrix);
+          renderer.setMenuText("LW", Renderer::TEXT_POS_BOTTOM, matrix);
+          break;
+          case 3:
+          renderer.setMenuText("C", Renderer::TEXT_POS_TOP, matrix);
+          renderer.setMenuText("LW", Renderer::TEXT_POS_BOTTOM, matrix);
+          break;
         }
         break;
 #endif
@@ -1164,7 +1175,7 @@ void loop() {
           renderer.setMinutes(settings.getNightModeTime(false)->getHours(), settings.getNightModeTime(false)->getMinutes(), settings.getLanguage(), matrix);
           renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if ( (settings.getNightModeTime(false)->getHours() >= 12) ) {
-            renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
+            renderer.setCorners(1, settings.getRenderCornersMode(), matrix);
           }
         }
         break;
@@ -1180,7 +1191,7 @@ void loop() {
           renderer.setMinutes(settings.getNightModeTime(true)->getHours(), settings.getNightModeTime(true)->getMinutes(), settings.getLanguage(), matrix);
           renderer.cleanWordsForAlarmSettingMode(settings.getLanguage(), matrix); // ES IST weg
           if ( (settings.getNightModeTime(true)->getHours() >= 12) ) {
-            renderer.setCorners(1, settings.getRenderCornersCw(), matrix);
+            renderer.setCorners(1, settings.getRenderCornersMode(), matrix);
           }
         }
         break;
@@ -1298,7 +1309,7 @@ void loop() {
 #ifdef USE_EXT_MODE_TEST
       case EXT_MODE_TEST:
         renderer.clearScreenBuffer(matrix);
-        renderer.setCorners(helperSeconds % 5, settings.getRenderCornersCw(), matrix);
+        renderer.setCorners(helperSeconds % 5, settings.getRenderCornersMode(), matrix);
 #ifdef ALARM
         if (settings.getEnableAlarm()) {
           renderer.activateAlarmLed(matrix); // Alarm-LED
@@ -1332,7 +1343,7 @@ void loop() {
 #ifdef USE_EXT_MODE_DCF_DEBUG
       case EXT_MODE_DCF_DEBUG:
         renderer.clearScreenBuffer(matrix);
-        renderer.setCorners(dcf77.getDcf77ErrorCorner(), settings.getRenderCornersCw(), matrix);
+        renderer.setCorners(dcf77.getDcf77ErrorCorner(), settings.getRenderCornersMode(), matrix);
         break;
 #endif
       default:
@@ -1706,7 +1717,7 @@ void hourPlusPressed() {
       break;
 #ifdef USE_EXT_MODE_CORNERS
     case EXT_MODE_CORNERS:
-      settings.setRenderCornersCw(!settings.getRenderCornersCw());
+      settings.setRenderCornersMode((settings.getRenderCornersMode() + 1) % 4);
       break;
 #endif
 #ifdef ALARM
@@ -1847,7 +1858,7 @@ void minutePlusPressed() {
       break;
 #ifdef USE_EXT_MODE_CORNERS
     case EXT_MODE_CORNERS:
-      settings.setRenderCornersCw(!settings.getRenderCornersCw());
+      settings.setRenderCornersMode((settings.getRenderCornersMode() + 1) % 4);
       break;
 #endif
 #ifdef ALARM

@@ -44,8 +44,8 @@ class Settings {
     byte getEvent();
     void setEvent(byte event);
 
-    boolean getRenderCornersCw();
-    void setRenderCornersCw(boolean cw);
+    byte getRenderCornersMode();
+    void setRenderCornersMode(byte mode);
 
     boolean getUseLdr();
     void setUseLdr(boolean useLdr);
@@ -83,7 +83,7 @@ class Settings {
 
   private:
     byte _language;
-    boolean _renderCornersCw;
+    byte _renderCornersMode;
     boolean _use_ldr;
     byte _brightness;
     boolean _enableAlarm;
