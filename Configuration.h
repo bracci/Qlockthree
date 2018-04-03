@@ -48,6 +48,7 @@
 //#define ENABLE_LANGUAGE_IT
 //#define ENABLE_LANGUAGE_NL
 //#define ENABLE_LANGUAGE_ES
+#define ENABLE_LANGUAGE_D3
 
 /*
  * Zusätzliche Schalter, um neue Zusatzfunktionen ein- bzw. auszuschalten.
@@ -94,20 +95,20 @@
 /*
  * Welches Board wird benutzt? Wird aktuell nur für das Pinmapping von LPD8806 und Neopixel gebraucht
  */
-#define BOARD_DEFAULT
-//#define BOARD_CLT
+//#define BOARD_DEFAULT
+#define BOARD_CLT
 //#define BOARD_BBRTCAD
 //#define BOARD_AMBBRTCAD
 
 /*
  * Welcher LED-Treiber soll benutzt werden?
  */
-#define LED_DRIVER_DEFAULT
+// #define LED_DRIVER_DEFAULT
 // #define LED_DRIVER_UEBERPIXEL
 // #define LED_DRIVER_POWER_SHIFT_REGISTER
 // #define LED_DRIVER_NEOPIXEL
 // #define LED_DRIVER_DOTSTAR
-// #define LED_DRIVER_LPD8806
+#define LED_DRIVER_LPD8806
 
 /*
  * wenn LED_DRIVER_DEFAULT dann normalerweise Hardware mit UDN, 
@@ -118,8 +119,8 @@
 #endif
 
 #if defined(LED_DRIVER_LPD8806) || defined(LED_DRIVER_NEOPIXEL)
-#define RGB_LEDS
-//#define RGBW_LEDS
+//#define RGB_LEDS
+#define RGBW_LEDS
 //#define MATRIX_XXL
 #endif
 
